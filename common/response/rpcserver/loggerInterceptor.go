@@ -1,7 +1,7 @@
 package rpcserver
 
 import (
-	"Gopan/common/errorx"
+	"GopherTok/common/errorx"
 	"context"
 
 	"github.com/pkg/errors"
