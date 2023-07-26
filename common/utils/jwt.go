@@ -13,7 +13,7 @@ type MyClaims struct {
 	jwt.StandardClaims
 }
 
-var accessSecret = []byte("liuxian123")
+var accessSecret = []byte("gophertok123")
 var refreshSecret = []byte("123456789")
 
 // GetToken 获取accessToken和refreshToken
