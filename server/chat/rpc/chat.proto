@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+package chat;
+
+option go_package = "./pb";
+
+service ChatRpc {
+    rpc MessageAction(MessageActionRequest) returns (MessageActionResponse) {}
+    rpc MessageChat(MessageChatRequest) returns (MessageChatResponse) {}
+    rpc MessageChatLast(MessageChatLastRequest) returns (MessageChatLastResponse) {}
+}
+
+message Message {
+    int64 id = 1;
+    int64 from_user_id = 2;
+    int64 to_user_id = 3;
+    string content = 4;
+    int64 create_time = 5;
+}
+
+message LastMessage {
+    string content = 1;
+    int64 msg_type = 2;
+}
+
+message MessageActionRequest {
+    int64 from_user_id = 1;
+    int64 to_user_id = 2;
+    int64 action = 3;
+    string content = 4;
+}
+
+message MessageActionResponse {
+
+}
+
+message MessageChatRequest {
+    int64 from_user_id = 1;
+    int64 to_user_id = 2;
+    int64 pre_msg_time = 3;
+}
+
+message MessageChatResponse {
+    repeated Message message_list = 1;
+}
+
+message MessageChatLastRequest {
+    int64 from_user_id = 1;
+    repeated int64 to_user_id_list = 2;
+}
+
+message MessageChatLastResponse {
+    repeated LastMessage last_message_list = 1;
+}
+
