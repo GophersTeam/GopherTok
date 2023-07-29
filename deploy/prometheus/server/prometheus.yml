@@ -1,0 +1,74 @@
+global:
+  scrape_interval:
+  external_labels:
+    monitor: 'codelab-monitor'
+
+scrape_configs:
+  - job_name: 'prometheus'
+    scrape_interval: 5s  #global catch time
+    static_configs:
+      - targets: ['127.0.0.1:9090']
+
+  - job_name: 'user-api'
+    static_configs:
+      - targets: [ 'gopan-user-api:6001' ]
+        labels:
+          job: user-api
+          app: user-api
+          env: dev
+          instance: host.docker.internal:3001
+  - job_name: 'user-rpc'
+    static_configs:
+      - targets: [ 'gopan-user-rpc:6002' ]
+        labels:
+          job: user-rpc
+          app: user-rpc
+          env: dev
+          instance: host.docker.internal:3002
+  - job_name: 'upload-api'
+    static_configs:
+      - targets: [ 'gopan-upload-api:6003' ]
+        labels:
+          job: upload-api
+          app: upload-api
+          env: dev
+          instance: host.docker.internal:3003
+  - job_name: 'upload-rpc'
+    static_configs:
+      - targets: [ 'gopan-upload-rpc:6004' ]
+        labels:
+          job: upload-rpc
+          app: upload-rpc
+          env: dev
+          instance: host.docker.internal:3003
+  - job_name: 'transfer'
+    static_configs:
+      - targets: [ 'gopan-transfer:6010' ]
+        labels:
+          job: transfer
+          app: transfer
+          env: dev
+  - job_name: 'download-api'
+    static_configs:
+      - targets: [ 'gopan-download-api:6005' ]
+        labels:
+          job: download-api
+          app: download-api
+          env: dev
+          instance: host.docker.internal:3005
+  - job_name: 'filemeta-api'
+    static_configs:
+      - targets: [ 'gopan-filemeta-api:6006' ]
+        labels:
+          job: filemeta-api
+          app: filemeta-api
+          env: dev
+          instance: host.docker.internal:3006
+  - job_name: 'filemeta-rpc'
+    static_configs:
+      - targets: [ 'gopan-filemeta-rpc:6007' ]
+        labels:
+          job: filemeta-rpc
+          app: filemeta-rpc
+          env: dev
+          instance: host.docker.internal:3007
