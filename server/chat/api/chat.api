@@ -1,0 +1,46 @@
+syntax = "v1"
+
+@server(
+	middleware : Auth
+)
+service chat {
+	@handler MessageAction
+	post /douyin/message/action (MessageActionRequest) returns (MessageActionResponse)
+	@handler MessageChat
+	get /douyin/message/chat (MessageChatRequest) returns (MessageChatResponse)
+}
+
+type BaseResponse {
+	Code    int64  `json:"status_code"`
+	Message string `json:"status_msg,omitempty"`
+}
+
+type (
+	MessageActionRequest {
+		ToUserId   int64  `form:"to_user_id" vd:"$>0;msg:'to_user_id error'"`
+		ActionType int64  `form:"action_type" vd:"$==1;msg:'action_type error'"`
+		Content    string `form:"content"`
+	}
+	MessageActionResponse {
+		BaseResponse
+	}
+)
+
+type (
+	MessageChatRequest {
+		ToUserId   int64 `form:"to_user_id"`
+		PreMsgTime int64 `form:"pre_msg_time,optional"`
+	}
+	MessageChatResponse {
+		BaseResponse
+		MessageList []*Message `json:"message_list"`
+	}
+)
+
+type Message {
+	Id         int64  `json:"id"`
+	FromUserId int64  `json:"from_user_id"`
+	ToUserId   int64  `json:"to_user_id"`
+	Content    string `json:"content"`
+	CreateTime int64  `json:"create_time"`
+}
