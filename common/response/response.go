@@ -13,19 +13,14 @@ import (
 type Body struct {
 	Code    uint32      `json:"status_code"`
 	Message string      `json:"status_msg"`
-	Data    interface{} `json:"data"`
+	Data    interface{} `json:"-"`
 }
 
 // http返回
 func Response(r *http.Request, w http.ResponseWriter, resp interface{}, err error) {
 	if err == nil {
 		//成功返回
-		r := &Body{
-			Code:    0,
-			Message: "success",
-			Data:    resp,
-		}
-		httpx.WriteJson(w, http.StatusOK, r)
+		httpx.WriteJson(w, http.StatusOK, resp)
 	} else {
 		//错误返回
 		errcode := uint32(500)
