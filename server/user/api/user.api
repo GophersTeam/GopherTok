@@ -1,0 +1,51 @@
+syntax = "v1"
+
+// 接口信息
+info(
+    title: "GopherTok/user.api"
+    author: "liuxian"
+    version: "1.0.0"
+)
+type BaseResponse {
+    Code int64 `json:"status_code"`
+    Message string `json:"status_msg,omitempty"`
+}
+type (
+    // 用户注册
+    RegisterReq {
+        Username string `form:"username" validate:"required,max=32"`
+        Password string `form:"password" validate:"required,max=32"`
+    }
+    RegisterResp {
+        BaseResponse
+        UserId int64 `json:"user_id"`
+        Token string `json:"token"`
+    }
+
+        // 用户登陆
+    LoginReq {
+        Username string `form:"username" validate:"required,max=32"`
+        Password string `form:"password" validate:"required,max=32"`
+    }
+    LoginResp {
+        BaseResponse
+        UserId int64 `json:"user_id"`
+        Token string `json:"token"`
+    }
+)
+@server(
+    prefix: douyin/user
+)
+service user{
+    @doc(
+        summary: "用户注册"
+    )
+    @handler Register
+    post /register (RegisterReq) returns (RegisterResp)
+
+    @doc(
+        summary: "用户登陆"
+    )
+    @handler Login
+    post /login (LoginReq) returns (LoginResp)
+}
