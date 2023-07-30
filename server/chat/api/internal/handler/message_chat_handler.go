@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"GopherTok/common/response"
 	"net/http"
 
 	"GopherTok/server/chat/api/internal/logic"
@@ -19,10 +20,6 @@ func MessageChatHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		l := logic.NewMessageChatLogic(r.Context(), svcCtx)
 		resp, err := l.MessageChat(&req)
-		if err != nil {
-			httpx.ErrorCtx(r.Context(), w, err)
-		} else {
-			httpx.OkJsonCtx(r.Context(), w, resp)
-		}
+		response.Response(r, w, resp, err)
 	}
 }

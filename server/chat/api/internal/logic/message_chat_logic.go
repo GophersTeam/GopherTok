@@ -46,7 +46,7 @@ func (l *MessageChatLogic) MessageChat(req *types.MessageChatRequest) (resp *typ
 
 	resp = new(types.MessageChatResponse)
 	resp.MessageList = make([]*types.Message, 0, len(chatResp.MessageList))
-	copier.Copy(&resp.MessageList, &chatResp.MessageList)
+	_ = copier.Copy(&resp.MessageList, &chatResp.MessageList)
 
 	return
 }

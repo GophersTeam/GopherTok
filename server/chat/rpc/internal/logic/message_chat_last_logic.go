@@ -3,8 +3,6 @@ package logic
 import (
 	"GopherTok/common/consts"
 	"context"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/proto"
 	"strconv"
 
@@ -32,8 +30,8 @@ func (l *MessageChatLastLogic) MessageChatLast(in *pb.MessageChatLastRequest) (r
 	fromUserIdStr := strconv.Itoa(int(in.FromUserId))
 	allLastMessages, err := l.svcCtx.RedisClient.HgetallCtx(l.ctx, consts.LastMessagePrefix+fromUserIdStr)
 	if err != nil {
-		l.Errorf("MessageBatchLast error: %s", err.Error())
-		return nil, status.Errorf(codes.Internal, "MessageBatchLast error: %s", err.Error())
+		l.Errorf("MessageChatLast RedisClient.HgetallCtx error: %s", err.Error())
+		return nil, err
 	}
 
 	resp = new(pb.MessageChatLastResponse)

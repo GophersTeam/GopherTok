@@ -1,0 +1,18 @@
+Name: chat.api
+Host: 0.0.0.0
+Port: 8888
+
+Mode: dev
+
+Log:
+    Encoding: plain
+
+RedisConf:
+    Host: 192.168.21.211:6379
+    Pass: "123456"
+
+ChatRpcConf:
+    Etcd:
+        Hosts:
+            - 192.168.21.211:2379
+        Key: chat.rpc

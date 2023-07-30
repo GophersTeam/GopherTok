@@ -7,8 +7,6 @@ import (
 	"GopherTok/server/chat/rpc/pb"
 	"context"
 	"github.com/zeromicro/go-zero/core/logx"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/proto"
 	"strconv"
 	"time"
@@ -38,8 +36,8 @@ func (l *MessageActionLogic) MessageAction(in *pb.MessageActionRequest) (resp *p
 	}
 	_, err = l.svcCtx.MessageModel.Insert(l.ctx, message)
 	if err != nil {
-		l.Errorf("MessageAction error: %s", err.Error())
-		return nil, status.Errorf(codes.Internal, "MessageAction error: %s", err.Error())
+		l.Errorf("MessageAction MessageModel.Insert error: %s", err.Error())
+		return nil, err
 	}
 
 	// 保存最新消息到redis
