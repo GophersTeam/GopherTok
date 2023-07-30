@@ -16,11 +16,10 @@ const (
 )
 
 const (
-	ErrHeadNil    = "请求头中auth为空"   //30001
-	ErrHeadFormat = "请求头中auth格式有误" //30002
-	ErrTokenProve = "token验证错误"    // 30003
-
-	ErrTokenEmpty = "token为空" // 30004
+	ErrHeadNil    = "请求头中auth为空"  //30001
+	ErrHeadFormat = "请求token格式有误" //30002
+	ErrTokenProve = "token验证错误"   // 30003
+	ErrTokenEmpty = "token为空"     // 30004
 )
 
 const (

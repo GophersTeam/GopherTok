@@ -6,3 +6,7 @@ const (
 	MsgTypeRecv   = 0
 	MsgTypeSend   = 1
 )
+
+const (
+	Token = "token"
+)

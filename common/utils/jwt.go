@@ -3,7 +3,7 @@ package utils
 import (
 	"errors"
 	"fmt"
-	"github.com/golang-jwt/jwt/v4"
+	"github.com/dgrijalva/jwt-go"
 	"time"
 )
 
@@ -13,11 +13,11 @@ type MyClaims struct {
 	jwt.StandardClaims
 }
 
-var accessSecret = []byte("gophertok123")
-var refreshSecret = []byte("123456789")
+//var accessSecret = []byte("liuxian123")
+//var refreshSecret = []byte("123456789")
 
 // GetToken 获取accessToken和refreshToken
-func GetToken(id int64, state string) (string, string) {
+func GetToken(id int64, state string, accessSecret, refreshSecret string) (string, string) {
 	// accessToken 的数据
 
 	aT := MyClaims{
@@ -54,7 +54,7 @@ func GetToken(id int64, state string) (string, string) {
 	}
 	return accessTokenSigned, refreshTokenSigned
 }
-func ParseToken(accessTokenString, refreshTokenString string) (*MyClaims, bool, error) {
+func ParseToken(accessTokenString, refreshTokenString string, accessSecret, refreshSecret string) (*MyClaims, bool, error) {
 	fmt.Println("In ParseToken")
 	accessToken, err := jwt.ParseWithClaims(accessTokenString, &MyClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return accessSecret, nil

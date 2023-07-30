@@ -25,4 +25,18 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		},
 		rest.WithPrefix("/douyin/user"),
 	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.JWT},
+			[]rest.Route{
+				{
+					Method:  http.MethodGet,
+					Path:    "/",
+					Handler: userinfoHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/douyin/user"),
+	)
 }
