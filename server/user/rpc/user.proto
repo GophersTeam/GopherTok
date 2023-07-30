@@ -26,7 +26,19 @@ message LoginResp{
   string Token = 2;
 }
 
-
+message UserInfoResp {
+  int64 id = 1;
+  string name = 2;
+  int64 follow_count = 3;
+  int64 follower_count = 4;
+  bool is_follow = 5;
+  string avatar = 6;
+  string background_image = 7;
+  string signature = 8;
+  int64 total_favorited = 9;
+  int64 work_count = 10;
+  int64 favorite_count = 11;
+}
 service user{
   rpc Register(RegisterReq)returns (RegisterResp); // 注册
   rpc Login(LoginReq)returns(LoginResp);          // 登陆
