@@ -19,7 +19,7 @@ type (
 	MessageActionRequest {
 		ToUserId   int64  `form:"to_user_id" vd:"$>0;msg:'to_user_id error'"`
 		ActionType int64  `form:"action_type" vd:"$==1;msg:'action_type error'"`
-		Content    string `form:"content"`
+		Content    string `form:"content" vd:"$!='';msg:'消息不能为空'"`
 	}
 	MessageActionResponse {
 		BaseResponse
@@ -28,7 +28,7 @@ type (
 
 type (
 	MessageChatRequest {
-		ToUserId   int64 `form:"to_user_id"`
+		ToUserId   int64 `form:"to_user_id" vd:"$>0;msg:'to_user_id error'"`
 		PreMsgTime int64 `form:"pre_msg_time,optional"`
 	}
 	MessageChatResponse {
