@@ -17,9 +17,10 @@ type MyClaims struct {
 //var refreshSecret = []byte("123456789")
 
 // GetToken 获取accessToken和refreshToken
-func GetToken(id int64, state string, accessSecret, refreshSecret string) (string, string) {
+func GetToken(id int64, state string, a, r string) (string, string) {
 	// accessToken 的数据
-
+	accessSecret := []byte(a)
+	refreshSecret := []byte(r)
 	aT := MyClaims{
 		id,
 		state,
@@ -54,8 +55,10 @@ func GetToken(id int64, state string, accessSecret, refreshSecret string) (strin
 	}
 	return accessTokenSigned, refreshTokenSigned
 }
-func ParseToken(accessTokenString, refreshTokenString string, accessSecret, refreshSecret string) (*MyClaims, bool, error) {
-	fmt.Println("In ParseToken")
+func ParseToken(accessTokenString, refreshTokenString string, a, r string) (*MyClaims, bool, error) {
+
+	accessSecret := []byte(a)
+	refreshSecret := []byte(r)
 	accessToken, err := jwt.ParseWithClaims(accessTokenString, &MyClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return accessSecret, nil
 	})
@@ -63,7 +66,6 @@ func ParseToken(accessTokenString, refreshTokenString string, accessSecret, refr
 		return claims, false, nil
 	}
 
-	fmt.Println("RefreshToken")
 	refreshToken, err := jwt.ParseWithClaims(refreshTokenString, &MyClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return refreshSecret, nil
 	})

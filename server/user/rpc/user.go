@@ -22,6 +22,8 @@ func main() {
 	flag.Parse()
 
 	var c config.Config
+	var nacosConf config.NacosConf
+	conf.MustLoad(*configFile, &nacosConf)
 	conf.MustLoad(*configFile, &c)
 	ctx := svc.NewServiceContext(c)
 
