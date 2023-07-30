@@ -1,0 +1,5 @@
+Host: 106.15.58.0
+Port: 8848
+NamespaceId: fd221e38-6439-4b1d-b82d-aa7cceebc537
+Group: dev
+DataId: chat-api.yaml
