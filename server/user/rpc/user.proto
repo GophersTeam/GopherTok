@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "./user";
+message CommonResp{
+  int64 Code = 1;
+  string Message = 2;
+}
+
+message RegisterReq{
+  string Username = 1;
+  string Password = 2;
+}
+message RegisterResp{
+  int64 UserId = 1;
+  string Token = 2;
+}
+
+message LoginReq{
+  string Username = 1;
+  string Password = 2;
+}
+message LoginResp{
+  int64 UserId = 1;
+  string Token = 2;
+}
+
+service user{
+  rpc Register(RegisterReq)returns (RegisterResp); // 注册
+  rpc Login(LoginReq)returns(LoginResp);          // 登陆
+}

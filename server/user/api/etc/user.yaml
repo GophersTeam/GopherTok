@@ -1,0 +1,5 @@
+Host: 106.15.58.0
+Port: 8848
+NamespaceId: f21ceb20-169f-42ca-b707-99ecd90fd325
+Group: dev
+DataId: user-api.yaml

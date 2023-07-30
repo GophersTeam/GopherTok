@@ -1,0 +1,70 @@
+syntax = "v1"
+
+// 接口信息
+info(
+    title: "GopherTok/user.api"
+    author: "liuxian"
+    version: "1.0.0"
+)
+type BaseResponse {
+    Code int64 `json:"status_code"`
+    Message string `json:"status_msg,omitempty"`
+}
+type (
+    // 用户注册
+    RegisterReq {
+        Username string `form:"username" validate:"required,max=32,min=4"`
+        Password string `form:"password" validate:"required,max=32,min=8"`
+    }
+    RegisterResp {
+        BaseResponse
+        UserId int64 `json:"user_id"`
+        Token string `json:"token"`
+    }
+
+        // 用户登陆
+    LoginReq {
+        Username string `form:"username" validate:"required,max=32,min=4"`
+        Password string `form:"password" validate:"required,max=32,min=8"`
+    }
+    LoginResp {
+        BaseResponse
+        UserId int64 `json:"user_id"`
+        Token string `json:"token"`
+    }
+        // 用户信息
+    UserInfoReq {
+        UserId int64 `json:"user_id"`
+        Token string `json:"token"`
+    }
+    UserInfoResp {
+        BaseResponse
+        ID int64 `json:"id"`
+        Name string `json:"name"`
+        FollowCount int64 `json:"follow_count"`
+        FollowerCount int64 `json:"follower_count"`
+        IsFollow bool `json:"is_follow"`
+        Avatar string `json:"avatar"`
+        BackgroundImage string `json:"background_image"`
+        Signature string `json:"signature"`
+        TotalFavorited string `json:"total_favorited"`
+        WorkCount int64 `json:"work_count"`
+        FavoriteCount int64 `json:"favorite_count"`
+    }
+)
+@server(
+    prefix: douyin/user
+)
+service user {
+    @doc(
+        summary: "用户注册"
+    )
+    @handler Register
+    post /register (RegisterReq) returns (RegisterResp)
+
+    @doc(
+        summary: "用户登陆"
+    )
+    @handler Login
+    post /login (LoginReq) returns (LoginResp)
+}
