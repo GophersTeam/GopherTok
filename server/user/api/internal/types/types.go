@@ -29,8 +29,8 @@ type LoginResp struct {
 }
 
 type UserInfoReq struct {
-	UserId int64  `json:"user_id"`
-	Token  string `json:"token"`
+	UserId int64  `form:"user_id"`
+	Token  string `form:"token"`
 }
 
 type UserInfoResp struct {

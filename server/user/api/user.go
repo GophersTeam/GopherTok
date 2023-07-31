@@ -21,6 +21,10 @@ func main() {
 	conf.MustLoad(*configFile, &nacosConf)
 	var c config.Config
 	nacosConf.LoadConfig(&c)
+	nacosConf.ListenConfig(func(namespace, group, dataId, data string) {
+		fmt.Printf("配置文件发生变化\n")
+		fmt.Printf("namespace: %s, group: %s, dataId: %s, data: %s", namespace, group, dataId, data)
+	})
 
 	server := rest.MustNewServer(c.RestConf)
 	defer server.Stop()

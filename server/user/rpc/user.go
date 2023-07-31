@@ -24,10 +24,15 @@ var configFile = flag.String("f", "etc/user.yaml", "the config file")
 func main() {
 	flag.Parse()
 
-	var c config.Config
 	var nacosConf config.NacosConf
 	conf.MustLoad(*configFile, &nacosConf)
-	conf.MustLoad(*configFile, &c)
+	var c config.Config
+	nacosConf.LoadConfig(&c)
+	nacosConf.ListenConfig(func(namespace, group, dataId, data string) {
+		fmt.Printf("配置文件发生变化\n")
+		fmt.Printf("namespace: %s, group: %s, dataId: %s, data: %s", namespace, group, dataId, data)
+	})
+
 	ctx := svc.NewServiceContext(c)
 
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {

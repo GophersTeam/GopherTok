@@ -34,8 +34,8 @@ type (
 	}
 	// 用户信息
 	UserInfoReq {
-		UserId int64  `json:"user_id"`
-		Token  string `json:"token"`
+		UserId int64  `form:"user_id"`
+		Token  string `form:"token"`
 	}
 	UserInfoResp {
 		BaseResponse
