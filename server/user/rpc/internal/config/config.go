@@ -15,4 +15,9 @@ type Config struct {
 		Cluster5 string
 		Cluster6 string
 	}
+	Token struct {
+		AccessToken  string
+		RefreshToken string
+	}
+	Salt string
 }

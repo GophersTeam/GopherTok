@@ -1,8 +1,11 @@
 package main
 
 import (
+	"GopherTok/common/logs/zapx"
+	"GopherTok/common/response/rpcserver"
 	"flag"
 	"fmt"
+	"github.com/zeromicro/go-zero/core/logx"
 
 	"GopherTok/server/user/rpc/internal/config"
 	"GopherTok/server/user/rpc/internal/server"
@@ -35,7 +38,12 @@ func main() {
 		}
 	})
 	defer s.Stop()
-
+	// 添加rpc 错误返回
+	s.AddUnaryInterceptors(rpcserver.LoggerInterceptor)
+	// zap
+	writer, err := zapx.NewZapWriter()
+	logx.Must(err)
+	logx.SetWriter(writer)
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
 	s.Start()
 }
