@@ -52,7 +52,7 @@ func (l *UserinfoLogic) Userinfo(req *types.UserInfoReq) (resp *types.UserInfoRe
 		FollowCount:     0,
 		FollowerCount:   0,
 		IsFollow:        false,
-		Avatar:          "",
+		Avatar:          userCnt.Avatar,
 		BackgroundImage: userCnt.BackgroundImage,
 		Signature:       userCnt.Signature,
 		TotalFavorited:  "",
