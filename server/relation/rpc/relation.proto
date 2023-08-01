@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package relation;
+option go_package = "./pb";
+
+
+message FollowReq {
+  string Token = 1;
+  string ToUserId = 2;
+  string ActionType = 3;
+}
+
+message FollowResp {
+  string StatusCode = 1;
+  string StatusMsg = 2;
+}
+
+message FollowListReq {
+  string Token = 1;
+  string ToUserId = 2;
+  string ActionType = 3;
+}
+message User{
+  int64 Id = 1;
+  string Name = 2;
+  int64 FollowCount = 3;
+  int64 FollowerCount = 4;
+  bool IsFollow = 5;
+  string Avatar =6;
+  string BackgroundImage =7;
+  string Signature = 8;
+  string TotalFavourited =9;
+  int64 WorkCount =10 ;
+  int64 FavouriteCount =11;
+}
+message FollowListResp {
+  string StatusCode = 1;
+  string StatusMsg = 2;
+  *[]User UserList = 3;
+}
+service StreamGreeter {
+  rpc greet(StreamReq) returns (StreamResp);
+}

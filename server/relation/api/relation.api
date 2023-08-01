@@ -1,0 +1,83 @@
+syntax = "v1"
+
+info(
+	title: "relation.api"
+	author: "hiahia12"
+	version: "1.0.0"
+)
+type Res {
+	StatusCode string `json:"status_code"`
+	StatusMsg  string `json:"status_msg"`
+}
+type User {
+	Id              int64  `json:"id"`
+	Name            string `json:"name"`
+	FollowCount     int64  `json:"follow_count"`
+	FollowerCount   int64  `json:"follower_count"`
+	IsFollow        bool   `json:"is_follow"`
+	Avatar          string `json:"avatar"`
+	BackgroundImage string `json:"background_image"`
+	Signature       string `json:"signature"`
+	TotalFavourited string `json:"total_favourited"`
+	WorkCount       int64  `json:"work_count"`
+	FavouriteCount  int64  `json:"favourite_count"`
+}
+type Follow {
+	Id         int64 `json:"id"`
+	UserId     int64 `json:"user_id"`
+	FollowerId int64 `json:"follower_id"`
+	IsFollow   bool  `json:"is_follow"`
+}
+type FollowReq {
+	Token      string `form:"token"`
+	ToUserId   string `form:"to_user_id"`
+	ActionType string `form:"action_type"`
+}
+
+type FollowRes {
+	Res
+}
+
+type FollowListReq {
+	UserId string `form:"user_id"`
+	Token  string `form:"token"`
+}
+
+type FollowListRes {
+	Res
+	UserList []User `json:"user_list"`
+}
+
+type FollowerListReq {
+	UserId string `form:"user_id"`
+	Token  string `form:"token"`
+}
+
+type FollowerListRes {
+	Res
+	UserList []User `json:"user_list"`
+}
+
+type FriendListReq {
+	UserId string `form:"user_id"`
+	Token  string `form:"token"`
+}
+
+type FriendListRes {
+	Res
+	UserList []User `json:"user_list"`
+}
+
+@server(
+	middleware : Jwt
+)
+service relation {
+	@handler Follow
+	post /douyin/relation/action (FollowReq) returns (FollowRes)
+	@handler FollowList
+	get /douyin/relation/follow/list (FollowListReq) returns (FollowListRes)
+	@handler FollowerList
+	get /douyin/relation/follower/list (FollowerListReq) returns (FollowerListRes)
+	@handler FriendList
+	get /douyin/relation/friend/list (FriendListReq) returns (FriendListRes)
+}
