@@ -1,6 +1,7 @@
 package main
 
 import (
+	"GopherTok/common/response/rpcserver"
 	"GopherTok/server/chat/rpc/internal/config"
 	"GopherTok/server/chat/rpc/internal/server"
 	"GopherTok/server/chat/rpc/internal/svc"
@@ -34,6 +35,7 @@ func main() {
 		}
 	})
 	defer s.Stop()
+	s.AddUnaryInterceptors(rpcserver.LoggerInterceptor)
 
 	logx.DisableStat()
 
@@ -41,31 +43,3 @@ func main() {
 	s.Start()
 
 }
-
-//func solveNQueens(n int) [][]string {
-//	res := [][]string{}
-//	// 初始化棋盘
-//	board := make([][]string, n)
-//	for i := 0; i < n; i++ {
-//		board[i] = make([]string, n)
-//		for j := 0; j < n; j++ {
-//			board[i][j] = ""
-//		}
-//	}
-//
-//	var dfs func(board [][]string, row int)  {
-//		if row == len(board) {
-//			temp := make([]string, len(board))
-//			for i := 0; i < len(board); i++ {
-//				temp[i] = strings.Join(board[i], "")
-//			}
-//			res = append(res, temp)
-//			return
-//		}
-//	}
-//
-//
-//
-//	dfs(board, 0, &res)
-//	return res
-//}

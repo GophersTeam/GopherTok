@@ -44,6 +44,7 @@ func (l *MessageActionLogic) MessageAction(req *types.MessageActionRequest) (res
 	}
 
 	resp = new(types.MessageActionResponse)
+	resp.Message = "ok"
 
 	return
 }

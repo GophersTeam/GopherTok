@@ -1,14 +1,12 @@
 package logic
 
 import (
-	"GopherTok/common/consts"
 	"GopherTok/server/chat/model"
 	"GopherTok/server/chat/rpc/internal/svc"
 	"GopherTok/server/chat/rpc/pb"
 	"context"
+	"github.com/zeromicro/go-zero/core/jsonx"
 	"github.com/zeromicro/go-zero/core/logx"
-	"google.golang.org/protobuf/proto"
-	"strconv"
 	"time"
 )
 
@@ -34,26 +32,11 @@ func (l *MessageActionLogic) MessageAction(in *pb.MessageActionRequest) (resp *p
 		Content:    in.Content,
 		CreateTime: time.Now().Unix(),
 	}
-	_, err = l.svcCtx.MessageModel.Insert(l.ctx, message)
+	messageStr, err := jsonx.MarshalToString(message)
+	err = l.svcCtx.KafkaPusher.Push(messageStr)
 	if err != nil {
-		l.Errorf("MessageAction MessageModel.Insert error: %s", err.Error())
 		return nil, err
 	}
-
-	// 保存最新消息到redis
-	fromUserID := strconv.Itoa(int(message.FromUserId))
-	toUserID := strconv.Itoa(int(message.ToUserId))
-
-	lastMessage := &pb.LastMessage{Content: message.Content}
-	lastMessage.MsgType = consts.MsgTypeRecv
-	lastMessageRecvBytes, _ := proto.Marshal(lastMessage)
-	//lastMessageRecvStr, _ := jsonx.MarshalToString(lastMessage)
-	lastMessage.MsgType = consts.MsgTypeSend
-	lastMessageSendBytes, _ := proto.Marshal(lastMessage)
-	//lastMessageSendStr, err := jsonx.MarshalToString(lastMessage)
-
-	_ = l.svcCtx.RedisClient.HsetCtx(l.ctx, consts.LastMessagePrefix+fromUserID, toUserID, string(lastMessageSendBytes))
-	_ = l.svcCtx.RedisClient.HsetCtx(l.ctx, consts.LastMessagePrefix+toUserID, fromUserID, string(lastMessageRecvBytes))
 
 	resp = new(pb.MessageActionResponse)
 
