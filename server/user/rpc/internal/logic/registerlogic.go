@@ -48,6 +48,7 @@ func (l *RegisterLogic) Register(in *user.RegisterReq) (*user.RegisterResp, erro
 	}
 
 	u := model.User{
+		ID:       l.svcCtx.Snowflake.Generate().Int64(),
 		Username: in.Username,
 		// 加盐加密
 		Password:        utils.Md5Password(in.Password, l.svcCtx.Config.Salt),
