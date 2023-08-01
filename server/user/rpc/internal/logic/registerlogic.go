@@ -7,7 +7,6 @@ import (
 	"context"
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
-	"github.com/redis/go-redis/v9"
 	"github.com/zeromicro/go-zero/core/logc"
 
 	"GopherTok/server/user/rpc/internal/svc"
@@ -33,7 +32,7 @@ func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Register
 func (l *RegisterLogic) Register(in *user.RegisterReq) (*user.RegisterResp, error) {
 	// todo: add your logic here and delete this line
 	// 先从redis查询是否有该userId
-	exists, err := l.checkUsernameExists(l.svcCtx.Rdb, in.Username)
+	exists, err := model.CheckUsernameExists(l.ctx, l.svcCtx.Rdb, in.Username)
 	if err != nil {
 		return nil, errors.Wrapf(errorx.NewDefaultError(err.Error()), "redis查询错误 err：%v", err)
 
@@ -43,7 +42,7 @@ func (l *RegisterLogic) Register(in *user.RegisterReq) (*user.RegisterResp, erro
 		logc.Info(l.ctx, "Username already exists.")
 		return nil, errors.Wrapf(errorx.NewDefaultError("用户名已经存在，请更换用户名"), "用户名已经存在，请更换用户名 RegisterReq：%v", in)
 	}
-	err = l.registerUser(l.svcCtx.Rdb, in.Username)
+	err = model.RegisterUser(l.ctx, l.svcCtx.Rdb, in.Username)
 	if err != nil {
 		return nil, errors.Wrapf(errorx.NewDefaultError(err.Error()), "redis set 错误 err：%v", err)
 	}
@@ -67,19 +66,4 @@ func (l *RegisterLogic) Register(in *user.RegisterReq) (*user.RegisterResp, erro
 		UserId: u.ID,
 		Token:  token,
 	}, nil
-}
-
-func (l *RegisterLogic) checkUsernameExists(client *redis.ClusterClient, username string) (bool, error) {
-	// 查询 Redis 中是否存在该用户名
-	exists, err := client.Exists(l.ctx, "username_"+username).Result()
-	if err != nil {
-		return false, err
-	}
-	return exists == 1, nil
-}
-
-func (l *RegisterLogic) registerUser(client *redis.ClusterClient, username string) error {
-	// 存储用户名到 Redis 中
-	_, err := client.Set(l.ctx, "username_"+username, "registered", 0).Result()
-	return err
 }

@@ -6,7 +6,7 @@ import (
 	"GopherTok/common/utils"
 	"GopherTok/server/user/api/internal/config"
 	"context"
-	"encoding/json"
+	"github.com/zeromicro/go-zero/rest/httpx"
 	"net/http"
 	"strings"
 )
@@ -29,23 +29,19 @@ func (m *JWTMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 		if token == "" {
 			token = r.PostFormValue("token")
 			if token == "" {
-				http.Error(w, errorx.ErrTokenEmpty, http.StatusUnauthorized)
+				httpx.WriteJson(w, http.StatusUnauthorized, errorx.NewCodeError(30004, errorx.ErrTokenEmpty))
 				return
 			}
 		}
 
 		parts := strings.Split(token, " ")
 		if len(parts) != 2 {
-			w.WriteHeader(http.StatusBadRequest)
-			err, _ := json.Marshal(errorx.NewCodeError(30002, errorx.ErrHeadFormat))
-			w.Write(err)
+			httpx.WriteJson(w, http.StatusUnauthorized, errorx.NewCodeError(30002, errorx.ErrHeadFormat))
 			return
 		}
 		parseToken, isExpire, err := utils.ParseToken(parts[0], parts[1], m.Config.Token.AccessToken, m.Config.Token.RefreshToken)
 		if err != nil {
-			w.WriteHeader(http.StatusUnauthorized)
-			err, _ := json.Marshal(errorx.NewCodeError(30003, errorx.ErrTokenProve))
-			w.Write(err)
+			httpx.WriteJson(w, http.StatusUnauthorized, errorx.NewCodeError(30003, errorx.ErrTokenProve))
 			return
 		}
 		if isExpire {
