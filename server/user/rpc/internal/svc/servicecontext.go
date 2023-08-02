@@ -19,7 +19,7 @@ type ServiceContext struct {
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	mysqlDb := init_db.InitGorm(c.MysqlCluster.DataSource)
-	snowflakeNode, _ := snowflake.NewNode(consts.ChatMachineId)
+	snowflakeNode, _ := snowflake.NewNode(consts.UserMachineId)
 	mysqlDb.AutoMigrate(&model.User{})
 	rc := make([]string, 1)
 	rc = append(rc, c.RedisCluster.Cluster1, c.RedisCluster.Cluster2, c.RedisCluster.Cluster3, c.RedisCluster.Cluster4, c.RedisCluster.Cluster5, c.RedisCluster.Cluster6)
