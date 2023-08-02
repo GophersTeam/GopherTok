@@ -3,23 +3,6 @@ syntax = "proto3";
 package relation;
 option go_package = "./pb";
 
-
-message FollowReq {
-  string Token = 1;
-  string ToUserId = 2;
-  string ActionType = 3;
-}
-
-message FollowResp {
-  string StatusCode = 1;
-  string StatusMsg = 2;
-}
-
-message FollowListReq {
-  string Token = 1;
-  string ToUserId = 2;
-  string ActionType = 3;
-}
 message User{
   int64 Id = 1;
   string Name = 2;
@@ -33,11 +16,76 @@ message User{
   int64 WorkCount =10 ;
   int64 FavouriteCount =11;
 }
-message FollowListResp {
+
+message FollowSubject{
+int64 Id  =1;
+int64 UserId = 2;
+int64 FollowerId = 3;
+bool IsFollow = 4;
+
+}
+message AddFollowReq {
+  string UserId = 1;
+  string ToUserId = 2;
+}
+
+message AddFollowResp {
   string StatusCode = 1;
   string StatusMsg = 2;
-  *[]User UserList = 3;
 }
+message DeleteFollowReq {
+  string UserId = 1;
+  string ToUserId = 2;
+}
+
+message DeleteFollowResp {
+  string StatusCode = 1;
+  string StatusMsg = 2;
+}
+
+message CheckIsFollowReq{
+  string UserId = 1;
+  string ToUserId = 2;
+}
+
+message CheckIsFollowResp{
+  string StatusCode = 1;
+  string StatusMsg = 2;
+}
+message GetFollowListReq {
+  string Userid = 1;
+  string ToUserId = 2;
+}
+
+message GetFollowListResp {
+  string StatusCode = 1;
+  string StatusMsg = 2;
+  User UserList = 3;
+}
+message GetFollowerReq {
+  string Userid = 1;
+  string ToUserId = 2;
+}
+
+message GetFollowerResp {
+  string StatusCode = 1;
+  string StatusMsg = 2;
+  User UserList = 3;
+}
+message GetFriendListReq {
+  string Userid = 1;
+}
+
+message GetFriendListResp {
+  string StatusCode = 1;
+  string StatusMsg = 2;
+  User UserList = 3;
+}
+
 service StreamGreeter {
-  rpc greet(StreamReq) returns (StreamResp);
+  rpc AddFollow(AddFollowReq) returns (AddFollowResp);
+  rpc DeleteFollow(DeleteFollowReq)returns(DeleteFollowResp);
+  rpc GetFollowList(GetFollowListReq)returns(GetFollowListResp);
+  rpc GetFollowerList(GetFollowerReq)returns(GetFollowerResp);
+  rpc GetFriendList(GetFriendListReq)returns(GetFriendListResp);
 }
