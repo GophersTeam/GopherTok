@@ -1,3 +1,4 @@
+create schema douying_chat;
 create table douyin_chat.message
 (
     id           bigint auto_increment
