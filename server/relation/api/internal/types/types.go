@@ -21,10 +21,10 @@ type User struct {
 }
 
 type Follow struct {
-	Id         int64 `json:"id"`
-	UserId     int64 `json:"user_id"`
-	FollowerId int64 `json:"follower_id"`
-	IsFollow   bool  `json:"is_follow"`
+	Id         int64 `gorm:"id" json:"id"`
+	UserId     int64 `gorm:"user_id" json:"user_id"`
+	FollowerId int64 `gorm:"fowwower_id" json:"follower_id"`
+	IsFollow   bool  `gorm:"is_follow" json:"is_follow"`
 }
 
 type FollowReq struct {

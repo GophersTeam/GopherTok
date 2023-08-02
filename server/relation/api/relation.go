@@ -12,13 +12,13 @@ import (
 	"github.com/zeromicro/go-zero/rest"
 )
 
-var configFile = flag.String("f", "etc/relation.yaml", "the config file")
+var configFile = "D:\\GopherTok\\server\\relation\\api\\etc\\relation.yaml"
 
 func main() {
 	flag.Parse()
 
 	var c config.Config
-	conf.MustLoad(*configFile, &c)
+	conf.MustLoad(configFile, &c)
 
 	server := rest.MustNewServer(c.RestConf)
 	defer server.Stop()
