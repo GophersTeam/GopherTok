@@ -1,0 +1,47 @@
+syntax = "proto3";
+package video;
+
+option go_package = "./video";
+message CommonResp{
+  int64 Code = 1;
+  string Message = 2;
+}
+
+message PublishVideoReq {
+  int64 id = 1;
+  int64 user_id = 2;
+  string title = 3;
+  string play_url = 4;
+  string cover_url = 5;
+  string create_time = 6;
+  string update_time = 7;
+}
+
+message VideoList{
+  int64 id = 1;
+  int64 user_id = 2;
+  string title = 3;
+  string play_url = 4;
+  string cover_url = 5;
+  string create_time = 6;
+  string update_time = 7;
+}
+message UserVideoListReq{
+  int64 user_id = 1;
+}
+message UserVideoListResp{
+  repeated VideoList video_list = 1;
+}
+
+message VideoListReq{
+  string latest_time = 1;
+}
+message VideoListResp{
+  repeated VideoList video_list = 1;
+}
+
+service video{
+  rpc PublishVideo(PublishVideoReq)returns(CommonResp);
+  rpc UserVideoList(UserVideoListReq) returns(UserVideoListResp);
+  rpc VideoList(VideoListReq)returns(VideoListResp);
+}

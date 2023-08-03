@@ -1,0 +1,102 @@
+syntax = "v1"
+
+// 接口信息
+info(
+	title: "GopherTok/video.api"
+	author: "liuxian"
+	version: "1.0.0"
+)
+// 基本响应
+type BaseResponse {
+	Code    int64  `json:"status_code"`
+	Message string `json:"status_msg,omitempty"`
+}
+// Author
+type AuthorInfo {
+	ID              int64  `json:"id"`
+	Name            string `json:"name"`
+	FollowCount     int64  `json:"follow_count"`
+	FollowerCount   int64  `json:"follower_count"`
+	IsFollow        bool   `json:"is_follow"`
+	Avatar          string `json:"avatar"`
+	BackgroundImage string `json:"background_image"`
+	Signature       string `json:"signature"`
+	TotalFavorited  string `json:"total_favorited"`
+	WorkCount       int64  `json:"work_count"`
+	FavoriteCount   int64  `json:"favorite_count"`
+}
+// video
+type VideoInfo {
+	ID            int64      `json:"id"`
+	Author        AuthorInfo `json:"author"`
+	PlayURL       string     `json:"play_url"`
+	CoverURL      string     `json:"cover_url"`
+	FavoriteCount int64      `json:"favorite_count"`
+	CommentCount  int64      `json:"comment_count"`
+	IsFavorite    bool       `json:"is_favorite"`
+	Title         string     `json:"title"`
+}
+// video list
+type VideoList {
+	List []*VideoInfo `json:"video_list"`
+}
+
+type (
+	// 投稿视频
+	PublishVideoReq {
+		Token string `form:"token"`
+		Title string `form:"title"`
+	}
+	PublishVideoResp {
+		BaseResponse
+	}
+	// 获取用户的所有视频
+	UserVideoListReq {
+		Token  string `form:"token"`
+		UserId string `form:"user_id"`
+	}
+	UserVideoListResp {
+		BaseResponse
+		VideoList
+	}
+	// 获取视频流
+	VideoListReq {
+		LatestTime string `form:"latest_time,optional"`
+		Token      string `form:"token,optional"`
+	}
+	VideoListResp {
+		BaseResponse
+		VideoList
+	}
+)
+@server(
+	prefix: douyin/publish
+	middleware: JWT // 路由中间件声明
+)
+service video {
+	
+	@doc(
+		summary: "投稿视频"
+	)
+	@handler PublishVideo
+	post /action (PublishVideoReq) returns (PublishVideoResp)
+	
+	@doc(
+		summary: "获取用户全部视频"
+	)
+	@handler UserVideoList
+	get /list (UserVideoListReq) returns (UserVideoListResp)
+}
+
+@server(
+	prefix: douyin
+)
+
+service video {
+	
+	@doc(
+		summary: "获取全部视频"
+	)
+	@handler VideoList
+	get /feed (VideoListReq) returns (VideoListResp)
+}
