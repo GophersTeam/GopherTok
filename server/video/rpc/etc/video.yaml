@@ -1,6 +1,5 @@
-Name: video.rpc
-ListenOn: 0.0.0.0:8080
-Etcd:
-  Hosts:
-  - 127.0.0.1:2379
-  Key: video.rpc
+Host: 106.15.58.0
+Port: 8848
+NamespaceId: 51d58e06-7e09-4587-96b8-c07183e694e1
+Group: dev
+DataId: video-rpc.yaml

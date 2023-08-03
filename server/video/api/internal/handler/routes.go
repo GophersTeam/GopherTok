@@ -3,6 +3,7 @@ package handler
 
 import (
 	"net/http"
+	"time"
 
 	"GopherTok/server/video/api/internal/svc"
 
@@ -26,7 +27,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		rest.WithPrefix("/douyin/publish"),
+		rest.WithPrefix("/douyin/publish"), rest.WithTimeout(9999999000*time.Millisecond),
 	)
 
 	server.AddRoutes(

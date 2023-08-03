@@ -15,6 +15,7 @@ message PublishVideoReq {
   string cover_url = 5;
   string create_time = 6;
   string update_time = 7;
+  string video_sha256=8;
 }
 
 message VideoList{
@@ -25,6 +26,7 @@ message VideoList{
   string cover_url = 5;
   string create_time = 6;
   string update_time = 7;
+  string video_sha256=8;
 }
 message UserVideoListReq{
   int64 user_id = 1;
