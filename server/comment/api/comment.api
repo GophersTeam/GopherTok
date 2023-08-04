@@ -1,0 +1,61 @@
+syntax = "v1"
+
+@server(
+	middleware : Auth
+)
+service comment {
+	@handler CommentAction
+	post /douyin/comment/action (CommentActionRequest) returns (CommentActionResponse)
+	@handler CommentList
+	get /douyin/comment/list (CommentListRequest) returns (CommentListResponse)
+}
+
+type Comment {
+	Id         int64  `json:"id"`
+	User       *User  `json:"user"`
+	Content    string `json:"content"`
+	CreateDate string `json:"create_date"`
+}
+
+type User {
+	Id              int64  `json:"id"`
+	Username        string `json:"name"`
+	Avatar          string `json:"avatar"`
+	FollowCount     int64  `json:"follow_count"`
+	TotalFavorited  int64  `json:"total_favorited"`
+	Signature       string `json:"signature"`
+	BackgroundImage string `json:"background_image"`
+	FollowerCount   int64  `json:"follower_count"`
+	WorkCount       int64  `json:"work_count"`
+	FavoriteCount   int64  `json:"favorite_count"`
+	IsFollow        bool   `json:"is_follow"`
+}
+
+type (
+	CommentActionRequest {
+		VideoId     int64  `form:"video_id" vd:"$>0;msg:'video_id error'"`
+		ActionType  int64  `form:"action_type" vd:"$==1||$==2;msg:'action_type error'"`
+		CommentText string `form:"comment_text,optional"`
+		CommentId   int64  `form:"comment_id,optional"`
+	}
+	CommentActionResponse {
+		BaseResponse
+		Comment *Comment `json:"comment"`
+	}
+)
+
+type (
+	CommentListRequest {
+		VideoId int64 `form:"video_id" vd:"$>0;msg:'video_id error'"`
+	}
+
+	CommentListResponse {
+		BaseResponse
+		CommentList []*Comment `json:"comment_list"`
+	}
+)
+
+type BaseResponse {
+	Code    int64  `json:"status_code"`
+	Message string `json:"status_msg,omitempty"`
+}
