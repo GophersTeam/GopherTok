@@ -1,7 +1,9 @@
 goctl model mysql ddl -src file.sql -dir . -c
 goctl api go -api video.api -dir .
 goctl rpc protoc video.proto --go_out=./types --go-grpc_out=./types --zrpc_out=.
+go run video.go -f etc/video.yaml
 go run user.go -f etc/user.yaml
+
 go run filemeta.go -f etc/filemeta-api.yaml
 
 goctl model mysql datasource -url="root:123456@tcp(127.0.0.1:3306)/gopan" -table="*"  -dir="./service/app/user/model"
@@ -20,7 +22,7 @@ docker run -it --privileged --pid=host justincormack/nsenter1
 ./kafka-console-consumer.sh --bootstrap-server kafka:9092  --topic gopan-log --from-beginning
 ./kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 -partitions 1 --topic gopan-log
 
-./kafka-topics.sh  --create --bootstrap-server kafka:9092 --replication-factor 1 --partitions 1 --topic gopan-log
+./kafka-topics.sh  --create --bootstrap-server kafka:9092 --replication-factor 1 --partitions 1 --topic gophertok-video
 
 
 	UserFile struct {
