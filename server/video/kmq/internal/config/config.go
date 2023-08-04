@@ -1,11 +1,13 @@
 package config
 
 import (
-	"github.com/zeromicro/go-zero/zrpc"
+	"github.com/zeromicro/go-queue/kq"
+	"github.com/zeromicro/go-zero/core/service"
 )
 
 type Config struct {
-	zrpc.RpcServerConf
+	KqConsumerConf kq.KqConf
+	service.ServiceConf
 	MysqlCluster struct {
 		DataSource string
 	}
@@ -16,14 +18,5 @@ type Config struct {
 		Cluster4 string
 		Cluster5 string
 		Cluster6 string
-	}
-	MinioCluster struct {
-		Endpoint  string
-		AccessKey string
-		SecretKey string
-	}
-	KqPusherConf struct {
-		Brokers []string
-		Topic   string
 	}
 }

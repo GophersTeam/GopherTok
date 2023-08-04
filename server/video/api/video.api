@@ -72,9 +72,9 @@ type (
 @server(
 	prefix: douyin/publish
 	middleware: JWT // 路由中间件声明
+	timeout: 9999999s
 )
 service video {
-	
 	@doc(
 		summary: "投稿视频"
 	)
@@ -93,7 +93,6 @@ service video {
 )
 
 service video {
-	
 	@doc(
 		summary: "获取全部视频"
 	)
