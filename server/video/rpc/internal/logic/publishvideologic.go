@@ -77,6 +77,9 @@ func (l *PublishVideoLogic) PublishVideo(in *video.PublishVideoReq) (*video.Comm
 		logc.Error(l.ctx, "Error parsing time:", err)
 		return nil, errors.Wrapf(errorx.NewDefaultError("Error parsing time"), "Error parsing time:%v", err)
 	}
+	fmt.Println(CreateTime)
+	fmt.Println("---")
+	fmt.Println(UpdateTime)
 	v := model.Video{
 		ID:          in.Id,
 		UserID:      in.UserId,
