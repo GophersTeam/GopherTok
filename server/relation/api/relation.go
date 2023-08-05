@@ -12,7 +12,7 @@ import (
 	"github.com/zeromicro/go-zero/rest"
 )
 
-var configFile = "D:\\GopherTok\\server\\relation\\api\\etc\\relation.yaml"
+var configFile = "D:\\GopherTok\\server\\relation\\api\\etc\\relation-api.yaml"
 
 func main() {
 	flag.Parse()

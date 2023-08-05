@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"GopherTok/server/relation/rpc/internal/svc"
-	"GopherTok/server/relation/rpc/types/pb"
+	"GopherTok/server/relation/rpc/pb"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

@@ -51,6 +51,7 @@ message CheckIsFollowReq{
 message CheckIsFollowResp{
   string StatusCode = 1;
   string StatusMsg = 2;
+  bool IsFollow = 3;
 }
 message GetFollowListReq {
   string Userid = 1;
@@ -72,6 +73,16 @@ message GetFollowerResp {
   string StatusMsg = 2;
   User UserList = 3;
 }
+message GetFollowerCountReq{
+  string Userid = 1;
+}
+
+message GetFollowerCountResp{
+  string StatusCode = 1;
+  string StatusMsg = 2;
+  int64 Count = 3;
+}
+
 message GetFriendListReq {
   string Userid = 1;
 }
@@ -82,10 +93,35 @@ message GetFriendListResp {
   User UserList = 3;
 }
 
-service StreamGreeter {
+message GetFollowCountReq{
+  string Userid = 1;
+}
+
+message GetFollowCountResp{
+  string StatusCode = 1;
+  string StatusMsg = 2;
+  int64 Count = 3;
+}
+
+message GetFriendCountReq{
+  string Userid = 1;
+}
+
+message GetFriendCountResp{
+  string StatusCode = 1;
+  string StatusMsg = 2;
+  int64 Count = 3;
+}
+
+service RelationRpc {
   rpc AddFollow(AddFollowReq) returns (AddFollowResp);
   rpc DeleteFollow(DeleteFollowReq)returns(DeleteFollowResp);
   rpc GetFollowList(GetFollowListReq)returns(GetFollowListResp);
   rpc GetFollowerList(GetFollowerReq)returns(GetFollowerResp);
   rpc GetFriendList(GetFriendListReq)returns(GetFriendListResp);
+  rpc GetFollowerCount(GetFollowerCountReq)returns(GetFollowerCountResp);
+  rpc GetFollowCount(GetFollowCountReq)returns(GetFollowCountResp);
+  rpc GetFriendCount(GetFriendCountReq)returns(GetFriendCountResp);
+  rpc CheckIsFollow(CheckIsFollowReq)returns(CheckIsFollowResp);
+
 }
