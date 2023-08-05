@@ -19,7 +19,7 @@ docker run -it --privileged --pid=host justincormack/nsenter1
 2023-07-06 00:25:39 {"@timestamp":"2023-07-06T00:25:39.674+08","level":"stat","content":"CPU: 0m, MEMORY: Alloc=3.1Mi, TotalAlloc=4.7Mi, Sys=14.5Mi, NumGC=1"}
 2023-07-06 00:26:39 {"@timestamp":"2023-07-06T00:26:39.675+08","level":"stat","content":"CPU: 0m, MEMORY: Alloc=2.0Mi, TotalAlloc=5.7Mi, Sys=15.1Mi, NumGC=2"}
 
-./kafka-console-consumer.sh --bootstrap-server kafka:9092  --topic gopan-log --from-beginning
+./kafka-console-consumer.sh --bootstrap-server kafka:9092  --topic gophertok-video --from-beginning
 ./kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 -partitions 1 --topic gopan-log
 
 ./kafka-topics.sh  --create --bootstrap-server kafka:9092 --replication-factor 1 --partitions 1 --topic gophertok-video
