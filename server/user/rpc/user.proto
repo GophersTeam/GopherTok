@@ -27,20 +27,27 @@ message LoginResp{
 }
 
 message UserInfoReq{
-  int64 id=1;
+  int64 id = 1;
 }
 message UserInfoResp {
   int64 id = 1;
   string name = 2;
-  string password=3;
+  string password = 3;
   string avatar = 6;
   string background_image = 7;
   string signature = 8;
 
 }
+message AddCountReq{
+  int64 Id = 1;
+  int64 FollowCount = 2;
+  int64 FollowerCount = 3;
+  int64 FriendCount = 4;
+}
+message AddCountResp{}
 service user{
   rpc Register(RegisterReq)returns (RegisterResp); // 注册
   rpc Login(LoginReq)returns(LoginResp);          // 登陆
   rpc UserInfo(UserInfoReq)returns(UserInfoResp); // 用户信息
-
+  rpc AddCount(AddCountReq)returns(AddCountResp); // 添加count
 }

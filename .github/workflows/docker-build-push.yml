@@ -2,7 +2,7 @@ name: Docker Build and Push
 on:
   push:
     branches:
-      - dev
+      - main
 
 jobs:
   build-and-push-gophertok-user-api:

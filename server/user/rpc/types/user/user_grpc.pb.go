@@ -22,6 +22,7 @@ const (
 	User_Register_FullMethodName = "/user.user/Register"
 	User_Login_FullMethodName    = "/user.user/Login"
 	User_UserInfo_FullMethodName = "/user.user/UserInfo"
+	User_AddCount_FullMethodName = "/user.user/AddCount"
 )
 
 // UserClient is the client API for User service.
@@ -31,6 +32,7 @@ type UserClient interface {
 	Register(ctx context.Context, in *RegisterReq, opts ...grpc.CallOption) (*RegisterResp, error)
 	Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error)
 	UserInfo(ctx context.Context, in *UserInfoReq, opts ...grpc.CallOption) (*UserInfoResp, error)
+	AddCount(ctx context.Context, in *AddCountReq, opts ...grpc.CallOption) (*AddCountResp, error)
 }
 
 type userClient struct {
@@ -68,6 +70,15 @@ func (c *userClient) UserInfo(ctx context.Context, in *UserInfoReq, opts ...grpc
 	return out, nil
 }
 
+func (c *userClient) AddCount(ctx context.Context, in *AddCountReq, opts ...grpc.CallOption) (*AddCountResp, error) {
+	out := new(AddCountResp)
+	err := c.cc.Invoke(ctx, User_AddCount_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServer is the server API for User service.
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility
@@ -75,6 +86,7 @@ type UserServer interface {
 	Register(context.Context, *RegisterReq) (*RegisterResp, error)
 	Login(context.Context, *LoginReq) (*LoginResp, error)
 	UserInfo(context.Context, *UserInfoReq) (*UserInfoResp, error)
+	AddCount(context.Context, *AddCountReq) (*AddCountResp, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -90,6 +102,9 @@ func (UnimplementedUserServer) Login(context.Context, *LoginReq) (*LoginResp, er
 }
 func (UnimplementedUserServer) UserInfo(context.Context, *UserInfoReq) (*UserInfoResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserInfo not implemented")
+}
+func (UnimplementedUserServer) AddCount(context.Context, *AddCountReq) (*AddCountResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddCount not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 
@@ -158,6 +173,24 @@ func _User_UserInfo_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_AddCount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddCountReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).AddCount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_AddCount_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).AddCount(ctx, req.(*AddCountReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // User_ServiceDesc is the grpc.ServiceDesc for User service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -176,6 +209,10 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UserInfo",
 			Handler:    _User_UserInfo_Handler,
+		},
+		{
+			MethodName: "AddCount",
+			Handler:    _User_AddCount_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

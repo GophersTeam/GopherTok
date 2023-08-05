@@ -8,4 +8,7 @@ type User struct {
 	Avatar          string `gorm:"size:255;column:avatar"`
 	BackgroundImage string `gorm:"size:255;column:background_image"`
 	Signature       string `gorm:"size:255;column:signature"`
+	FollowCount     int64  `gorm:"column:follow_count"`
+	FollowerCount   int64  `gorm:"column:follower_count"`
+	FriendCount     int64  `gorm:"column:friend_count"`
 }
