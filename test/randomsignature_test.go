@@ -1,6 +1,7 @@
 package test
 
 import (
+	"GopherTok/common/utils"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -28,4 +29,8 @@ func TestSignature(t *testing.T) {
 	// 将响应内容（个性签名）转换为字符串并打印
 	signature := string(body)
 	fmt.Println("个性签名:", signature)
+}
+func TestNameRandom(t *testing.T) {
+	fmt.Println(utils.GetRandomYiYan())
+	fmt.Println(utils.GetRandomImageUrl())
 }
