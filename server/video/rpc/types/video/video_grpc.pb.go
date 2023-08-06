@@ -22,6 +22,7 @@ const (
 	Video_PublishVideo_FullMethodName  = "/video.video/PublishVideo"
 	Video_UserVideoList_FullMethodName = "/video.video/UserVideoList"
 	Video_VideoList_FullMethodName     = "/video.video/VideoList"
+	Video_IsExistsVideo_FullMethodName = "/video.video/IsExistsVideo"
 )
 
 // VideoClient is the client API for Video service.
@@ -31,6 +32,7 @@ type VideoClient interface {
 	PublishVideo(ctx context.Context, in *PublishVideoReq, opts ...grpc.CallOption) (*CommonResp, error)
 	UserVideoList(ctx context.Context, in *UserVideoListReq, opts ...grpc.CallOption) (*UserVideoListResp, error)
 	VideoList(ctx context.Context, in *VideoListReq, opts ...grpc.CallOption) (*VideoListResp, error)
+	IsExistsVideo(ctx context.Context, in *IsExistsVideoReq, opts ...grpc.CallOption) (*IsExistsVideoResp, error)
 }
 
 type videoClient struct {
@@ -68,6 +70,15 @@ func (c *videoClient) VideoList(ctx context.Context, in *VideoListReq, opts ...g
 	return out, nil
 }
 
+func (c *videoClient) IsExistsVideo(ctx context.Context, in *IsExistsVideoReq, opts ...grpc.CallOption) (*IsExistsVideoResp, error) {
+	out := new(IsExistsVideoResp)
+	err := c.cc.Invoke(ctx, Video_IsExistsVideo_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // VideoServer is the server API for Video service.
 // All implementations must embed UnimplementedVideoServer
 // for forward compatibility
@@ -75,6 +86,7 @@ type VideoServer interface {
 	PublishVideo(context.Context, *PublishVideoReq) (*CommonResp, error)
 	UserVideoList(context.Context, *UserVideoListReq) (*UserVideoListResp, error)
 	VideoList(context.Context, *VideoListReq) (*VideoListResp, error)
+	IsExistsVideo(context.Context, *IsExistsVideoReq) (*IsExistsVideoResp, error)
 	mustEmbedUnimplementedVideoServer()
 }
 
@@ -90,6 +102,9 @@ func (UnimplementedVideoServer) UserVideoList(context.Context, *UserVideoListReq
 }
 func (UnimplementedVideoServer) VideoList(context.Context, *VideoListReq) (*VideoListResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VideoList not implemented")
+}
+func (UnimplementedVideoServer) IsExistsVideo(context.Context, *IsExistsVideoReq) (*IsExistsVideoResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IsExistsVideo not implemented")
 }
 func (UnimplementedVideoServer) mustEmbedUnimplementedVideoServer() {}
 
@@ -158,6 +173,24 @@ func _Video_VideoList_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Video_IsExistsVideo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IsExistsVideoReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VideoServer).IsExistsVideo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Video_IsExistsVideo_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VideoServer).IsExistsVideo(ctx, req.(*IsExistsVideoReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Video_ServiceDesc is the grpc.ServiceDesc for Video service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -176,6 +209,10 @@ var Video_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "VideoList",
 			Handler:    _Video_VideoList_Handler,
+		},
+		{
+			MethodName: "IsExistsVideo",
+			Handler:    _Video_IsExistsVideo_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

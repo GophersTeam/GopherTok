@@ -36,3 +36,8 @@ func (s *VideoServer) VideoList(ctx context.Context, in *video.VideoListReq) (*v
 	l := logic.NewVideoListLogic(ctx, s.svcCtx)
 	return l.VideoList(in)
 }
+
+func (s *VideoServer) IsExistsVideo(ctx context.Context, in *video.IsExistsVideoReq) (*video.IsExistsVideoResp, error) {
+	l := logic.NewIsExistsVideoLogic(ctx, s.svcCtx)
+	return l.IsExistsVideo(in)
+}

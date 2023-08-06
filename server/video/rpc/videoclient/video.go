@@ -14,6 +14,8 @@ import (
 
 type (
 	CommonResp        = video.CommonResp
+	IsExistsVideoReq  = video.IsExistsVideoReq
+	IsExistsVideoResp = video.IsExistsVideoResp
 	PublishVideoReq   = video.PublishVideoReq
 	UserVideoListReq  = video.UserVideoListReq
 	UserVideoListResp = video.UserVideoListResp
@@ -25,6 +27,7 @@ type (
 		PublishVideo(ctx context.Context, in *PublishVideoReq, opts ...grpc.CallOption) (*CommonResp, error)
 		UserVideoList(ctx context.Context, in *UserVideoListReq, opts ...grpc.CallOption) (*UserVideoListResp, error)
 		VideoList(ctx context.Context, in *VideoListReq, opts ...grpc.CallOption) (*VideoListResp, error)
+		IsExistsVideo(ctx context.Context, in *IsExistsVideoReq, opts ...grpc.CallOption) (*IsExistsVideoResp, error)
 	}
 
 	defaultVideo struct {
@@ -51,4 +54,9 @@ func (m *defaultVideo) UserVideoList(ctx context.Context, in *UserVideoListReq, 
 func (m *defaultVideo) VideoList(ctx context.Context, in *VideoListReq, opts ...grpc.CallOption) (*VideoListResp, error) {
 	client := video.NewVideoClient(m.cli.Conn())
 	return client.VideoList(ctx, in, opts...)
+}
+
+func (m *defaultVideo) IsExistsVideo(ctx context.Context, in *IsExistsVideoReq, opts ...grpc.CallOption) (*IsExistsVideoResp, error) {
+	client := video.NewVideoClient(m.cli.Conn())
+	return client.IsExistsVideo(ctx, in, opts...)
 }

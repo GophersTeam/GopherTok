@@ -42,8 +42,15 @@ message VideoListResp{
   repeated VideoList video_list = 1;
 }
 
+message IsExistsVideoReq{
+  int64 video_id=1;
+}
+message IsExistsVideoResp{
+  bool is_exists=1;
+}
 service video{
   rpc PublishVideo(PublishVideoReq)returns(CommonResp);
   rpc UserVideoList(UserVideoListReq) returns(UserVideoListResp);
   rpc VideoList(VideoListReq)returns(VideoListResp);
+  rpc IsExistsVideo(IsExistsVideoReq)returns(IsExistsVideoResp);
 }
