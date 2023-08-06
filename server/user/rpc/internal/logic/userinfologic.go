@@ -61,8 +61,11 @@ func (l *UserInfoLogic) UserInfo(in *user.UserInfoReq) (*user.UserInfoResp, erro
 		Avatar:          u.Avatar,
 		BackgroundImage: u.BackgroundImage,
 		Signature:       u.Signature,
+		IsFollow:        false,
 		FollowCount:     followCount.Count,
 		FollowerCount:   followerCount.Count,
+		TotalFavorited:  "0",
 		WorkCount:       int64(len(userVideoList.VideoList)),
+		FavoriteCount:   0,
 	}, nil
 }
