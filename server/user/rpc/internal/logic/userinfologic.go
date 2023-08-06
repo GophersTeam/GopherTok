@@ -2,9 +2,12 @@ package logic
 
 import (
 	"GopherTok/common/errorx"
+	"GopherTok/server/relation/rpc/pb"
 	"GopherTok/server/user/model"
+	"GopherTok/server/video/rpc/types/video"
 	"context"
 	"github.com/pkg/errors"
+	"strconv"
 
 	"GopherTok/server/user/rpc/internal/svc"
 	"GopherTok/server/user/rpc/types/user"
@@ -33,6 +36,24 @@ func (l *UserInfoLogic) UserInfo(in *user.UserInfoReq) (*user.UserInfoResp, erro
 	if err != nil {
 		return nil, errors.Wrapf(errorx.NewDefaultError(err.Error()), "mysql查询错误 err：%v", err)
 	}
+	followCount, err := l.svcCtx.RelationRpc.GetFollowCount(l.ctx, &pb.GetFollowCountReq{
+		Userid: strconv.FormatInt(in.Id, 10),
+	})
+	if err != nil {
+		return nil, errors.Wrapf(err, "req: %+v", in)
+	}
+	followerCount, err := l.svcCtx.RelationRpc.GetFollowerCount(l.ctx, &pb.GetFollowerCountReq{
+		Userid: strconv.FormatInt(in.Id, 10),
+	})
+	if err != nil {
+		return nil, errors.Wrapf(err, "req: %+v", in)
+	}
+	userVideoList, err := l.svcCtx.VideoRpc.UserVideoList(l.ctx, &video.UserVideoListReq{
+		UserId: in.Id,
+	})
+	if err != nil {
+		return nil, errors.Wrapf(err, "req: %+v", in)
+	}
 
 	return &user.UserInfoResp{
 		Id:              u.ID,
@@ -40,5 +61,8 @@ func (l *UserInfoLogic) UserInfo(in *user.UserInfoReq) (*user.UserInfoResp, erro
 		Avatar:          u.Avatar,
 		BackgroundImage: u.BackgroundImage,
 		Signature:       u.Signature,
+		FollowCount:     followCount.Count,
+		FollowerCount:   followerCount.Count,
+		WorkCount:       int64(len(userVideoList.VideoList)),
 	}, nil
 }
