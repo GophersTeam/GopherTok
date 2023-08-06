@@ -13,7 +13,7 @@ type ServiceContext struct {
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
-todo:
+
 	conf := redis.Options{
 		Addr:                  "",
 		Username:              "",
