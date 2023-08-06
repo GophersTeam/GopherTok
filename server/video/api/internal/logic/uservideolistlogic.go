@@ -80,6 +80,7 @@ func (l *UserVideoListLogic) UserVideoList(req *types.UserVideoListReq) (resp *t
 			CoverURL:      list[i].CoverUrl,
 			FavoriteCount: 0,
 			CommentCount:  commentCount.Count,
+			IsFavorite:    false,
 		}
 		videoList = append(videoList, videoItem)
 	}

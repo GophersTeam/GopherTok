@@ -31,13 +31,16 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	)
 
 	server.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodGet,
-				Path:    "/feed",
-				Handler: VideoListHandler(serverCtx),
-			},
-		},
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.VideoJWT},
+			[]rest.Route{
+				{
+					Method:  http.MethodGet,
+					Path:    "/feed",
+					Handler: VideoListHandler(serverCtx),
+				},
+			}...,
+		),
 		rest.WithPrefix("/douyin"),
 	)
 }

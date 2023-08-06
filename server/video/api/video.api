@@ -90,6 +90,7 @@ service video {
 
 @server(
 	prefix: douyin
+	middleware: VideoJWT
 )
 
 service video {

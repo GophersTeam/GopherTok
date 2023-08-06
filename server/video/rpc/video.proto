@@ -49,10 +49,16 @@ message IsExistsVideoResp{
   bool is_exists=1;
 }
 
-
+message FindVideoReq{
+  int64 id =1;
+}
+message FindVideoResp{
+   VideoList video = 1;
+}
 service video{
   rpc PublishVideo(PublishVideoReq)returns(CommonResp);
   rpc UserVideoList(UserVideoListReq) returns(UserVideoListResp);
   rpc VideoList(VideoListReq)returns(VideoListResp);
   rpc IsExistsVideo(IsExistsVideoReq)returns(IsExistsVideoResp);
+  rpc FindVideo(FindVideoReq)returns(FindVideoResp);
 }

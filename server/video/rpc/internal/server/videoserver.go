@@ -41,3 +41,8 @@ func (s *VideoServer) IsExistsVideo(ctx context.Context, in *video.IsExistsVideo
 	l := logic.NewIsExistsVideoLogic(ctx, s.svcCtx)
 	return l.IsExistsVideo(in)
 }
+
+func (s *VideoServer) FindVideo(ctx context.Context, in *video.FindVideoReq) (*video.FindVideoResp, error) {
+	l := logic.NewFindVideoLogic(ctx, s.svcCtx)
+	return l.FindVideo(in)
+}

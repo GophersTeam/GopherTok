@@ -18,6 +18,7 @@ import (
 type ServiceContext struct {
 	Config     config.Config
 	JWT        rest.Middleware
+	VideoJWT   rest.Middleware
 	UserRpc    userclient.User
 	VideoRpc   videoclient.Video
 	CommentRpc commentrpc.CommentRpc
@@ -36,6 +37,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
 		Config:     c,
 		JWT:        middleware.NewJWTMiddleware(c).Handle,
+		VideoJWT:   middleware.NewVideoJWTMiddleware(c).Handle,
 		UserRpc:    userclient.NewUser(zrpc.MustNewClient(c.UserRpcConf)),
 		VideoRpc:   videoclient.NewVideo(zrpc.MustNewClient(c.VideoRpcConf)),
 		CommentRpc: commentrpc.NewCommentRpc(zrpc.MustNewClient(c.CommentRpcConf)),
