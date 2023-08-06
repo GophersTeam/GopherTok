@@ -1,6 +1,6 @@
 module GopherTok
 
-go 1.20
+go 1.19
 
 require (
 	github.com/bwmarrin/snowflake v0.3.0
@@ -15,6 +15,7 @@ require (
 	github.com/nacos-group/nacos-sdk-go/v2 v2.2.2
 	github.com/pkg/errors v0.9.1
 	github.com/redis/go-redis/v9 v9.0.5
+	github.com/stretchr/testify v1.8.4
 	github.com/tencentyun/cos-go-sdk-v5 v0.7.42
 	github.com/zeromicro/go-queue v1.1.8
 	github.com/zeromicro/go-zero v1.5.4
@@ -22,6 +23,7 @@ require (
 	google.golang.org/grpc v1.56.2
 	google.golang.org/protobuf v1.31.0
 	gorm.io/driver/mysql v1.5.1
+	gorm.io/driver/sqlite v1.5.2
 	gorm.io/gorm v1.25.2
 )
 
@@ -70,6 +72,7 @@ require (
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.17 // indirect
+	github.com/mattn/go-sqlite3 v1.14.17 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.4 // indirect
 	github.com/minio/md5-simd v1.1.2 // indirect
 	github.com/minio/sha256-simd v1.0.1 // indirect
@@ -83,6 +86,7 @@ require (
 	github.com/openzipkin/zipkin-go v0.4.1 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.9 // indirect
 	github.com/pierrec/lz4/v4 v4.1.17 // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/prometheus/client_golang v1.16.0 // indirect
 	github.com/prometheus/client_model v0.3.0 // indirect
 	github.com/prometheus/common v0.42.0 // indirect

@@ -52,9 +52,9 @@ func (l *RegisterLogic) Register(in *user.RegisterReq) (*user.RegisterResp, erro
 		Username: in.Username,
 		// 加盐加密
 		Password:        utils.Md5Password(in.Password, l.svcCtx.Config.Salt),
-		Avatar:          "",
-		BackgroundImage: "",
-		Signature:       "",
+		Avatar:          utils.GetRandomImageUrl(),
+		BackgroundImage: utils.GetRandomImageUrl(),
+		Signature:       utils.GetRandomYiYan(),
 	}
 	if err := l.svcCtx.MysqlDb.Create(&u).Error; err != nil {
 		logx.Error(err)

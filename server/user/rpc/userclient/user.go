@@ -13,6 +13,8 @@ import (
 )
 
 type (
+	AddCountReq  = user.AddCountReq
+	AddCountResp = user.AddCountResp
 	CommonResp   = user.CommonResp
 	LoginReq     = user.LoginReq
 	LoginResp    = user.LoginResp
@@ -25,6 +27,7 @@ type (
 		Register(ctx context.Context, in *RegisterReq, opts ...grpc.CallOption) (*RegisterResp, error)
 		Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error)
 		UserInfo(ctx context.Context, in *UserInfoReq, opts ...grpc.CallOption) (*UserInfoResp, error)
+		AddCount(ctx context.Context, in *AddCountReq, opts ...grpc.CallOption) (*AddCountResp, error)
 	}
 
 	defaultUser struct {
@@ -51,4 +54,9 @@ func (m *defaultUser) Login(ctx context.Context, in *LoginReq, opts ...grpc.Call
 func (m *defaultUser) UserInfo(ctx context.Context, in *UserInfoReq, opts ...grpc.CallOption) (*UserInfoResp, error) {
 	client := user.NewUserClient(m.cli.Conn())
 	return client.UserInfo(ctx, in, opts...)
+}
+
+func (m *defaultUser) AddCount(ctx context.Context, in *AddCountReq, opts ...grpc.CallOption) (*AddCountResp, error) {
+	client := user.NewUserClient(m.cli.Conn())
+	return client.AddCount(ctx, in, opts...)
 }

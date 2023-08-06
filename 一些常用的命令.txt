@@ -1,6 +1,6 @@
 goctl model mysql ddl -src file.sql -dir . -c
 goctl api go -api video.api -dir .
-goctl rpc protoc video.proto --go_out=./types --go-grpc_out=./types --zrpc_out=.
+goctl rpc protoc user.proto --go_out=./types --go-grpc_out=./types --zrpc_out=.
 go run video.go -f etc/video.yaml
 go run user.go -f etc/user.yaml
 

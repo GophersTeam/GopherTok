@@ -36,3 +36,8 @@ func (s *UserServer) UserInfo(ctx context.Context, in *user.UserInfoReq) (*user.
 	l := logic.NewUserInfoLogic(ctx, s.svcCtx)
 	return l.UserInfo(in)
 }
+
+func (s *UserServer) AddCount(ctx context.Context, in *user.AddCountReq) (*user.AddCountResp, error) {
+	l := logic.NewAddCountLogic(ctx, s.svcCtx)
+	return l.AddCount(in)
+}

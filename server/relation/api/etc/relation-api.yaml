@@ -1,0 +1,16 @@
+Name: relation
+Host: 0.0.0.0
+Port: 7888
+RelationRpc:
+  Etcd:
+    Hosts:
+    - localhost:2379
+    Key: relation.rpc
+UserRpc:
+  Etcd:
+    Hosts:
+      - localhost:2379
+    Key: user.rpc
+Token:
+  AccessToken: gophertok-YkAkzyqpRJnhHZvU5x5W
+  RefreshToken: gophertok-dWgcRF43wqoAMD6hRpaC
