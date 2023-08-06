@@ -12,6 +12,7 @@ const (
 const (
 	UserMachineId = iota
 	ChatMachineId
+	VideoMachineId
 )
 
 const (

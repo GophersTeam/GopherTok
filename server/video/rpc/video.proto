@@ -48,6 +48,8 @@ message IsExistsVideoReq{
 message IsExistsVideoResp{
   bool is_exists=1;
 }
+
+
 service video{
   rpc PublishVideo(PublishVideoReq)returns(CommonResp);
   rpc UserVideoList(UserVideoListReq) returns(UserVideoListResp);

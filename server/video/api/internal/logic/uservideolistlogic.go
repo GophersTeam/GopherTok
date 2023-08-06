@@ -3,6 +3,7 @@ package logic
 import (
 	"GopherTok/common/consts"
 	"GopherTok/common/errorx"
+	"GopherTok/server/comment/rpc/pb"
 	"GopherTok/server/user/rpc/types/user"
 	"GopherTok/server/video/api/internal/svc"
 	"GopherTok/server/video/api/internal/types"
@@ -53,6 +54,12 @@ func (l *UserVideoListLogic) UserVideoList(req *types.UserVideoListReq) (resp *t
 	videoList := make([]*types.VideoInfo, 0) // Assuming VideoList is a struct that matches your needs
 
 	for i := 0; i < len(list); i++ {
+		commentCount, err := l.svcCtx.CommentRpc.GetCommentCount(l.ctx, &pb.GetCommentCountRequest{
+			VideoId: list[i].Id,
+		})
+		if err != nil {
+			return nil, errors.Wrapf(err, "req: %+v", req)
+		}
 		videoItem := &types.VideoInfo{
 			ID: list[i].Id,
 			Author: types.AuthorInfo{
@@ -72,7 +79,7 @@ func (l *UserVideoListLogic) UserVideoList(req *types.UserVideoListReq) (resp *t
 			PlayURL:       list[i].PlayUrl,
 			CoverURL:      list[i].CoverUrl,
 			FavoriteCount: 0,
-			CommentCount:  0,
+			CommentCount:  commentCount.Count,
 		}
 		videoList = append(videoList, videoItem)
 	}
