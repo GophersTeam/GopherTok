@@ -31,11 +31,10 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	}()
 
 	return &ServiceContext{
-		Config:       c,
-		CommentModel: model.NewCommentModel(c.MongoConf.Url, c.MongoConf.DB, c.MongoConf.Collection),
-		Snowflake:    snowflakeNode,
-		UserRpc:      userclient.NewUser(zrpc.MustNewClient(c.UserRpcConf)),
-		//UserRpc:             mock.UserRpc{},
+		Config:              c,
+		CommentModel:        model.NewCommentModel(c.MongoConf.Url, c.MongoConf.DB, c.MongoConf.Collection),
+		Snowflake:           snowflakeNode,
+		UserRpc:             userclient.NewUser(zrpc.MustNewClient(c.UserRpcConf)),
 		SensitiveWordFilter: trie,
 		KafkaPusher:         kq.NewPusher(c.KafkaConf.Addrs, c.KafkaConf.Topic),
 		RedisClient:         redis.MustNewRedis(c.RedisConf),
