@@ -30,9 +30,9 @@ func (u UserRpc) UserInfo(ctx context.Context, in *userclient.UserInfoReq, opts 
 	return &userclient.UserInfoResp{
 		Id:              1,
 		Name:            "hhhh",
-		Avatar:          "",
-		BackgroundImage: "",
-		Signature:       "",
+		Avatar:          "htpp://xxx",
+		BackgroundImage: "htpp://xxx",
+		Signature:       "htpp://xxx",
 		IsFollow:        false,
 		FollowCount:     23,
 		FollowerCount:   33,

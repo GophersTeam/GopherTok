@@ -29,7 +29,7 @@ func NewFindVideoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *FindVid
 func (l *FindVideoLogic) FindVideo(in *video.FindVideoReq) (*video.FindVideoResp, error) {
 	// todo: add your logic here and delete this line
 	v := model.Video{}
-	if err := l.svcCtx.MysqlDb.Where("id = ?").First(&v).Error; err != nil {
+	if err := l.svcCtx.MysqlDb.Where("id = ?", in.Id).First(&v).Error; err != nil {
 		return nil, errors.Wrapf(errorx.NewDefaultError("mysql查询出错，err:"+err.Error()), "mysql查询出错，err:%v", err)
 	}
 	return &video.FindVideoResp{

@@ -3,6 +3,7 @@ package logic
 import (
 	"GopherTok/common/errorx"
 	"GopherTok/server/relation/rpc/pb"
+	"GopherTok/server/relation/rpc/relationrpc"
 	"GopherTok/server/user/model"
 	"GopherTok/server/video/rpc/types/video"
 	"context"
@@ -54,14 +55,20 @@ func (l *UserInfoLogic) UserInfo(in *user.UserInfoReq) (*user.UserInfoResp, erro
 	if err != nil {
 		return nil, errors.Wrapf(err, "req: %+v", in)
 	}
-
+	isFollow, err := l.svcCtx.RelationRpc.CheckIsFollow(l.ctx, &relationrpc.CheckIsFollowReq{
+		UserId:   strconv.FormatInt(in.CurrentId, 10),
+		ToUserId: strconv.FormatInt(in.Id, 10),
+	})
+	if err != nil {
+		return nil, errors.Wrapf(err, "req: %+v", in)
+	}
 	return &user.UserInfoResp{
 		Id:              u.ID,
 		Name:            u.Username,
 		Avatar:          u.Avatar,
 		BackgroundImage: u.BackgroundImage,
 		Signature:       u.Signature,
-		IsFollow:        false,
+		IsFollow:        isFollow.IsFollow,
 		FollowCount:     followCount.Count,
 		FollowerCount:   followerCount.Count,
 		TotalFavorited:  "0",

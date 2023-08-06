@@ -3,8 +3,7 @@ package svc
 import (
 	"GopherTok/common/consts"
 	"GopherTok/common/init_db"
-	"GopherTok/server/relation/rpc/pb"
-	"GopherTok/server/relation/rpc/relationrpc"
+	"GopherTok/common/mock"
 	"GopherTok/server/user/model"
 	"GopherTok/server/user/rpc/internal/config"
 	"GopherTok/server/video/rpc/videoclient"
@@ -16,7 +15,7 @@ import (
 
 type ServiceContext struct {
 	Config      config.Config
-	RelationRpc pb.RelationRpcClient
+	RelationRpc mock.RelationRpc
 	VideoRpc    videoclient.Video
 	Snowflake   *snowflake.Node
 	Rdb         *redis.ClusterClient
@@ -32,7 +31,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	redisDb := init_db.InitRedis(rc)
 	return &ServiceContext{
 		Config:      c,
-		RelationRpc: relationrpc.NewRelationRpc(zrpc.MustNewClient(c.RelationRpc)),
+		RelationRpc: mock.RelationRpc{},
 		VideoRpc:    videoclient.NewVideo(zrpc.MustNewClient(c.VideoRpcConf)),
 		Snowflake:   snowflakeNode,
 		MysqlDb:     mysqlDb,

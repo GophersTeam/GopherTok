@@ -3,8 +3,7 @@ package svc
 import (
 	"GopherTok/common/consts"
 	"GopherTok/common/init_db"
-	"GopherTok/server/comment/rpc/commentrpc"
-	"GopherTok/server/user/rpc/userclient"
+	"GopherTok/common/mock"
 	"GopherTok/server/video/api/internal/config"
 	"GopherTok/server/video/api/internal/middleware"
 	"GopherTok/server/video/rpc/videoclient"
@@ -19,9 +18,9 @@ type ServiceContext struct {
 	Config     config.Config
 	JWT        rest.Middleware
 	VideoJWT   rest.Middleware
-	UserRpc    userclient.User
+	UserRpc    mock.UserRpc
 	VideoRpc   videoclient.Video
-	CommentRpc commentrpc.CommentRpc
+	CommentRpc mock.CommentRpc
 
 	Snowflake *snowflake.Node
 	MinioDb   *minio.Client
@@ -38,9 +37,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Config:     c,
 		JWT:        middleware.NewJWTMiddleware(c).Handle,
 		VideoJWT:   middleware.NewVideoJWTMiddleware(c).Handle,
-		UserRpc:    userclient.NewUser(zrpc.MustNewClient(c.UserRpcConf)),
+		UserRpc:    mock.UserRpc{},
 		VideoRpc:   videoclient.NewVideo(zrpc.MustNewClient(c.VideoRpcConf)),
-		CommentRpc: commentrpc.NewCommentRpc(zrpc.MustNewClient(c.CommentRpcConf)),
+		CommentRpc: mock.CommentRpc{},
 		Snowflake:  snowflakeNode,
 		MinioDb:    minioDb,
 		Rdb:        redisDb,
