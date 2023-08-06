@@ -3,6 +3,7 @@ package logic
 import (
 	"GopherTok/common/batcher"
 	"GopherTok/common/errorx"
+	"GopherTok/common/utils"
 	"GopherTok/server/video/model"
 	"context"
 	"encoding/json"
@@ -23,14 +24,17 @@ type PublishVideoLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	batcher *batcher.Batcher
+	batcher             *batcher.Batcher
+	SensitiveWordFilter utils.SensitiveWordFilter
 }
 
 func NewPublishVideoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PublishVideoLogic {
+	trie := utils.NewSensitiveTrie()
 	f := &PublishVideoLogic{
-		ctx:    ctx,
-		svcCtx: svcCtx,
-		Logger: logx.WithContext(ctx),
+		ctx:                 ctx,
+		svcCtx:              svcCtx,
+		Logger:              logx.WithContext(ctx),
+		SensitiveWordFilter: trie,
 	}
 	// batcher配置
 	options := batcher.Options{
@@ -80,6 +84,8 @@ func (l *PublishVideoLogic) PublishVideo(in *video.PublishVideoReq) (*video.Comm
 	fmt.Println(CreateTime)
 	fmt.Println("---")
 	fmt.Println(UpdateTime)
+	// 标题敏感过滤
+	in.Title = l.SensitiveWordFilter.Filter(in.Title)
 	v := model.Video{
 		ID:          in.Id,
 		UserID:      in.UserId,
