@@ -37,7 +37,6 @@ func (l *UserInfoLogic) UserInfo(in *user.UserInfoReq) (*user.UserInfoResp, erro
 	return &user.UserInfoResp{
 		Id:              u.ID,
 		Name:            u.Username,
-		Password:        u.Password,
 		Avatar:          u.Avatar,
 		BackgroundImage: u.BackgroundImage,
 		Signature:       u.Signature,
