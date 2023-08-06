@@ -19,10 +19,11 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	User_Register_FullMethodName = "/user.user/Register"
-	User_Login_FullMethodName    = "/user.user/Login"
-	User_UserInfo_FullMethodName = "/user.user/UserInfo"
-	User_AddCount_FullMethodName = "/user.user/AddCount"
+	User_Register_FullMethodName     = "/user.user/Register"
+	User_Login_FullMethodName        = "/user.user/Login"
+	User_UserInfo_FullMethodName     = "/user.user/UserInfo"
+	User_AddCount_FullMethodName     = "/user.user/AddCount"
+	User_UserIsExists_FullMethodName = "/user.user/UserIsExists"
 )
 
 // UserClient is the client API for User service.
@@ -33,6 +34,7 @@ type UserClient interface {
 	Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error)
 	UserInfo(ctx context.Context, in *UserInfoReq, opts ...grpc.CallOption) (*UserInfoResp, error)
 	AddCount(ctx context.Context, in *AddCountReq, opts ...grpc.CallOption) (*AddCountResp, error)
+	UserIsExists(ctx context.Context, in *UserIsExistsReq, opts ...grpc.CallOption) (*UserIsExistsResp, error)
 }
 
 type userClient struct {
@@ -79,6 +81,15 @@ func (c *userClient) AddCount(ctx context.Context, in *AddCountReq, opts ...grpc
 	return out, nil
 }
 
+func (c *userClient) UserIsExists(ctx context.Context, in *UserIsExistsReq, opts ...grpc.CallOption) (*UserIsExistsResp, error) {
+	out := new(UserIsExistsResp)
+	err := c.cc.Invoke(ctx, User_UserIsExists_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServer is the server API for User service.
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility
@@ -87,6 +98,7 @@ type UserServer interface {
 	Login(context.Context, *LoginReq) (*LoginResp, error)
 	UserInfo(context.Context, *UserInfoReq) (*UserInfoResp, error)
 	AddCount(context.Context, *AddCountReq) (*AddCountResp, error)
+	UserIsExists(context.Context, *UserIsExistsReq) (*UserIsExistsResp, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -105,6 +117,9 @@ func (UnimplementedUserServer) UserInfo(context.Context, *UserInfoReq) (*UserInf
 }
 func (UnimplementedUserServer) AddCount(context.Context, *AddCountReq) (*AddCountResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddCount not implemented")
+}
+func (UnimplementedUserServer) UserIsExists(context.Context, *UserIsExistsReq) (*UserIsExistsResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserIsExists not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 
@@ -191,6 +206,24 @@ func _User_AddCount_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_UserIsExists_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserIsExistsReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserIsExists(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_UserIsExists_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserIsExists(ctx, req.(*UserIsExistsReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // User_ServiceDesc is the grpc.ServiceDesc for User service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -213,6 +246,10 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AddCount",
 			Handler:    _User_AddCount_Handler,
+		},
+		{
+			MethodName: "UserIsExists",
+			Handler:    _User_UserIsExists_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

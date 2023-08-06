@@ -10,6 +10,11 @@ import (
 type UserRpc struct {
 }
 
+func (u UserRpc) UserIsExists(ctx context.Context, in *userclient.UserIsExistsReq, opts ...grpc.CallOption) (*userclient.UserIsExistsResp, error) {
+	//TODO implement me
+	return &userclient.UserIsExistsResp{Exists: false}, nil
+}
+
 func (u UserRpc) Register(ctx context.Context, in *userclient.RegisterReq, opts ...grpc.CallOption) (*userclient.RegisterResp, error) {
 	//TODO implement me
 	panic("implement me")

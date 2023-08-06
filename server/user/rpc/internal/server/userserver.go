@@ -41,3 +41,8 @@ func (s *UserServer) AddCount(ctx context.Context, in *user.AddCountReq) (*user.
 	l := logic.NewAddCountLogic(ctx, s.svcCtx)
 	return l.AddCount(in)
 }
+
+func (s *UserServer) UserIsExists(ctx context.Context, in *user.UserIsExistsReq) (*user.UserIsExistsResp, error) {
+	l := logic.NewUserIsExistsLogic(ctx, s.svcCtx)
+	return l.UserIsExists(in)
+}

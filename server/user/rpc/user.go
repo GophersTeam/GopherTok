@@ -19,14 +19,15 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-// var configFile = flag.String("f", "etc/user.yaml", "the config file")
-var configFile = "D:\\GopherTok\\server\\user\\rpc\\etc\\user.yaml"
+var configFile = flag.String("f", "etc/user.yaml", "the config file")
+
+//var configFile = "D:\\GopherTok\\server\\user\\rpc\\etc\\user.yaml"
 
 func main() {
 	flag.Parse()
 
 	var nacosConf config.NacosConf
-	conf.MustLoad(configFile, &nacosConf)
+	conf.MustLoad(*configFile, &nacosConf)
 	var c config.Config
 	nacosConf.LoadConfig(&c)
 	nacosConf.ListenConfig(func(namespace, group, dataId, data string) {
