@@ -1,0 +1,95 @@
+syntax = "v1"
+
+// 接口信息
+info(
+	title: "GopherTok/favor.api"
+	author: "saleroa"
+	version: "1.0.0"
+)
+
+type BaseResponse {
+	Code    int64  `json:"status_code"`
+	Message string `json:"status_msg,omitempty"`
+}
+
+type (
+
+	// Favor
+	FavorReq {
+		User_id  int64 `json:"userId"`
+		Video_id int64 `json:"videoId"`
+	}
+
+	FavorResp {
+		BaseResponse
+	}
+
+	// DisFavor
+	DisFavorReq {
+		User_id  int64 `json:"userId"`
+		Video_id int64 `json:"videoId"`
+	}
+
+	DisFavorResp {
+		BaseResponse
+	}
+
+	// Favor list
+	FavorlistReq {
+		UserId int64 `form:"user_id"`
+	}
+	FavorlistResp {
+		BaseResponse
+		Video_ids []int64 `json:"videoIds"`
+	}
+
+	// FavorNum
+	FavorNumReq {
+		Video_id int64 `json:"videoId"`
+	}
+
+	FavorNumResp {
+	    FavorNum int64 `json:"favorNum"`
+		BaseResponse
+	}
+)
+
+@server(
+	prefix: douyin/favor
+)
+
+service favor {
+	
+	@doc(
+		summary: "点赞数目"
+	)
+	@handler FavorNum
+	post /favornum (FavorNumReq) returns (FavorNumResp)
+	
+}
+
+@server(
+	prefix: douyin/favor
+	middleware: JWT // 路由中间件声明
+)
+
+service favor {
+	@doc(
+		summary:  "点赞"
+	)
+	@handler Favor
+	post /favor (FavorReq) returns (FavorResp)
+	
+	@doc(
+		summary:  "取消点赞"
+	)
+	@handler DisFavor
+	post /disfavor (DisFavorReq) returns (DisFavorResp)
+	
+	@doc(
+		summary: "点赞列表"
+	)
+	@handler FavorList
+	post /favorlist (FavorlistReq) returns (FavorlistResp)
+	
+}

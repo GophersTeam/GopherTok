@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package favor;
+
+option go_package = "./favor";
+
+service FavorRpc{
+  rpc DisFavor(DisFavorReq) returns (DisFavorResp);//取消点赞
+  rpc Favor(FavorReq) returns (FavorResp); // 点赞
+  rpc FavorList(FavorListReq) returns(FavorListResp);  //点赞列表
+  rpc FavorNum(FavorNumReq) returns (FavorNumResp); //点赞数目
+}
+
+//
+message DisFavorReq{
+  int64 UserId = 1;
+  int64 VideoId = 2;
+  string Token = 3;
+}
+message DisFavorResp{}
+
+//
+message FavorReq{
+  int64 Userid = 1;
+  int64 VideoId = 2;
+  string Token = 3;
+}
+message FavorResp{}
+
+//
+message FavorListReq{
+  int64 Userid = 1;
+  string Token = 2;
+}
+message FavorListResp{
+  repeated int64 VideoIds = 1;
+}
+
+//
+message FavorNumReq{
+  int64  VideoId = 1;
+}
+message FavorNumResp{
+  int64 Num = 1;
+}
+//
+
+
