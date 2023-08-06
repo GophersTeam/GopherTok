@@ -24,9 +24,11 @@ func NewDelCommentLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DelCom
 }
 
 func (l *DelCommentLogic) DelComment(in *pb.DelCommentRequest) (resp *pb.DelCommentResponse, err error) {
-	// todo: add your logic here and delete this line
-
+	_, err = l.svcCtx.CommentModel.Delete(l.ctx, in.CommentId)
+	if err != nil {
+		l.Errorf("Delete comment error: %v", err)
+		return
+	}
 	resp = new(pb.DelCommentResponse)
-
 	return
 }

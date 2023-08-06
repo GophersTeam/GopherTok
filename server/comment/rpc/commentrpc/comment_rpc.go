@@ -22,6 +22,7 @@ type (
 	GetCommentCountResponse = pb.GetCommentCountResponse
 	GetCommentListRequest   = pb.GetCommentListRequest
 	GetCommentListResponse  = pb.GetCommentListResponse
+	User                    = pb.User
 
 	CommentRpc interface {
 		AddComment(ctx context.Context, in *AddCommentRequest, opts ...grpc.CallOption) (*AddCommentResponse, error)

@@ -40,7 +40,7 @@ type (
 	}
 	CommentActionResponse {
 		BaseResponse
-		Comment *Comment `json:"comment"`
+		Comment *Comment `json:"comment,omitempty"`
 	}
 )
 

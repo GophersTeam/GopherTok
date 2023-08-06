@@ -24,9 +24,14 @@ func NewGetCommentCountLogic(ctx context.Context, svcCtx *svc.ServiceContext) *G
 }
 
 func (l *GetCommentCountLogic) GetCommentCount(in *pb.GetCommentCountRequest) (resp *pb.GetCommentCountResponse, err error) {
-	// todo: add your logic here and delete this line
+	count, err := l.svcCtx.CommentModel.GetCountByVideoId(l.ctx, in.VideoId)
+	if err != nil {
+		l.Errorf("Get comment count error: %v", err)
+		return
+	}
 
 	resp = new(pb.GetCommentCountResponse)
+	resp.Count = count
 
 	return
 }

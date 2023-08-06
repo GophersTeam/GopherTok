@@ -29,14 +29,31 @@ message DelCommentResponse {
 message Comment {
     int64 id = 1;
     int64 video_id = 2;
-    string content = 3;
-    string create_date = 4;
+    User user = 3;
+    string content = 4;
+    string create_date = 5;
+}
+
+
+message User {
+    int64 id = 1;
+    string username = 2;
+    int64 follow_count = 3;
+    int64 follower_count = 4;
+    bool is_follow = 5;
+    string avatar = 6;
+    string background_image = 7;
+    string signature = 8;
+    int64 total_favorited = 9;
+    int64 work_count = 10;
+    int64 favorite_count = 11;
 }
 
 message GetCommentListRequest {
     int64 video_id = 1;
     int64 page_num = 2;
     int64 page_size = 3;
+    int64 user_id = 4;
 }
 
 message GetCommentListResponse {

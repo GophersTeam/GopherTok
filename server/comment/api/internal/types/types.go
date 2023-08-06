@@ -31,7 +31,7 @@ type CommentActionRequest struct {
 
 type CommentActionResponse struct {
 	BaseResponse
-	Comment *Comment `json:"comment"`
+	Comment *Comment `json:"comment,omitempty"`
 }
 
 type CommentListRequest struct {
