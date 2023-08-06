@@ -10,4 +10,8 @@ type Config struct {
 	rest.RestConf
 	RedisConf      redis.RedisConf
 	CommentRpcConf zrpc.RpcClientConf
+	Token          struct {
+		AccessToken  string
+		RefreshToken string
+	}
 }

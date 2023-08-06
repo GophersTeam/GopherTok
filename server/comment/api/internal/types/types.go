@@ -10,7 +10,7 @@ type Comment struct {
 
 type User struct {
 	Id              int64  `json:"id"`
-	Username        string `json:"name"`
+	Name            string `json:"name"`
 	Avatar          string `json:"avatar"`
 	FollowCount     int64  `json:"follow_count"`
 	TotalFavorited  int64  `json:"total_favorited"`

@@ -3,9 +3,11 @@ package logic
 import (
 	"GopherTok/server/comment/model"
 	"GopherTok/server/comment/rpc/commentrpc"
+	"GopherTok/server/user/rpc/userclient"
 	"context"
 	"github.com/jinzhu/copier"
 	"github.com/pkg/errors"
+	"github.com/zeromicro/go-zero/core/jsonx"
 	"time"
 
 	"GopherTok/server/comment/rpc/internal/svc"
@@ -42,30 +44,32 @@ func (l *AddCommentLogic) AddComment(in *pb.AddCommentRequest) (resp *pb.AddComm
 		UserId:     in.UserId,
 		CreateDate: time.Now().Format(time.DateTime),
 	}
-	err = l.svcCtx.CommentModel.Insert(l.ctx, comment)
+	// 丢到kafka里异步落库
+	commentJson, _ := jsonx.MarshalToString(&comment)
+	err = l.svcCtx.KafkaPusher.Push(commentJson)
 	if err != nil {
-		l.Errorf("Insert comment error: %v", err)
+		l.Errorf("Push comment error: %v", err)
 		return
 	}
 
-	// 获取用户信息
-	//userInfoResp, err := l.svcCtx.UserRpc.UserInfo(l.ctx, &userclient.UserInfoReq{
-	//	UserId:       in.UserId,
-	//	TargetUserId: in.UserId,
-	//})
-	//if err != nil {
-	//	l.Errorf("Get user info error: %v", err)
-	//	return
-	//}
+	//获取用户信息
+	userInfoResp, err := l.svcCtx.UserRpc.UserInfo(l.ctx, &userclient.UserInfoReq{
+		Id:        in.UserId,
+		CurrentId: in.UserId,
+	})
+	if err != nil {
+		l.Errorf("Get user info error: %v", err)
+		return
+	}
 	resp = new(pb.AddCommentResponse)
 	resp.Comment = new(pb.Comment)
 	_ = copier.Copy(resp.Comment, comment)
 	resp.Comment.User = new(commentrpc.User)
-	//_ = copier.Copy(resp.Comment.User, userInfoResp.User)
+	_ = copier.Copy(resp.Comment.User, userInfoResp)
 
-	resp.Comment.User.Id = in.UserId
-	resp.Comment.User.Username = "test"
-	resp.Comment.User.Avatar = "https://static001.geekbang.org/account/avatar/00/19/61/0b/1c0b7f0d.jpg"
+	//resp.Comment.User.Id = in.UserId
+	//resp.Comment.User.Username = "test"
+	//resp.Comment.User.Avatar = "https://static001.geekbang.org/account/avatar/00/19/61/0b/1c0b7f0d.jpg"
 
 	return
 }

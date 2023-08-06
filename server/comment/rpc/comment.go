@@ -1,8 +1,10 @@
 package main
 
 import (
+	"GopherTok/common/response/rpcserver"
 	"flag"
 	"fmt"
+	"github.com/zeromicro/go-zero/core/logx"
 
 	"GopherTok/server/comment/rpc/internal/config"
 	"GopherTok/server/comment/rpc/internal/server"
@@ -35,6 +37,8 @@ func main() {
 		}
 	})
 	defer s.Stop()
+	s.AddUnaryInterceptors(rpcserver.LoggerInterceptor)
+	logx.DisableStat()
 
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
 	s.Start()

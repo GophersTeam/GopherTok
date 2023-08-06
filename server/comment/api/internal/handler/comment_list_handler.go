@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"GopherTok/common/response"
 	"net/http"
 
 	"GopherTok/server/comment/api/internal/logic"
@@ -19,10 +20,6 @@ func CommentListHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		l := logic.NewCommentListLogic(r.Context(), svcCtx)
 		resp, err := l.CommentList(&req)
-		if err != nil {
-			httpx.ErrorCtx(r.Context(), w, err)
-		} else {
-			httpx.OkJsonCtx(r.Context(), w, resp)
-		}
+		response.Response(r, w, resp, err)
 	}
 }

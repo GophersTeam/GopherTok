@@ -16,12 +16,26 @@ type (
 		commentModel
 		FindByVideoId(ctx context.Context, videoId int64) (comments []*Comment, err error)
 		GetCountByVideoId(ctx context.Context, videoId int64) (count int64, err error)
+		FindOneAndDelete(ctx context.Context, id int64) (*Comment, error)
 	}
 
 	customCommentModel struct {
 		*defaultCommentModel
 	}
 )
+
+func (m *customCommentModel) FindOneAndDelete(ctx context.Context, id int64) (*Comment, error) {
+	var data Comment
+	err := m.conn.FindOneAndDelete(ctx, &data, bson.M{"_id": id})
+	switch err {
+	case nil:
+		return &data, nil
+	case mon.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+}
 
 func (m *customCommentModel) GetCountByVideoId(ctx context.Context, videoId int64) (count int64, err error) {
 	count, err = m.conn.CountDocuments(ctx, bson.M{"video_id": videoId})

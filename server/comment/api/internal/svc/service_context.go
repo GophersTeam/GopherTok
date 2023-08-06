@@ -17,11 +17,10 @@ type ServiceContext struct {
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
-	redisClient := redis.MustNewRedis(c.RedisConf)
 
 	return &ServiceContext{
 		Config:     c,
-		Auth:       middleware.NewAuthMiddleware(redisClient).Handle,
+		Auth:       middleware.NewAuthMiddleware(c).Handle,
 		CommentRpc: commentrpc.NewCommentRpc(zrpc.MustNewClient(c.CommentRpcConf)),
 	}
 }

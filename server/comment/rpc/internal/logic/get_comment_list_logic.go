@@ -2,6 +2,7 @@ package logic
 
 import (
 	"GopherTok/server/comment/rpc/commentrpc"
+	"GopherTok/server/user/rpc/userclient"
 	"context"
 	"github.com/jinzhu/copier"
 	"github.com/zeromicro/go-zero/core/threading"
@@ -43,21 +44,21 @@ func (l *GetCommentListLogic) GetCommentList(in *pb.GetCommentListRequest) (resp
 		ii := i
 		group.RunSafe(func() {
 			resp.CommentList[ii].User = new(commentrpc.User)
-			//userInfoResp, ierr := l.svcCtx.UserRpc.UserInfo(l.ctx, &userrpc.UserInfoRequest{
-			//	UserId:       in.UserId,
-			//	TargetUserId: commentList[ii].UserId,
-			//})
-			//
-			//if err != nil {
-			//	l.Errorf("Get user info error: %v", err)
-			//	err = ierr
-			//	return
-			//}
-			//
-			//_ = copier.Copy(resp.CommentList[ii].User, userInfoResp.User)
-			resp.CommentList[ii].User.Id = in.UserId
-			resp.CommentList[ii].User.Username = "test"
-			resp.CommentList[ii].User.Avatar = "https://avatars.githubusercontent.com/u/1967184?v=4"
+			userInfoResp, ierr := l.svcCtx.UserRpc.UserInfo(l.ctx, &userclient.UserInfoReq{
+				Id:        commentList[ii].UserId,
+				CurrentId: in.UserId,
+			})
+
+			if err != nil {
+				l.Errorf("Get user info error: %v", err)
+				err = ierr
+				return
+			}
+
+			_ = copier.Copy(resp.CommentList[ii].User, userInfoResp)
+			//resp.CommentList[ii].User.Id = in.UserId
+			//resp.CommentList[ii].User.Name = "test"
+			//resp.CommentList[ii].User.Avatar = "https://avatars.githubusercontent.com/u/1967184?v=4"
 		})
 	}
 	group.Wait()

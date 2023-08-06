@@ -3,20 +3,21 @@ package middleware
 import (
 	"GopherTok/common/consts"
 	"GopherTok/common/errorx"
+	"GopherTok/common/utils"
+	"GopherTok/server/comment/api/internal/config"
 	"context"
-	"github.com/zeromicro/go-zero/core/logx"
-	"github.com/zeromicro/go-zero/core/stores/redis"
+	"github.com/zeromicro/go-zero/rest/httpx"
 	"net/http"
-	"strconv"
+	"strings"
 )
 
 type AuthMiddleware struct {
-	RedisClient *redis.Redis
+	Config config.Config
 }
 
-func NewAuthMiddleware(redisClient *redis.Redis) *AuthMiddleware {
+func NewAuthMiddleware(c config.Config) *AuthMiddleware {
 	return &AuthMiddleware{
-		RedisClient: redisClient,
+		Config: c,
 	}
 }
 
@@ -26,27 +27,35 @@ func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 		if token == "" {
 			token = r.PostFormValue("token")
 			if token == "" {
-				http.Error(w, errorx.ErrTokenEmpty, http.StatusUnauthorized)
+				httpx.WriteJson(w, http.StatusUnauthorized, errorx.NewCodeError(30004, errorx.ErrTokenEmpty))
 				return
 			}
 		}
 
-		// token不为空，从redis中获取用户id
-		userIdStr, err := m.RedisClient.GetCtx(r.Context(), consts.TokenPrefix+token)
+		parts := strings.Split(token, " ")
+		if len(parts) != 2 {
+			httpx.WriteJson(w, http.StatusUnauthorized, errorx.NewCodeError(30002, errorx.ErrHeadFormat))
+			return
+		}
+		parseToken, isExpire, err := utils.ParseToken(parts[0], parts[1], m.Config.Token.AccessToken, m.Config.Token.RefreshToken)
 		if err != nil {
-			logx.Errorf("redis get token failed, err:%v", err)
-			http.Error(w, errorx.ErrTokenProve, http.StatusUnauthorized)
+			httpx.WriteJson(w, http.StatusUnauthorized, errorx.NewCodeError(30003, errorx.ErrTokenProve))
 			return
 		}
-		if userIdStr == "" {
-			http.Error(w, errorx.ErrTokenProve, http.StatusUnauthorized)
-			return
-		}
+		if isExpire {
+			parts[0], parts[1] = utils.GetToken(parseToken.ID, parseToken.State, m.Config.Token.AccessToken, m.Config.Token.RefreshToken)
+			//w.Header().Set("Authorization", fmt.Sprintf("Bearer %s %s", parts[0], parts[1]))
 
-		// userId写入上下文
-		userId, _ := strconv.Atoi(userIdStr)
-		ctx := context.WithValue(r.Context(), consts.UserId, int64(userId))
-		r = r.WithContext(ctx)
+		}
+		token = parts[0] + " " + parts[1]
+
+		r = r.WithContext(context.WithValue(r.Context(), consts.UserId, parseToken.ID))
+		r = r.WithContext(context.WithValue(r.Context(), consts.Token, token))
+
+		//tokensMap := map[string]int64{
+		//	"zhangsan": 1686435870602694657,
+		//}
+		//r = r.WithContext(context.WithValue(r.Context(), consts.UserId, tokensMap[token]))
 
 		next(w, r)
 	}

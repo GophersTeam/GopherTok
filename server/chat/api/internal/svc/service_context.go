@@ -21,7 +21,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 
 	return &ServiceContext{
 		Config:      c,
-		Auth:        middleware.NewAuthMiddleware(redisClient).Handle,
+		Auth:        middleware.NewAuthMiddleware(c).Handle,
 		RedisClient: redisClient,
 		ChatRpc:     chatrpc.NewChatRpc(zrpc.MustNewClient(c.ChatRpcConf)),
 	}

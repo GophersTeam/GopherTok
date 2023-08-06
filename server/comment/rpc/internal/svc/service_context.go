@@ -5,15 +5,21 @@ import (
 	"GopherTok/common/utils"
 	"GopherTok/server/comment/model"
 	"GopherTok/server/comment/rpc/internal/config"
+	"GopherTok/server/user/rpc/userclient"
 	"github.com/bwmarrin/snowflake"
+	"github.com/zeromicro/go-queue/kq"
+	"github.com/zeromicro/go-zero/core/stores/redis"
+	"github.com/zeromicro/go-zero/zrpc"
 )
 
 type ServiceContext struct {
-	Config       config.Config
-	CommentModel model.CommentModel
-	Snowflake    *snowflake.Node
-	//UserRpc      userclient.User
+	Config              config.Config
+	CommentModel        model.CommentModel
+	Snowflake           *snowflake.Node
+	UserRpc             userclient.User
 	SensitiveWordFilter utils.SensitiveWordFilter
+	KafkaPusher         *kq.Pusher
+	RedisClient         *redis.Redis
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -28,7 +34,10 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Config:       c,
 		CommentModel: model.NewCommentModel(c.MongoConf.Url, c.MongoConf.DB, c.MongoConf.Collection),
 		Snowflake:    snowflakeNode,
-		//UserRpc:      userclient.NewUser(zrpc.MustNewClient(c.UserRpcConf)),
+		UserRpc:      userclient.NewUser(zrpc.MustNewClient(c.UserRpcConf)),
+		//UserRpc:             mock.UserRpc{},
 		SensitiveWordFilter: trie,
+		KafkaPusher:         kq.NewPusher(c.KafkaConf.Addrs, c.KafkaConf.Topic),
+		RedisClient:         redis.MustNewRedis(c.RedisConf),
 	}
 }

@@ -37,7 +37,7 @@ message Comment {
 
 message User {
     int64 id = 1;
-    string username = 2;
+    string name = 2;
     int64 follow_count = 3;
     int64 follower_count = 4;
     bool is_follow = 5;
