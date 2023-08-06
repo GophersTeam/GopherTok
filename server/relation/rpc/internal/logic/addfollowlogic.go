@@ -24,7 +24,10 @@ func NewAddFollowLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AddFoll
 }
 
 func (l *AddFollowLogic) AddFollow(in *pb.AddFollowReq) (*pb.AddFollowResp, error) {
-	// todo: add your logic here and delete this line
+	sadd, err := l.svcCtx.Rdb.Sadd(in.UserId, in.ToUserId)
+	if err != nil {
+		return nil, err
+	}
 
 	return &pb.AddFollowResp{}, nil
 }

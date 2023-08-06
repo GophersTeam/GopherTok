@@ -25,8 +25,8 @@ bool IsFollow = 4;
 
 }
 message AddFollowReq {
-  string UserId = 1;
-  string ToUserId = 2;
+  int64 UserId = 1;
+  int64 ToUserId = 2;
 }
 
 message AddFollowResp {
@@ -34,8 +34,8 @@ message AddFollowResp {
   string StatusMsg = 2;
 }
 message DeleteFollowReq {
-  string UserId = 1;
-  string ToUserId = 2;
+  int64 UserId = 1;
+  int64 ToUserId = 2;
 }
 
 message DeleteFollowResp {
@@ -44,8 +44,8 @@ message DeleteFollowResp {
 }
 
 message CheckIsFollowReq{
-  string UserId = 1;
-  string ToUserId = 2;
+  int64 UserId = 1;
+  int64 ToUserId = 2;
 }
 
 message CheckIsFollowResp{
@@ -54,8 +54,8 @@ message CheckIsFollowResp{
   bool IsFollow = 3;
 }
 message GetFollowListReq {
-  string Userid = 1;
-  string ToUserId = 2;
+  int64 Userid = 1;
+  int64 ToUserId = 2;
 }
 
 message GetFollowListResp {
@@ -64,8 +64,8 @@ message GetFollowListResp {
   User UserList = 3;
 }
 message GetFollowerReq {
-  string Userid = 1;
-  string ToUserId = 2;
+  int64 Userid = 1;
+  int64 ToUserId = 2;
 }
 
 message GetFollowerResp {
@@ -74,7 +74,7 @@ message GetFollowerResp {
   User UserList = 3;
 }
 message GetFollowerCountReq{
-  string Userid = 1;
+  int64 Userid = 1;
 }
 
 message GetFollowerCountResp{
@@ -84,7 +84,7 @@ message GetFollowerCountResp{
 }
 
 message GetFriendListReq {
-  string Userid = 1;
+  int64 Userid = 1;
 }
 
 message GetFriendListResp {
@@ -94,7 +94,7 @@ message GetFriendListResp {
 }
 
 message GetFollowCountReq{
-  string Userid = 1;
+  int64 Userid = 1;
 }
 
 message GetFollowCountResp{
@@ -104,7 +104,7 @@ message GetFollowCountResp{
 }
 
 message GetFriendCountReq{
-  string Userid = 1;
+  int64 Userid = 1;
 }
 
 message GetFriendCountResp{
