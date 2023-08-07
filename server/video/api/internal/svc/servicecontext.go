@@ -20,6 +20,7 @@ type ServiceContext struct {
 	VideoJWT   rest.Middleware
 	UserRpc    mock.UserRpc
 	VideoRpc   videoclient.Video
+	FavorRpc   mock.FavorRpc
 	CommentRpc mock.CommentRpc
 
 	Snowflake *snowflake.Node
@@ -38,6 +39,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		JWT:        middleware.NewJWTMiddleware(c).Handle,
 		VideoJWT:   middleware.NewVideoJWTMiddleware(c).Handle,
 		UserRpc:    mock.UserRpc{},
+		FavorRpc:   mock.FavorRpc{},
 		VideoRpc:   videoclient.NewVideo(zrpc.MustNewClient(c.VideoRpcConf)),
 		CommentRpc: mock.CommentRpc{},
 		Snowflake:  snowflakeNode,

@@ -3,6 +3,7 @@ package logic
 import (
 	"GopherTok/common/consts"
 	"GopherTok/server/comment/rpc/pb"
+	"GopherTok/server/favor/rpc/favorrpc"
 	"GopherTok/server/user/rpc/types/user"
 	"GopherTok/server/video/api/internal/svc"
 	"GopherTok/server/video/api/internal/types"
@@ -51,7 +52,7 @@ func (l *VideoListLogic) VideoList(req *types.VideoListReq) (resp *types.VideoLi
 	videoList := make([]*types.VideoInfo, 0) // Assuming VideoList is a struct that matches your needs
 
 	for i := 0; i < len(list); i++ {
-		// 那个视频的作者信息
+		// 查看视频的作者信息
 		userinfo, err := l.svcCtx.UserRpc.UserInfo(l.ctx, &user.UserInfoReq{
 			Id:        list[i].UserId,
 			CurrentId: uid,
@@ -59,15 +60,32 @@ func (l *VideoListLogic) VideoList(req *types.VideoListReq) (resp *types.VideoLi
 		if err != nil {
 			return nil, errors.Wrapf(err, "req: %+v", req)
 		}
-		// 匿名用户
-		if uid == 0 {
-			userinfo.IsFollow = false
-		}
+
 		commentCount, err := l.svcCtx.CommentRpc.GetCommentCount(l.ctx, &pb.GetCommentCountRequest{
 			VideoId: list[i].Id,
 		})
 		if err != nil {
 			return nil, errors.Wrapf(err, "req: %+v", req)
+		}
+		favoriteCount, err := l.svcCtx.FavorRpc.FavorNum(l.ctx, &favorrpc.FavorNumReq{
+			VideoId: list[i].Id,
+		})
+		if err != nil {
+			return nil, errors.Wrapf(err, "req: %+v", req)
+		}
+		// 未登陆的用户,直接设置未点赞该视频,并且未关注该用户
+		isFavorite := false
+		if uid == 0 {
+			userinfo.IsFollow = false
+		} else {
+			isFavoriteCnt, err := l.svcCtx.FavorRpc.IsFavor(l.ctx, &favorrpc.IsFavorReq{
+				UserId:  userinfo.Id,
+				VideoId: list[i].Id,
+			})
+			if err != nil {
+				return nil, errors.Wrapf(err, "req: %+v", req)
+			}
+			isFavorite = isFavoriteCnt.IsFavor
 		}
 		videoItem := &types.VideoInfo{
 			ID: list[i].Id,
@@ -87,9 +105,9 @@ func (l *VideoListLogic) VideoList(req *types.VideoListReq) (resp *types.VideoLi
 			Title:         list[i].Title,
 			PlayURL:       list[i].PlayUrl,
 			CoverURL:      list[i].CoverUrl,
-			FavoriteCount: 0,
+			FavoriteCount: favoriteCount.Num,
 			CommentCount:  commentCount.Count,
-			IsFavorite:    false,
+			IsFavorite:    isFavorite,
 		}
 		videoList = append(videoList, videoItem)
 	}

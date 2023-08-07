@@ -2,6 +2,7 @@ package logic
 
 import (
 	"GopherTok/common/errorx"
+	"GopherTok/server/favor/rpc/favorrpc"
 	"GopherTok/server/relation/rpc/pb"
 	"GopherTok/server/relation/rpc/relationrpc"
 	"GopherTok/server/user/model"
@@ -62,6 +63,15 @@ func (l *UserInfoLogic) UserInfo(in *user.UserInfoReq) (*user.UserInfoResp, erro
 	if err != nil {
 		return nil, errors.Wrapf(err, "req: %+v", in)
 	}
+	totalFavorited, err := l.svcCtx.FavorRpc.FavoredNumOfUser(l.ctx, &favorrpc.FavoredNumOfUserReq{
+		UserId: in.Id,
+	})
+	if err != nil {
+		return nil, errors.Wrapf(err, "req: %+v", in)
+	}
+	favoriteCount, err := l.svcCtx.FavorRpc.FavorNumOfUser(l.ctx, &favorrpc.FavorNumOfUserReq{
+		UserId: in.Id,
+	})
 	return &user.UserInfoResp{
 		Id:              u.ID,
 		Name:            u.Username,
@@ -71,8 +81,8 @@ func (l *UserInfoLogic) UserInfo(in *user.UserInfoReq) (*user.UserInfoResp, erro
 		IsFollow:        isFollow.IsFollow,
 		FollowCount:     followCount.Count,
 		FollowerCount:   followerCount.Count,
-		TotalFavorited:  "0",
+		TotalFavorited:  strconv.FormatInt(totalFavorited.FavoredNumOfUser, 10),
 		WorkCount:       int64(len(userVideoList.VideoList)),
-		FavoriteCount:   0,
+		FavoriteCount:   favoriteCount.FavorNumOfUser,
 	}, nil
 }
