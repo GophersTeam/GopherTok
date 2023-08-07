@@ -29,7 +29,7 @@ func (l *FavorNumLogic) FavorNum(req *types.FavorNumReq) (resp *types.FavorNumRe
 	// todo: add your logic here and delete this line
 
 	num, err := l.svcCtx.FavorRpc.FavorNum(l.ctx, &favor.FavorNumReq{
-		Vedioid: req.Video_id,
+		VideoId: req.Video_id,
 	})
 
 	if err != nil {

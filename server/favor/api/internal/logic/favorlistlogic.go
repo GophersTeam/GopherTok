@@ -45,6 +45,6 @@ func (l *FavorListLogic) FavorList(req *types.FavorlistReq) (resp *types.Favorli
 
 	return &types.FavorlistResp{
 		BaseResponse: types.BaseResponse{},
-		Video_ids:    list.Videoids,
+		Video_ids:    list.VideoIds,
 	}, nil
 }

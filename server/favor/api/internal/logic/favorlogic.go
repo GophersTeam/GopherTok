@@ -37,7 +37,7 @@ func (l *FavorLogic) Favor(req *types.FavorReq) (resp *types.FavorResp, err erro
 	fmt.Println("user id =", userId)
 	_, err = l.svcCtx.FavorRpc.Favor(l.ctx, &favor.FavorReq{
 		Userid:  userId,
-		Videoid: req.Video_id,
+		VideoId: req.Video_id,
 	})
 	if err != nil {
 		return nil, errors.Wrapf(err, "req: %+v", req)

@@ -36,9 +36,9 @@ func (l *DisFavorLogic) DisFavor(req *types.DisFavorReq) (resp *types.DisFavorRe
 	}
 	fmt.Println("user id =", userId)
 
-	l.svcCtx.FavorRpc.DisFavor(l.ctx, &favor.DisFavorReq{
-		Userid:  userId,
-		Videoid: req.Video_id,
+	_, err = l.svcCtx.FavorRpc.DisFavor(l.ctx, &favor.DisFavorReq{
+		UserId:  userId,
+		VideoId: req.Video_id,
 	})
 	if err != nil {
 		return nil, errors.Wrapf(err, "req: %+v", req)
