@@ -13,4 +13,6 @@ type Config struct {
 		Host string
 		Pass string
 	}
+
+	VideoRpcConf zrpc.RpcClientConf
 }

@@ -1,9 +1,9 @@
 package logic
 
 import (
+	"GopherTok/server/favor/rpc/internal/svc"
 	"context"
 
-	"GopherTok/server/favor/rpc/internal/svc"
 	"GopherTok/server/favor/rpc/types/favor"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -25,7 +25,7 @@ func NewDisFavorLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DisFavor
 
 func (l *DisFavorLogic) DisFavor(in *favor.DisFavorReq) (*favor.DisFavorResp, error) {
 	// todo: add your logic here and delete this line
-	err := l.svcCtx.FavorModel.Delete(l.ctx, in.Userid, in.Videoid)
+	err := l.svcCtx.FavorModel.Delete(l.ctx, in.UserId, in.VideoId)
 	if err != nil {
 		return nil, err
 	}

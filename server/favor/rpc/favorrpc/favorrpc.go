@@ -13,20 +13,29 @@ import (
 )
 
 type (
-	DisFavorReq   = favor.DisFavorReq
-	DisFavorResp  = favor.DisFavorResp
-	FavorListReq  = favor.FavorListReq
-	FavorListResp = favor.FavorListResp
-	FavorNumReq   = favor.FavorNumReq
-	FavorNumResp  = favor.FavorNumResp
-	FavorReq      = favor.FavorReq
-	FavorResp     = favor.FavorResp
+	DisFavorReq          = favor.DisFavorReq
+	DisFavorResp         = favor.DisFavorResp
+	FavorListReq         = favor.FavorListReq
+	FavorListResp        = favor.FavorListResp
+	FavorNumOfUserReq    = favor.FavorNumOfUserReq
+	FavorNumOfUserResp   = favor.FavorNumOfUserResp
+	FavorNumReq          = favor.FavorNumReq
+	FavorNumResp         = favor.FavorNumResp
+	FavorReq             = favor.FavorReq
+	FavorResp            = favor.FavorResp
+	FavoredNumOfUserReq  = favor.FavoredNumOfUserReq
+	FavoredNumOfUserResp = favor.FavoredNumOfUserResp
+	IsFavorReq           = favor.IsFavorReq
+	IsFavorResp          = favor.IsFavorResp
 
 	FavorRpc interface {
 		DisFavor(ctx context.Context, in *DisFavorReq, opts ...grpc.CallOption) (*DisFavorResp, error)
 		Favor(ctx context.Context, in *FavorReq, opts ...grpc.CallOption) (*FavorResp, error)
 		FavorList(ctx context.Context, in *FavorListReq, opts ...grpc.CallOption) (*FavorListResp, error)
 		FavorNum(ctx context.Context, in *FavorNumReq, opts ...grpc.CallOption) (*FavorNumResp, error)
+		IsFavor(ctx context.Context, in *IsFavorReq, opts ...grpc.CallOption) (*IsFavorResp, error)
+		FavorNumOfUser(ctx context.Context, in *FavorNumOfUserReq, opts ...grpc.CallOption) (*FavorNumOfUserResp, error)
+		FavoredNumOfUser(ctx context.Context, in *FavoredNumOfUserReq, opts ...grpc.CallOption) (*FavoredNumOfUserResp, error)
 	}
 
 	defaultFavorRpc struct {
@@ -58,4 +67,19 @@ func (m *defaultFavorRpc) FavorList(ctx context.Context, in *FavorListReq, opts 
 func (m *defaultFavorRpc) FavorNum(ctx context.Context, in *FavorNumReq, opts ...grpc.CallOption) (*FavorNumResp, error) {
 	client := favor.NewFavorRpcClient(m.cli.Conn())
 	return client.FavorNum(ctx, in, opts...)
+}
+
+func (m *defaultFavorRpc) IsFavor(ctx context.Context, in *IsFavorReq, opts ...grpc.CallOption) (*IsFavorResp, error) {
+	client := favor.NewFavorRpcClient(m.cli.Conn())
+	return client.IsFavor(ctx, in, opts...)
+}
+
+func (m *defaultFavorRpc) FavorNumOfUser(ctx context.Context, in *FavorNumOfUserReq, opts ...grpc.CallOption) (*FavorNumOfUserResp, error) {
+	client := favor.NewFavorRpcClient(m.cli.Conn())
+	return client.FavorNumOfUser(ctx, in, opts...)
+}
+
+func (m *defaultFavorRpc) FavoredNumOfUser(ctx context.Context, in *FavoredNumOfUserReq, opts ...grpc.CallOption) (*FavoredNumOfUserResp, error) {
+	client := favor.NewFavorRpcClient(m.cli.Conn())
+	return client.FavoredNumOfUser(ctx, in, opts...)
 }

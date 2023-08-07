@@ -9,6 +9,9 @@ service FavorRpc{
   rpc Favor(FavorReq) returns (FavorResp); // 点赞
   rpc FavorList(FavorListReq) returns(FavorListResp);  //点赞列表
   rpc FavorNum(FavorNumReq) returns (FavorNumResp); //点赞数目
+  rpc IsFavor(IsFavorReq) returns (IsFavorResp); //当前用户是否点赞该视频
+  rpc FavorNumOfUser(FavorNumOfUserReq) returns (FavorNumOfUserResp); // 用户的点赞数
+  rpc FavoredNumOfUser(FavoredNumOfUserReq) returns (FavoredNumOfUserResp); // 用户的获赞数
 }
 
 //
@@ -44,5 +47,38 @@ message FavorNumResp{
   int64 Num = 1;
 }
 //
+
+message IsFavorReq{
+  int64 UserId = 1;
+  int64 VideoId = 2;
+}
+
+message IsFavorResp{
+  bool IsFavor = 1;
+}
+
+//
+
+message FavorNumOfUserReq{
+  int64 UserId = 1;
+}
+
+message FavorNumOfUserResp{
+  int64 FavorNumOfUser = 1 ;
+}
+
+//
+
+message FavoredNumOfUserReq{
+  int64 UserId = 1;
+}
+
+message FavoredNumOfUserResp{
+  int64 FavoredNumOfUser = 1 ;
+}
+
+
+
+
 
 

@@ -19,10 +19,13 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	FavorRpc_DisFavor_FullMethodName  = "/favor.FavorRpc/DisFavor"
-	FavorRpc_Favor_FullMethodName     = "/favor.FavorRpc/Favor"
-	FavorRpc_FavorList_FullMethodName = "/favor.FavorRpc/FavorList"
-	FavorRpc_FavorNum_FullMethodName  = "/favor.FavorRpc/FavorNum"
+	FavorRpc_DisFavor_FullMethodName         = "/favor.FavorRpc/DisFavor"
+	FavorRpc_Favor_FullMethodName            = "/favor.FavorRpc/Favor"
+	FavorRpc_FavorList_FullMethodName        = "/favor.FavorRpc/FavorList"
+	FavorRpc_FavorNum_FullMethodName         = "/favor.FavorRpc/FavorNum"
+	FavorRpc_IsFavor_FullMethodName          = "/favor.FavorRpc/IsFavor"
+	FavorRpc_FavorNumOfUser_FullMethodName   = "/favor.FavorRpc/FavorNumOfUser"
+	FavorRpc_FavoredNumOfUser_FullMethodName = "/favor.FavorRpc/FavoredNumOfUser"
 )
 
 // FavorRpcClient is the client API for FavorRpc service.
@@ -33,6 +36,9 @@ type FavorRpcClient interface {
 	Favor(ctx context.Context, in *FavorReq, opts ...grpc.CallOption) (*FavorResp, error)
 	FavorList(ctx context.Context, in *FavorListReq, opts ...grpc.CallOption) (*FavorListResp, error)
 	FavorNum(ctx context.Context, in *FavorNumReq, opts ...grpc.CallOption) (*FavorNumResp, error)
+	IsFavor(ctx context.Context, in *IsFavorReq, opts ...grpc.CallOption) (*IsFavorResp, error)
+	FavorNumOfUser(ctx context.Context, in *FavorNumOfUserReq, opts ...grpc.CallOption) (*FavorNumOfUserResp, error)
+	FavoredNumOfUser(ctx context.Context, in *FavoredNumOfUserReq, opts ...grpc.CallOption) (*FavoredNumOfUserResp, error)
 }
 
 type favorRpcClient struct {
@@ -79,6 +85,33 @@ func (c *favorRpcClient) FavorNum(ctx context.Context, in *FavorNumReq, opts ...
 	return out, nil
 }
 
+func (c *favorRpcClient) IsFavor(ctx context.Context, in *IsFavorReq, opts ...grpc.CallOption) (*IsFavorResp, error) {
+	out := new(IsFavorResp)
+	err := c.cc.Invoke(ctx, FavorRpc_IsFavor_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *favorRpcClient) FavorNumOfUser(ctx context.Context, in *FavorNumOfUserReq, opts ...grpc.CallOption) (*FavorNumOfUserResp, error) {
+	out := new(FavorNumOfUserResp)
+	err := c.cc.Invoke(ctx, FavorRpc_FavorNumOfUser_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *favorRpcClient) FavoredNumOfUser(ctx context.Context, in *FavoredNumOfUserReq, opts ...grpc.CallOption) (*FavoredNumOfUserResp, error) {
+	out := new(FavoredNumOfUserResp)
+	err := c.cc.Invoke(ctx, FavorRpc_FavoredNumOfUser_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // FavorRpcServer is the server API for FavorRpc service.
 // All implementations must embed UnimplementedFavorRpcServer
 // for forward compatibility
@@ -87,6 +120,9 @@ type FavorRpcServer interface {
 	Favor(context.Context, *FavorReq) (*FavorResp, error)
 	FavorList(context.Context, *FavorListReq) (*FavorListResp, error)
 	FavorNum(context.Context, *FavorNumReq) (*FavorNumResp, error)
+	IsFavor(context.Context, *IsFavorReq) (*IsFavorResp, error)
+	FavorNumOfUser(context.Context, *FavorNumOfUserReq) (*FavorNumOfUserResp, error)
+	FavoredNumOfUser(context.Context, *FavoredNumOfUserReq) (*FavoredNumOfUserResp, error)
 	mustEmbedUnimplementedFavorRpcServer()
 }
 
@@ -105,6 +141,15 @@ func (UnimplementedFavorRpcServer) FavorList(context.Context, *FavorListReq) (*F
 }
 func (UnimplementedFavorRpcServer) FavorNum(context.Context, *FavorNumReq) (*FavorNumResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FavorNum not implemented")
+}
+func (UnimplementedFavorRpcServer) IsFavor(context.Context, *IsFavorReq) (*IsFavorResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IsFavor not implemented")
+}
+func (UnimplementedFavorRpcServer) FavorNumOfUser(context.Context, *FavorNumOfUserReq) (*FavorNumOfUserResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FavorNumOfUser not implemented")
+}
+func (UnimplementedFavorRpcServer) FavoredNumOfUser(context.Context, *FavoredNumOfUserReq) (*FavoredNumOfUserResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FavoredNumOfUser not implemented")
 }
 func (UnimplementedFavorRpcServer) mustEmbedUnimplementedFavorRpcServer() {}
 
@@ -191,6 +236,60 @@ func _FavorRpc_FavorNum_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _FavorRpc_IsFavor_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IsFavorReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FavorRpcServer).IsFavor(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FavorRpc_IsFavor_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FavorRpcServer).IsFavor(ctx, req.(*IsFavorReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FavorRpc_FavorNumOfUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FavorNumOfUserReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FavorRpcServer).FavorNumOfUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FavorRpc_FavorNumOfUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FavorRpcServer).FavorNumOfUser(ctx, req.(*FavorNumOfUserReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FavorRpc_FavoredNumOfUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FavoredNumOfUserReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FavorRpcServer).FavoredNumOfUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FavorRpc_FavoredNumOfUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FavorRpcServer).FavoredNumOfUser(ctx, req.(*FavoredNumOfUserReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // FavorRpc_ServiceDesc is the grpc.ServiceDesc for FavorRpc service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -213,6 +312,18 @@ var FavorRpc_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "FavorNum",
 			Handler:    _FavorRpc_FavorNum_Handler,
+		},
+		{
+			MethodName: "IsFavor",
+			Handler:    _FavorRpc_IsFavor_Handler,
+		},
+		{
+			MethodName: "FavorNumOfUser",
+			Handler:    _FavorRpc_FavorNumOfUser_Handler,
+		},
+		{
+			MethodName: "FavoredNumOfUser",
+			Handler:    _FavorRpc_FavoredNumOfUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

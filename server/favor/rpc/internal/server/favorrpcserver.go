@@ -41,3 +41,18 @@ func (s *FavorRpcServer) FavorNum(ctx context.Context, in *favor.FavorNumReq) (*
 	l := logic.NewFavorNumLogic(ctx, s.svcCtx)
 	return l.FavorNum(in)
 }
+
+func (s *FavorRpcServer) IsFavor(ctx context.Context, in *favor.IsFavorReq) (*favor.IsFavorResp, error) {
+	l := logic.NewIsFavorLogic(ctx, s.svcCtx)
+	return l.IsFavor(in)
+}
+
+func (s *FavorRpcServer) FavorNumOfUser(ctx context.Context, in *favor.FavorNumOfUserReq) (*favor.FavorNumOfUserResp, error) {
+	l := logic.NewFavorNumOfUserLogic(ctx, s.svcCtx)
+	return l.FavorNumOfUser(in)
+}
+
+func (s *FavorRpcServer) FavoredNumOfUser(ctx context.Context, in *favor.FavoredNumOfUserReq) (*favor.FavoredNumOfUserResp, error) {
+	l := logic.NewFavoredNumOfUserLogic(ctx, s.svcCtx)
+	return l.FavoredNumOfUser(in)
+}

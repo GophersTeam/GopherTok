@@ -11,7 +11,6 @@ func NewFavorModel(c redis.Options) FavorModel {
 	return &customModel{
 		defaultModel: NewDefaultModel(c),
 	}
-
 }
 
 func NewDefaultModel(c redis.Options) defaultModel {
@@ -37,6 +36,8 @@ type (
 		Delete(ctx context.Context, UserId int64, VideoId int64) error
 		SearchByUid(ctx context.Context, UserId int64) ([]int64, error)
 		NumOfFavor(ctx context.Context, VideoId int64) (int, error)
+		FavorNumOfUser(ctx context.Context, UserId int64) (int, error)
+		IsFavor(ctx context.Context, UserId int64, VideoId int64) (bool, error)
 	}
 )
 
@@ -46,11 +47,11 @@ func (m *defaultModel) Insert(ctx context.Context, UserId int64, VideoId int64) 
 	tx := m.Client.TxPipeline()
 
 	// 在事务中执行命令
-	if err = tx.SAdd(ctx, strconv.FormatInt(VideoId, 10), UserId).Err(); err != nil {
+	if err = tx.SAdd(ctx, strconv.Itoa(int(VideoId)), UserId).Err(); err != nil {
 		return err
 	}
 
-	if err = tx.HSet(ctx, strconv.FormatInt(UserId, 10), VideoId, VideoId).Err(); err != nil {
+	if err = tx.HSet(ctx, strconv.Itoa(int(UserId)), strconv.Itoa(int(VideoId)), VideoId).Err(); err != nil {
 		return err
 	}
 
@@ -63,11 +64,11 @@ func (m *defaultModel) Delete(ctx context.Context, UserId int64, VideoId int64) 
 	tx := m.Client.TxPipeline()
 
 	// 在事务中执行命令
-	if err = tx.SRem(ctx, strconv.FormatInt(VideoId, 10), UserId).Err(); err != nil {
+	if err = tx.SRem(ctx, strconv.Itoa(int(VideoId)), UserId).Err(); err != nil {
 		return err
 	}
 
-	if err = tx.HDel(ctx, strconv.FormatInt(UserId, 10), strconv.Itoa(int(VideoId))).Err(); err != nil {
+	if err = tx.HDel(ctx, strconv.Itoa(int(UserId)), strconv.Itoa(int(VideoId))).Err(); err != nil {
 		return err
 	}
 
@@ -76,7 +77,7 @@ func (m *defaultModel) Delete(ctx context.Context, UserId int64, VideoId int64) 
 }
 
 func (m *defaultModel) SearchByUid(ctx context.Context, UserId int64) ([]int64, error) {
-	result, err := m.Client.HVals(ctx, strconv.FormatInt(UserId, 10)).Result()
+	result, err := m.Client.HVals(ctx, strconv.Itoa(int(UserId))).Result()
 	if err != nil {
 		return nil, err
 	}
@@ -93,9 +94,31 @@ func (m *defaultModel) SearchByUid(ctx context.Context, UserId int64) ([]int64, 
 }
 
 func (m *defaultModel) NumOfFavor(ctx context.Context, VideoId int64) (int, error) {
-	result, err := m.Client.SCard(ctx, strconv.FormatInt(VideoId, 10)).Result()
+	result, err := m.Client.SCard(ctx, strconv.Itoa(int(VideoId))).Result()
 	if err != nil {
 		return 0, err
 	}
 	return int(result), nil
 }
+
+func (m *defaultModel) IsFavor(ctx context.Context, UserId int64, VideoId int64) (bool, error) {
+	result, err := m.Client.Exists(ctx, strconv.Itoa(int(UserId)), strconv.Itoa(int(VideoId))).Result()
+	if err != nil {
+		return false, err
+	}
+	if result != 0 {
+		return true, nil
+	}
+	return false, nil
+}
+
+func (m *defaultModel) FavorNumOfUser(ctx context.Context, UserId int64) (int, error) {
+	result, err := m.Client.HLen(ctx, strconv.Itoa(int(UserId))).Result()
+	if err != nil {
+		return 0, err
+	}
+	return int(result), err
+}
+
+//查询用户是否点赞该视频，用户的获赞数目，用户的总点赞数 ，
+//用户的获赞数目可以通过 id 插叙所属视频， 再查视频的或赞数目

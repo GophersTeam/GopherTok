@@ -1,12 +1,12 @@
 package main
 
 import (
+	"GopherTok/server/favor/rpc/internal/config"
+	"GopherTok/server/favor/rpc/internal/svc"
 	"flag"
 	"fmt"
 
-	"GopherTok/server/favor/rpc/internal/config"
 	"GopherTok/server/favor/rpc/internal/server"
-	"GopherTok/server/favor/rpc/internal/svc"
 	"GopherTok/server/favor/rpc/types/favor"
 
 	"github.com/zeromicro/go-zero/core/conf"
