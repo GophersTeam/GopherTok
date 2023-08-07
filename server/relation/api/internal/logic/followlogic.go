@@ -1,7 +1,9 @@
 package logic
 
 import (
+	"GopherTok/server/relation/rpc/pb"
 	"context"
+	"fmt"
 
 	"GopherTok/server/relation/api/internal/svc"
 	"GopherTok/server/relation/api/internal/types"
@@ -24,7 +26,68 @@ func NewFollowLogic(ctx context.Context, svcCtx *svc.ServiceContext) *FollowLogi
 }
 
 func (l *FollowLogic) Follow(req *types.FollowReq) (resp *types.FollowRes, err error) {
-	// todo: add your logic here and delete this line
+	//userid := l.ctx.Value(con.UserId).(int64)
+	//exists, err := l.svcCtx.UserRpc.UserIsExists(l.ctx, &user.UserIsExistsReq{Id: req.ToUserId})
+	//if err != nil {
+	//	return &types.FollowRes{
+	//		StatusCode: "-1",
+	//		StatusMsg:  err.Error(),
+	//	}, err
+	//}
+	//if exists.Exists == false {
+	//	return &types.FollowRes{
+	//		StatusCode: "-1",
+	//		StatusMsg:  "user doesn't exist",
+	//	}, nil
+	//}
+	//
+	//exists, err = l.svcCtx.UserRpc.UserIsExists(l.ctx, &user.UserIsExistsReq{Id: userid})
+	//if err != nil {
+	//	return &types.FollowRes{
+	//		StatusCode: "-1",
+	//		StatusMsg:  err.Error(),
+	//	}, err
+	//}
+	//if exists.Exists == false {
+	//	return &types.FollowRes{
+	//		StatusCode: "-1",
+	//		StatusMsg:  "user doesn't exist",
+	//	}, nil
+	//}
+	var userid int64 = 1
+	isFollow, err := l.svcCtx.RelationRpc.CheckIsFollow(l.ctx, &pb.CheckIsFollowReq{
+		UserId:   userid,
+		ToUserId: req.ToUserId,
+	})
+	if err != nil {
+		fmt.Print(err)
+		return &types.FollowRes{
+			StatusCode: isFollow.StatusCode,
+			StatusMsg:  isFollow.StatusMsg,
+		}, err
+	}
 
-	return
+	if isFollow.IsFollow {
+		return &types.FollowRes{
+			StatusCode: "-1",
+			StatusMsg:  "follow has exist",
+		}, nil
+	}
+
+	follow, err := l.svcCtx.RelationRpc.AddFollow(l.ctx, &pb.AddFollowReq{
+		UserId:   userid,
+		ToUserId: req.ToUserId,
+	})
+	if err != nil {
+		fmt.Print(err)
+		return &types.FollowRes{
+			StatusCode: follow.StatusCode,
+			StatusMsg:  follow.StatusMsg,
+		}, err
+	}
+
+	return &types.FollowRes{
+		StatusCode: follow.StatusCode,
+		StatusMsg:  follow.StatusMsg,
+	}, nil
 }

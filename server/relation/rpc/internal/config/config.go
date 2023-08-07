@@ -10,5 +10,5 @@ type Config struct {
 	Mysql struct {
 		DataSource string
 	}
-	Redis redis.RedisConf
+	RedisConf redis.RedisConf
 }

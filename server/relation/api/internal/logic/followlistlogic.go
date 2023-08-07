@@ -1,7 +1,9 @@
 package logic
 
 import (
+	"GopherTok/server/relation/rpc/pb"
 	"context"
+	"fmt"
 
 	"GopherTok/server/relation/api/internal/svc"
 	"GopherTok/server/relation/api/internal/types"
@@ -24,7 +26,67 @@ func NewFollowListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Follow
 }
 
 func (l *FollowListLogic) FollowList(req *types.FollowListReq) (resp *types.FollowListRes, err error) {
-	// todo: add your logic here and delete this line
-
-	return
+	//userid := l.ctx.Value(con.UserId).(int64)
+	//exists, err := l.svcCtx.UserRpc.UserIsExists(l.ctx, &user.UserIsExistsReq{Id: req.UserId})
+	//if err != nil {
+	//	return &types.FollowRes{
+	//		StatusCode: "-1",
+	//		StatusMsg:  err.Error(),
+	//	}, err
+	//}
+	//if exists.Exists == false {
+	//	return &types.FollowRes{
+	//		StatusCode: "-1",
+	//		StatusMsg:  "user doesn't exist",
+	//	}, nil
+	//}
+	//
+	//exists, err = l.svcCtx.UserRpc.UserIsExists(l.ctx, &user.UserIsExistsReq{Id: userid})
+	//if err != nil {
+	//	return &types.FollowRes{
+	//		StatusCode: "-1",
+	//		StatusMsg:  err.Error(),
+	//	}, err
+	//}
+	//if exists.Exists == false {
+	//	return &types.FollowRes{
+	//		StatusCode: "-1",
+	//		StatusMsg:  "user doesn't exist",
+	//	}, nil
+	//}
+	var userid int64 = 1
+	followList, err := l.svcCtx.RelationRpc.GetFollowList(l.ctx, &pb.GetFollowListReq{
+		Userid:   userid,
+		ToUserId: req.UserId,
+	})
+	if err != nil {
+		fmt.Print(err)
+		return &types.FollowListRes{
+			StatusCode: "-1",
+			StatusMsg:  err.Error(),
+			UserList:   nil,
+		}, err
+	}
+	userList := []types.User{}
+	for _, v := range *followList.UserList {
+		user := types.User{
+			Id:              v.Id,
+			Name:            v.Name,
+			FollowCount:     v.FollowCount,
+			FollowerCount:   v.FollowerCount,
+			IsFollow:        v.IsFollow,
+			Avatar:          v.Avatar,
+			BackgroundImage: v.BackgroundImage,
+			Signature:       v.Signature,
+			TotalFavourited: v.TotalFavourited,
+			WorkCount:       v.WorkCount,
+			FavouriteCount:  v.FavouriteCount,
+		}
+		userList = append(userList, user)
+	}
+	return &types.FollowListRes{
+		StatusCode: "0",
+		StatusMsg:  "get followList successfully",
+		UserList:   &userList,
+	}, nil
 }

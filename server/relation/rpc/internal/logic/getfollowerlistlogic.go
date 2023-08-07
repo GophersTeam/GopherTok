@@ -24,7 +24,6 @@ func NewGetFollowerListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *G
 }
 
 func (l *GetFollowerListLogic) GetFollowerList(in *pb.GetFollowerReq) (*pb.GetFollowerResp, error) {
-	// todo: add your logic here and delete this line
 
 	return &pb.GetFollowerResp{}, nil
 }

@@ -1,7 +1,9 @@
 package logic
 
 import (
+	"GopherTok/common/errorx"
 	"context"
+	"github.com/pkg/errors"
 
 	"GopherTok/server/relation/rpc/internal/svc"
 	"GopherTok/server/relation/rpc/pb"
@@ -24,10 +26,24 @@ func NewAddFollowLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AddFoll
 }
 
 func (l *AddFollowLogic) AddFollow(in *pb.AddFollowReq) (*pb.AddFollowResp, error) {
-	sadd, err := l.svcCtx.Rdb.Sadd(in.UserId, in.ToUserId)
+	_, err := l.svcCtx.Rdb.Sadd(string(in.UserId), in.ToUserId)
 	if err != nil {
-		return nil, err
-	}
+		return &pb.AddFollowResp{StatusCode: "-1",
+				StatusMsg: err.Error()},
+			errors.Wrapf(errorx.NewDefaultError("redis set err:"+err.Error()), "redis set err ：%v", err)
 
-	return &pb.AddFollowResp{}, nil
+	}
+	err = l.svcCtx.MysqlDb.WithContext(l.ctx).Table("follow_subject").Create(&pb.FollowSubject{
+		UserId:     in.UserId,
+		FollowerId: 0,
+		IsFollow:   false,
+	}).Error
+	if err != nil {
+		return &pb.AddFollowResp{StatusCode: "-1",
+				StatusMsg: err.Error()},
+			errors.Wrapf(errorx.NewDefaultError("mysql add err:"+err.Error()), "mysql add err ：%v", err)
+
+	}
+	return &pb.AddFollowResp{StatusCode: "0",
+		StatusMsg: "add follow successfully"}, nil
 }

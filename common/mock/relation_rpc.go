@@ -58,9 +58,11 @@ func (r RelationRpc) GetFollowerCount(ctx context.Context, in *relationrpc.GetFo
 func (r RelationRpc) GetFollowCount(ctx context.Context, in *relationrpc.GetFollowCountReq, opts ...grpc.CallOption) (*relationrpc.GetFollowCountResp, error) {
 	//TODO implement me
 
-	return &relationrpc.GetFollowCountResp{StatusCode: "",
-		StatusMsg: "",
-		Count:     0}, nil
+	return &relationrpc.GetFollowCountResp{
+		StatusCode: "",
+		StatusMsg:  "",
+		Count:      0,
+	}, nil
 }
 
 func (r RelationRpc) GetFriendCount(ctx context.Context, in *relationrpc.GetFriendCountReq, opts ...grpc.CallOption) (*relationrpc.GetFriendCountResp, error) {

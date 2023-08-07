@@ -5,6 +5,6 @@ Etcd:
   - 127.0.0.1:2379
   Key: relation.rpc
 Mysql:
-  DataSource: root:liao20031103@tcp(127.0.0.1:3306)/gophertok_follow?charset=utf8mb4&parseTime=True&loc=local
-Redis:
+  DataSource: root:liao20031103@tcp(127.0.0.1:3306)/gophertok_follow?charset=utf8mb4&parseTime=True&loc=Local
+RedisConf:
   Host: 127.0.0.1:6379

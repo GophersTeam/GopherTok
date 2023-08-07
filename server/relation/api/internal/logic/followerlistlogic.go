@@ -1,13 +1,11 @@
 package logic
 
 import (
-	con "GopherTok/common/consts"
 	"GopherTok/server/relation/api/internal/svc"
 	"GopherTok/server/relation/api/internal/types"
 	"GopherTok/server/relation/rpc/pb"
 	"context"
 	"github.com/zeromicro/go-zero/core/logx"
-	"strconv"
 )
 
 type FollowerListLogic struct {
@@ -25,11 +23,37 @@ func NewFollowerListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Foll
 }
 
 func (l *FollowerListLogic) FollowerList(req *types.FollowerListReq) (resp *types.FollowerListRes, err error) {
-	userid := l.ctx.Value(con.UserId).(int64)
-	to_userid, _ := strconv.ParseInt(req.UserId, 10, 64)
-
+	//userid := l.ctx.Value(con.UserId).(int64)
+	//exists, err := l.svcCtx.UserRpc.UserIsExists(l.ctx, &user.UserIsExistsReq{Id: req.UserId})
+	//if err != nil {
+	//	return &types.FollowRes{
+	//		StatusCode: "-1",
+	//		StatusMsg:  err.Error(),
+	//	}, err
+	//}
+	//if exists.Exists == false {
+	//	return &types.FollowRes{
+	//		StatusCode: "-1",
+	//		StatusMsg:  "user doesn't exist",
+	//	}, nil
+	//}
+	//
+	//exists, err = l.svcCtx.UserRpc.UserIsExists(l.ctx, &user.UserIsExistsReq{Id: userid})
+	//if err != nil {
+	//	return &types.FollowRes{
+	//		StatusCode: "-1",
+	//		StatusMsg:  err.Error(),
+	//	}, err
+	//}
+	//if exists.Exists == false {
+	//	return &types.FollowRes{
+	//		StatusCode: "-1",
+	//		StatusMsg:  "user doesn't exist",
+	//	}, nil
+	//}
+	var userid int64 = 1
 	rep, err := l.svcCtx.RelationRpc.GetFollowerList(l.ctx, &pb.GetFollowerReq{Userid: userid,
-		ToUserId: to_userid})
+		ToUserId: req.UserId})
 	userlist := &[]types.User{}
 
 	if err != nil {
