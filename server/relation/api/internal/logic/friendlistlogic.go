@@ -2,6 +2,7 @@ package logic
 
 import (
 	"GopherTok/server/relation/rpc/pb"
+	"GopherTok/server/user/rpc/types/user"
 	"context"
 	"fmt"
 
@@ -26,19 +27,21 @@ func NewFriendListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Friend
 }
 
 func (l *FriendListLogic) FriendList(req *types.FriendListReq) (resp *types.FriendListRes, err error) {
-	//exists, err := l.svcCtx.UserRpc.UserIsExists(l.ctx, &user.UserIsExistsReq{Id: req.UserId})
-	//if err != nil {
-	//	return &types.FollowRes{
-	//		StatusCode: "-1",
-	//		StatusMsg:  err.Error(),
-	//	}, err
-	//}
-	//if exists.Exists == false {
-	//	return &types.FollowRes{
-	//		StatusCode: "-1",
-	//		StatusMsg:  "user doesn't exist",
-	//	}, nil
-	//}
+	exists, err := l.svcCtx.UserRpc.UserIsExists(l.ctx, &user.UserIsExistsReq{Id: req.UserId})
+	if err != nil {
+		return &types.FriendListRes{
+			StatusCode: "-1",
+			StatusMsg:  err.Error(),
+			UserList:   nil,
+		}, err
+	}
+	if exists.Exists == false {
+		return &types.FriendListRes{
+			StatusCode: "-1",
+			StatusMsg:  "user doesn't exist",
+			UserList:   nil,
+		}, nil
+	}
 
 	rep, err := l.svcCtx.RelationRpc.GetFriendList(l.ctx, &pb.GetFriendListReq{Userid: req.UserId})
 	userlist := &[]types.User{}

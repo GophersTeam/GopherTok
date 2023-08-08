@@ -4,6 +4,7 @@ import (
 	"GopherTok/common/errorx"
 	"context"
 	"github.com/pkg/errors"
+	"strconv"
 
 	"GopherTok/server/relation/rpc/internal/svc"
 	"GopherTok/server/relation/rpc/pb"
@@ -26,15 +27,15 @@ func NewCheckIsFollowLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Che
 }
 
 func (l *CheckIsFollowLogic) CheckIsFollow(in *pb.CheckIsFollowReq) (*pb.CheckIsFollowResp, error) {
-	isFollow, err := l.svcCtx.Rdb.Sismember(string(in.UserId), in.ToUserId)
-	if err != nil {
+	boolCmd := l.svcCtx.Rdb.SIsMember(l.ctx, strconv.FormatInt(in.ToUserId, 10), in.UserId)
+	if boolCmd.Err() != nil {
 		return &pb.CheckIsFollowResp{StatusCode: "-1",
-				StatusMsg: err.Error(),
+				StatusMsg: boolCmd.Err().Error(),
 				IsFollow:  false},
-			errors.Wrapf(errorx.NewDefaultError("redis sismember err:"+err.Error()), "redis sismember err ：%v", err)
+			errors.Wrapf(errorx.NewDefaultError("redis sismember err:"+boolCmd.Err().Error()), "redis sismember err ：%v", boolCmd.Err())
 	}
 
 	return &pb.CheckIsFollowResp{StatusCode: "0",
 		StatusMsg: "check isFollow successfully",
-		IsFollow:  isFollow}, nil
+		IsFollow:  boolCmd.Val()}, nil
 }

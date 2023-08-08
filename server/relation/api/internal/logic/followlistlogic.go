@@ -1,7 +1,9 @@
 package logic
 
 import (
+	con "GopherTok/common/consts"
 	"GopherTok/server/relation/rpc/pb"
+	"GopherTok/server/user/rpc/types/user"
 	"context"
 	"fmt"
 
@@ -26,35 +28,39 @@ func NewFollowListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Follow
 }
 
 func (l *FollowListLogic) FollowList(req *types.FollowListReq) (resp *types.FollowListRes, err error) {
-	//userid := l.ctx.Value(con.UserId).(int64)
-	//exists, err := l.svcCtx.UserRpc.UserIsExists(l.ctx, &user.UserIsExistsReq{Id: req.UserId})
-	//if err != nil {
-	//	return &types.FollowRes{
-	//		StatusCode: "-1",
-	//		StatusMsg:  err.Error(),
-	//	}, err
-	//}
-	//if exists.Exists == false {
-	//	return &types.FollowRes{
-	//		StatusCode: "-1",
-	//		StatusMsg:  "user doesn't exist",
-	//	}, nil
-	//}
-	//
-	//exists, err = l.svcCtx.UserRpc.UserIsExists(l.ctx, &user.UserIsExistsReq{Id: userid})
-	//if err != nil {
-	//	return &types.FollowRes{
-	//		StatusCode: "-1",
-	//		StatusMsg:  err.Error(),
-	//	}, err
-	//}
-	//if exists.Exists == false {
-	//	return &types.FollowRes{
-	//		StatusCode: "-1",
-	//		StatusMsg:  "user doesn't exist",
-	//	}, nil
-	//}
-	var userid int64 = 1
+	userid := l.ctx.Value(con.UserId).(int64)
+	exists, err := l.svcCtx.UserRpc.UserIsExists(l.ctx, &user.UserIsExistsReq{Id: req.UserId})
+	if err != nil {
+		return &types.FollowListRes{
+			StatusCode: "-1",
+			StatusMsg:  err.Error(),
+			UserList:   nil,
+		}, err
+	}
+	if exists.Exists == false {
+		return &types.FollowListRes{
+			StatusCode: "-1",
+			StatusMsg:  "user doesn't exist",
+			UserList:   nil,
+		}, nil
+	}
+
+	exists, err = l.svcCtx.UserRpc.UserIsExists(l.ctx, &user.UserIsExistsReq{Id: userid})
+	if err != nil {
+		return &types.FollowListRes{
+			StatusCode: "-1",
+			StatusMsg:  err.Error(),
+			UserList:   nil,
+		}, err
+	}
+	if exists.Exists == false {
+		return &types.FollowListRes{
+			StatusCode: "-1",
+			StatusMsg:  "user doesn't exist",
+			UserList:   nil,
+		}, nil
+	}
+
 	followList, err := l.svcCtx.RelationRpc.GetFollowList(l.ctx, &pb.GetFollowListReq{
 		Userid:   userid,
 		ToUserId: req.UserId,

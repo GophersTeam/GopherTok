@@ -85,6 +85,7 @@ message GetFollowerCountResp{
 
 message GetFriendListReq {
   int64 Userid = 1;
+  int64 ToUserId = 2;
 }
 
 message GetFriendListResp {

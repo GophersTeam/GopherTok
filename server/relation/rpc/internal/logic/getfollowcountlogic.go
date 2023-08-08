@@ -28,36 +28,37 @@ func NewGetFollowCountLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ge
 }
 
 func (l *GetFollowCountLogic) GetFollowCount(in *pb.GetFollowCountReq) (*pb.GetFollowCountResp, error) {
-	count, err := l.svcCtx.Rdb.Hget("followCount", fmt.Sprintf("%d:followCount", in.Userid))
-	if err != nil {
-		return &pb.GetFollowCountResp{StatusCode: "-1",
-				StatusMsg: err.Error(),
-				Count:     0},
-			errors.Wrapf(errorx.NewDefaultError("redis get err:"+err.Error()), "redis get err ：%v", err)
-	}
-
-	if count == "nil" {
-		//如果redis中没有则从mysql中拉取并更新至redis中
-		db := l.svcCtx.MysqlDb.WithContext(l.ctx).Table("follow_subject").
-			Where("follower_id = ?", in.Userid).Find(&[]pb.FollowSubject{})
-		err = db.Error
-		countMysql := db.RowsAffected
-
-		if err != nil {
+	countCmd := l.svcCtx.Rdb.HGet(l.ctx, "followCount", fmt.Sprintf("%d:followCount", in.Userid))
+	if countCmd.Err() != nil {
+		if countCmd.Err().Error() != "redis: nil" {
 			return &pb.GetFollowCountResp{StatusCode: "-1",
-					StatusMsg: err.Error(),
+					StatusMsg: countCmd.Err().Error(),
 					Count:     0},
-				errors.Wrapf(errorx.NewDefaultError("mysql get err:"+err.Error()), "mysql get err ：%v", err)
+				errors.Wrapf(errorx.NewDefaultError("redis get err:"+countCmd.Err().Error()), "redis get err ：%v", countCmd.Err())
 		}
 
-		l.svcCtx.Rdb.Hset("followCount", fmt.Sprintf("%d:followCount", in.Userid), string(countMysql))
+		if countCmd.Err().Error() == "redis: nil" {
+			//如果redis中没有则从mysql中拉取并更新至redis中
+			db := l.svcCtx.MysqlDb.WithContext(l.ctx).Table("follow_subject").
+				Where("follower_id = ?", in.Userid).Find(&[]pb.FollowSubject{})
+			err := db.Error
+			countMysql := db.RowsAffected
 
-		return &pb.GetFollowCountResp{StatusCode: "0",
-			StatusMsg: "get followCount successfully",
-			Count:     countMysql}, nil
+			if err != nil {
+				return &pb.GetFollowCountResp{StatusCode: "-1",
+						StatusMsg: err.Error(),
+						Count:     0},
+					errors.Wrapf(errorx.NewDefaultError("mysql get err:"+err.Error()), "mysql get err ：%v", err)
+			}
+
+			l.svcCtx.Rdb.HSet(l.ctx, "followCount", fmt.Sprintf("%d:followCount", in.Userid), strconv.FormatInt(countMysql, 10))
+
+			return &pb.GetFollowCountResp{StatusCode: "0",
+				StatusMsg: "get followCount successfully",
+				Count:     countMysql}, nil
+		}
 	}
-
-	countInt, err := strconv.ParseInt(count, 10, 64)
+	countInt, _ := strconv.ParseInt(countCmd.Val(), 10, 64)
 
 	return &pb.GetFollowCountResp{
 		StatusCode: "0",

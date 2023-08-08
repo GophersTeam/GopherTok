@@ -152,10 +152,10 @@ type FollowSubject struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id         int64 `protobuf:"varint,1,opt,name=Id,proto3" json:"Id,omitempty"`
-	UserId     int64 `protobuf:"varint,2,opt,name=UserId,proto3" json:"UserId,omitempty"`
-	FollowerId int64 `protobuf:"varint,3,opt,name=FollowerId,proto3" json:"FollowerId,omitempty"`
-	IsFollow   bool  `protobuf:"varint,4,opt,name=IsFollow,proto3" json:"IsFollow,omitempty"`
+	Id         int64 `gorm:"column:id" protobuf:"varint,1,opt,name=Id,proto3" json:"Id,omitempty"`
+	UserId     int64 `gorm:"column:user_id" protobuf:"varint,2,opt,name=UserId,proto3" json:"UserId,omitempty"`
+	FollowerId int64 `gorm:"column:follower_id" protobuf:"varint,3,opt,name=FollowerId,proto3" json:"FollowerId,omitempty"`
+	IsFollow   bool  `gorm:"column:is_follow" protobuf:"varint,4,opt,name=IsFollow,proto3" json:"IsFollow,omitempty"`
 }
 
 func (x *FollowSubject) Reset() {

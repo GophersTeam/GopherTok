@@ -23,8 +23,9 @@ type Follow struct {
 }
 
 type FollowReq struct {
-	Token    string `form:"token"`
-	ToUserId int64  `form:"to_user_id"`
+	Token      string `form:"token"`
+	ToUserId   int64  `form:"to_user_id"`
+	ActionType int32  `form:"action_type"`
 }
 
 type FollowRes struct {
