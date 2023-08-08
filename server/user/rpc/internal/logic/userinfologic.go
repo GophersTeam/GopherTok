@@ -39,13 +39,13 @@ func (l *UserInfoLogic) UserInfo(in *user.UserInfoReq) (*user.UserInfoResp, erro
 		return nil, errors.Wrapf(errorx.NewDefaultError(err.Error()), "mysql查询错误 err：%v", err)
 	}
 	followCount, err := l.svcCtx.RelationRpc.GetFollowCount(l.ctx, &pb.GetFollowCountReq{
-		Userid: strconv.FormatInt(in.Id, 10),
+		Userid: in.Id,
 	})
 	if err != nil {
 		return nil, errors.Wrapf(err, "req: %+v", in)
 	}
 	followerCount, err := l.svcCtx.RelationRpc.GetFollowerCount(l.ctx, &pb.GetFollowerCountReq{
-		Userid: strconv.FormatInt(in.Id, 10),
+		Userid: in.Id,
 	})
 	if err != nil {
 		return nil, errors.Wrapf(err, "req: %+v", in)
@@ -57,8 +57,8 @@ func (l *UserInfoLogic) UserInfo(in *user.UserInfoReq) (*user.UserInfoResp, erro
 		return nil, errors.Wrapf(err, "req: %+v", in)
 	}
 	isFollow, err := l.svcCtx.RelationRpc.CheckIsFollow(l.ctx, &relationrpc.CheckIsFollowReq{
-		UserId:   strconv.FormatInt(in.CurrentId, 10),
-		ToUserId: strconv.FormatInt(in.Id, 10),
+		UserId:   in.CurrentId,
+		ToUserId: in.Id,
 	})
 	if err != nil {
 		return nil, errors.Wrapf(err, "req: %+v", in)

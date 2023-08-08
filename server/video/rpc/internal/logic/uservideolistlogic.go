@@ -29,7 +29,7 @@ func NewUserVideoListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Use
 func (l *UserVideoListLogic) UserVideoList(in *video.UserVideoListReq) (*video.UserVideoListResp, error) {
 	// todo: add your logic here and delete this line
 	var list []model.Video
-	err := l.svcCtx.MysqlDb.Where("user_id = ?", in.UserId).Order("id DESC").Find(&list).Error
+	err := l.svcCtx.MysqlDb.Where("user_id = ?", in.UserId).Order("create_time DESC").Find(&list).Error
 	if err != nil {
 		return nil, errors.Wrapf(errorx.NewDefaultError("mysql find 错误"+err.Error()), "mysql find err:%v", err)
 	}
