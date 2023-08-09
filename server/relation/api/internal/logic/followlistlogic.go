@@ -74,7 +74,7 @@ func (l *FollowListLogic) FollowList(req *types.FollowListReq) (resp *types.Foll
 		}, err
 	}
 	userList := []types.User{}
-	for _, v := range *followList.UserList {
+	for _, v := range followList.UserList {
 		user := types.User{
 			Id:              v.Id,
 			Name:            v.Name,

@@ -30,17 +30,17 @@ func NewGetFriendListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Get
 func (l *GetFriendListLogic) GetFriendList(in *pb.GetFriendListReq) (*pb.GetFriendListResp, error) {
 	friend := []pb.FollowSubject{}
 	err := l.svcCtx.MysqlDb.WithContext(l.ctx).Table("follow_subject").
-		Where("user_id = ?", in.Userid).Find(&friend).Error
+		Where("user_id = ?", in.ToUserId).Find(&friend).Error
 	if err != nil {
 		return &pb.GetFriendListResp{StatusCode: "-1",
 				StatusMsg: err.Error(),
 				UserList:  nil},
 			errors.Wrapf(errorx.NewDefaultError("mysql get err:"+err.Error()), "mysql get err ：%v", err)
 	}
-	friendList := []pb.User{}
+	friendList := []*pb.User{}
 	for _, v := range friend {
 		err := l.svcCtx.MysqlDb.WithContext(l.ctx).Table("follow_subject").
-			Where("user_id = ? AND follower_id = ?", v.FollowerId, in.Userid).First(&pb.FollowSubject{}).Error
+			Where("user_id = ? AND follower_id = ?", v.FollowerId, in.ToUserId).First(&pb.FollowSubject{}).Error
 		if err != nil {
 			if err != gorm.ErrRecordNotFound {
 				return &pb.GetFriendListResp{StatusCode: "-1",
@@ -80,10 +80,10 @@ func (l *GetFriendListLogic) GetFriendList(in *pb.GetFriendListReq) (*pb.GetFrie
 			WorkCount:       use.WorkCount,
 			FavouriteCount:  use.FavoriteCount,
 		}
-		friendList = append(friendList, follow1)
+		friendList = append(friendList, &follow1)
 	}
 
 	return &pb.GetFriendListResp{StatusCode: "0",
 		StatusMsg: "get friendList successfully",
-		UserList:  &friendList}, nil
+		UserList:  friendList}, nil
 }

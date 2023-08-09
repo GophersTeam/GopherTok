@@ -29,7 +29,7 @@ func NewGetFollowListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Get
 
 func (l *GetFollowListLogic) GetFollowList(in *pb.GetFollowListReq) (*pb.GetFollowListResp, error) {
 	follow := []pb.FollowSubject{}
-	followList := []pb.User{}
+	followList := []*pb.User{}
 	err := l.svcCtx.MysqlDb.WithContext(l.ctx).Table("follow_subject").Where("follower_id = ?", in.ToUserId).Find(&follow).Error
 	if err != nil {
 		if err != gorm.ErrRecordNotFound {
@@ -76,12 +76,12 @@ func (l *GetFollowListLogic) GetFollowList(in *pb.GetFollowListReq) (*pb.GetFoll
 			FavouriteCount:  use.FavoriteCount,
 		}
 
-		followList = append(followList, follow1)
+		followList = append(followList, &follow1)
 	}
 	return &pb.GetFollowListResp{
 		StatusCode: "0",
 		StatusMsg:  "get followList successfully",
-		UserList:   &followList,
+		UserList:   followList,
 	}, nil
 
 }

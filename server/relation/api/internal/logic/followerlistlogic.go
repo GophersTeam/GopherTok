@@ -68,7 +68,7 @@ func (l *FollowerListLogic) FollowerList(req *types.FollowerListReq) (resp *type
 			UserList:   nil,
 		}, err
 	}
-	for _, val := range *rep.UserList {
+	for _, val := range rep.UserList {
 		user := &types.User{
 			Id:              val.Id,
 			Name:            val.Name,
