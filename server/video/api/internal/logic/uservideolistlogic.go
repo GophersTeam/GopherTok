@@ -4,6 +4,7 @@ import (
 	"GopherTok/common/consts"
 	"GopherTok/common/errorx"
 	"GopherTok/server/comment/rpc/pb"
+	"GopherTok/server/favor/rpc/favorrpc"
 	"GopherTok/server/user/rpc/types/user"
 	"GopherTok/server/video/api/internal/svc"
 	"GopherTok/server/video/api/internal/types"
@@ -60,6 +61,19 @@ func (l *UserVideoListLogic) UserVideoList(req *types.UserVideoListReq) (resp *t
 		if err != nil {
 			return nil, errors.Wrapf(err, "req: %+v", req)
 		}
+		favoriteCount, err := l.svcCtx.FavorRpc.FavorNum(l.ctx, &favorrpc.FavorNumReq{
+			VideoId: list[i].Id,
+		})
+		if err != nil {
+			return nil, errors.Wrapf(err, "req: %+v", req)
+		}
+		isFavorite, err := l.svcCtx.FavorRpc.IsFavor(l.ctx, &favorrpc.IsFavorReq{
+			UserId:  userinfo.Id,
+			VideoId: list[i].Id,
+		})
+		if err != nil {
+			return nil, errors.Wrapf(err, "req: %+v", req)
+		}
 		videoItem := &types.VideoInfo{
 			ID: list[i].Id,
 			Author: types.AuthorInfo{
@@ -78,9 +92,9 @@ func (l *UserVideoListLogic) UserVideoList(req *types.UserVideoListReq) (resp *t
 			Title:         list[i].Title,
 			PlayURL:       list[i].PlayUrl,
 			CoverURL:      list[i].CoverUrl,
-			FavoriteCount: 0,
+			FavoriteCount: favoriteCount.Num,
 			CommentCount:  commentCount.Count,
-			IsFavorite:    false,
+			IsFavorite:    isFavorite.IsFavor,
 		}
 		videoList = append(videoList, videoItem)
 	}

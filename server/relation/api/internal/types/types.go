@@ -16,16 +16,16 @@ type User struct {
 }
 
 type Follow struct {
-	Id         int64 `gorm:"id" json:"id"`
-	UserId     int64 `gorm:"user_id" json:"user_id"`
-	FollowerId int64 `gorm:"fowwower_id" json:"follower_id"`
-	IsFollow   bool  `gorm:"is_follow" json:"is_follow"`
+	Id         int64 `json:"id"`
+	UserId     int64 `json:"user_id"`
+	FollowerId int64 `json:"follower_id"`
+	IsFollow   bool  `json:"is_follow"`
 }
 
 type FollowReq struct {
 	Token      string `form:"token"`
-	ToUserId   string `form:"to_user_id"`
-	ActionType string `form:"action_type"`
+	ToUserId   int64  `form:"to_user_id"`
+	ActionType int32  `form:"action_type"`
 }
 
 type FollowRes struct {
@@ -34,7 +34,7 @@ type FollowRes struct {
 }
 
 type FollowListReq struct {
-	UserId string `form:"user_id"`
+	UserId int64  `form:"user_id"`
 	Token  string `form:"token"`
 }
 
@@ -45,7 +45,7 @@ type FollowListRes struct {
 }
 
 type FollowerListReq struct {
-	UserId string `form:"user_id"`
+	UserId int64  `form:"user_id"`
 	Token  string `form:"token"`
 }
 
@@ -56,7 +56,7 @@ type FollowerListRes struct {
 }
 
 type FriendListReq struct {
-	UserId string `form:"user_id"`
+	UserId int64  `form:"user_id"`
 	Token  string `form:"token"`
 }
 

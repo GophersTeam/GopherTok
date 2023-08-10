@@ -61,7 +61,7 @@ message GetFollowListReq {
 message GetFollowListResp {
   string StatusCode = 1;
   string StatusMsg = 2;
-  User UserList = 3;
+  repeated User UserList = 3;
 }
 message GetFollowerReq {
   int64 Userid = 1;
@@ -71,7 +71,7 @@ message GetFollowerReq {
 message GetFollowerResp {
   string StatusCode = 1;
   string StatusMsg = 2;
-  User UserList = 3;
+  repeated User UserList = 3;
 }
 message GetFollowerCountReq{
   int64 Userid = 1;
@@ -85,12 +85,13 @@ message GetFollowerCountResp{
 
 message GetFriendListReq {
   int64 Userid = 1;
+  int64 ToUserId = 2;
 }
 
 message GetFriendListResp {
   string StatusCode = 1;
   string StatusMsg = 2;
-  User UserList = 3;
+  repeated User UserList = 3;
 }
 
 message GetFollowCountReq{

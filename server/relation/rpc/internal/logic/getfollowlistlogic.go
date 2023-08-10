@@ -1,7 +1,11 @@
 package logic
 
 import (
+	"GopherTok/common/errorx"
+	"GopherTok/server/user/rpc/types/user"
 	"context"
+	"github.com/pkg/errors"
+	"gorm.io/gorm"
 
 	"GopherTok/server/relation/rpc/internal/svc"
 	"GopherTok/server/relation/rpc/pb"
@@ -24,7 +28,60 @@ func NewGetFollowListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Get
 }
 
 func (l *GetFollowListLogic) GetFollowList(in *pb.GetFollowListReq) (*pb.GetFollowListResp, error) {
-	// todo: add your logic here and delete this line
+	follow := []pb.FollowSubject{}
+	followList := []*pb.User{}
+	err := l.svcCtx.MysqlDb.WithContext(l.ctx).Table("follow_subject").Where("follower_id = ?", in.ToUserId).Find(&follow).Error
+	if err != nil {
+		if err != gorm.ErrRecordNotFound {
+			return &pb.GetFollowListResp{
+					StatusCode: "-1",
+					StatusMsg:  err.Error(),
+					UserList:   nil,
+				},
+				errors.Wrapf(errorx.NewDefaultError("mysql add err:"+err.Error()), "mysql add err ：%v", err)
+		} else {
+			return &pb.GetFollowListResp{
+				StatusCode: "0",
+				StatusMsg:  "get followList successfully",
+				UserList:   nil,
+			}, nil
+		}
+	}
 
-	return &pb.GetFollowListResp{}, nil
+	for _, v := range follow {
+
+		use, err := l.svcCtx.UserRpc.UserInfo(l.ctx, &user.UserInfoReq{
+			Id:        v.UserId,
+			CurrentId: in.Userid,
+		})
+		if err != nil {
+			return &pb.GetFollowListResp{
+					StatusCode: "-1",
+					StatusMsg:  err.Error(),
+					UserList:   nil,
+				},
+				errors.Wrapf(errorx.NewDefaultError("userInfo get err:"+err.Error()), "userInfo get err ：%v", err)
+		}
+		follow1 := pb.User{
+			Id:              use.Id,
+			Name:            use.Name,
+			FollowCount:     use.FollowCount,
+			FollowerCount:   use.FollowerCount,
+			IsFollow:        use.IsFollow,
+			Avatar:          use.Avatar,
+			BackgroundImage: use.BackgroundImage,
+			Signature:       use.Signature,
+			TotalFavourited: use.TotalFavorited,
+			WorkCount:       use.WorkCount,
+			FavouriteCount:  use.FavoriteCount,
+		}
+
+		followList = append(followList, &follow1)
+	}
+	return &pb.GetFollowListResp{
+		StatusCode: "0",
+		StatusMsg:  "get followList successfully",
+		UserList:   followList,
+	}, nil
+
 }

@@ -21,8 +21,6 @@ import (
 
 var configFile = flag.String("f", "etc/user.yaml", "the config file")
 
-//var configFile = "D:\\GopherTok\\server\\user\\rpc\\etc\\user.yaml"
-
 func main() {
 	flag.Parse()
 

@@ -17,6 +17,7 @@ type ServiceContext struct {
 	Config      config.Config
 	RelationRpc mock.RelationRpc
 	VideoRpc    videoclient.Video
+	FavorRpc    mock.FavorRpc
 	Snowflake   *snowflake.Node
 	Rdb         *redis.ClusterClient
 	MysqlDb     *gorm.DB
@@ -33,6 +34,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Config:      c,
 		RelationRpc: mock.RelationRpc{},
 		VideoRpc:    videoclient.NewVideo(zrpc.MustNewClient(c.VideoRpcConf)),
+		FavorRpc:    mock.FavorRpc{},
 		Snowflake:   snowflakeNode,
 		MysqlDb:     mysqlDb,
 		Rdb:         redisDb,

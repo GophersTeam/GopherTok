@@ -5,10 +5,6 @@ info(
 	author: "hiahia12"
 	version: "1.0.0"
 )
-type Res {
-	StatusCode string `json:"status_code"`
-	StatusMsg  string `json:"status_msg"`
-}
 type User {
 	Id              int64  `json:"id"`
 	Name            string `json:"name"`
@@ -30,42 +26,46 @@ type Follow {
 }
 type FollowReq {
 	Token      string `form:"token"`
-	ToUserId   string `form:"to_user_id"`
-	ActionType string `form:"action_type"`
+	ToUserId   int64  `form:"to_user_id"`
+	ActionType int32  `form:"action_type"`
 }
 
 type FollowRes {
-	Res
+	StatusCode string `json:"status_code"`
+	StatusMsg  string `json:"status_msg"`
 }
 
 type FollowListReq {
-	UserId string `form:"user_id"`
+	UserId int64  `form:"user_id"`
 	Token  string `form:"token"`
 }
 
 type FollowListRes {
-	Res
-	UserList []User `json:"user_list"`
+	StatusCode string `json:"status_code"`
+	StatusMsg  string `json:"status_msg"`
+	UserList   []User `json:"user_list"`
 }
 
 type FollowerListReq {
-	UserId string `form:"user_id"`
+	UserId int64  `form:"user_id"`
 	Token  string `form:"token"`
 }
 
 type FollowerListRes {
-	Res
-	UserList []User `json:"user_list"`
+	StatusCode string `json:"status_code"`
+	StatusMsg  string `json:"status_msg"`
+	UserList   []User `json:"user_list"`
 }
 
 type FriendListReq {
-	UserId string `form:"user_id"`
+	UserId int64  `form:"user_id"`
 	Token  string `form:"token"`
 }
 
 type FriendListRes {
-	Res
-	UserList []User `json:"user_list"`
+	StatusCode string `json:"status_code"`
+	StatusMsg  string `json:"status_msg"`
+	UserList   []User `json:"user_list"`
 }
 
 @server(

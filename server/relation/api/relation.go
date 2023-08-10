@@ -12,14 +12,14 @@ import (
 	"github.com/zeromicro/go-zero/rest"
 )
 
-var configFile = "D:\\GopherTok\\server\\relation\\api\\etc\\relation-api.yaml"
+var configFile = flag.String("f", "etc/nacos.yaml", "the config file")
 
 func main() {
 	flag.Parse()
-
+	var nacosConf config.NacosConf
+	conf.MustLoad(*configFile, &nacosConf)
 	var c config.Config
-	conf.MustLoad(configFile, &c)
-
+	nacosConf.LoadConfig(&c)
 	server := rest.MustNewServer(c.RestConf)
 	defer server.Stop()
 

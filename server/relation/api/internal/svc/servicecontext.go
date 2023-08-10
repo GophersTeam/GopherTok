@@ -4,7 +4,8 @@ import (
 	"GopherTok/server/relation/api/internal/config"
 	"GopherTok/server/relation/api/internal/middleware"
 	"GopherTok/server/relation/rpc/pb"
-	"GopherTok/server/relation/rpc/relationRpc"
+	"GopherTok/server/relation/rpc/relationrpc"
+	"GopherTok/server/user/rpc/userclient"
 	"github.com/zeromicro/go-zero/rest"
 	"github.com/zeromicro/go-zero/zrpc"
 )
@@ -12,6 +13,7 @@ import (
 type ServiceContext struct {
 	Config      config.Config
 	RelationRpc pb.RelationRpcClient
+	UserRpc     userclient.User
 	Jwt         rest.Middleware
 }
 
@@ -20,5 +22,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Config:      c,
 		Jwt:         middleware.NewJwtMiddleware(c).Handle,
 		RelationRpc: relationrpc.NewRelationRpc(zrpc.MustNewClient(c.RelationRpc)),
+		UserRpc:     userclient.NewUser(zrpc.MustNewClient(c.UserRpc)),
 	}
 }
