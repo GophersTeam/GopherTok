@@ -6,13 +6,12 @@ import (
 	"GopherTok/server/relation/rpc/pb"
 	"GopherTok/server/relation/rpc/relationrpc"
 	"GopherTok/server/user/model"
+	"GopherTok/server/user/rpc/internal/svc"
+	"GopherTok/server/user/rpc/types/user"
 	"GopherTok/server/video/rpc/types/video"
 	"context"
 	"github.com/pkg/errors"
 	"strconv"
-
-	"GopherTok/server/user/rpc/internal/svc"
-	"GopherTok/server/user/rpc/types/user"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -33,6 +32,7 @@ func NewUserInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UserInfo
 
 func (l *UserInfoLogic) UserInfo(in *user.UserInfoReq) (*user.UserInfoResp, error) {
 	// todo: add your logic here and delete this line
+
 	u := model.User{}
 	err := l.svcCtx.MysqlDb.Where("id = ?", in.Id).First(&u).Error
 	if err != nil {
