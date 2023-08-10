@@ -17,8 +17,14 @@ var configFile = flag.String("f", "etc/favor.yaml", "the config file")
 func main() {
 	flag.Parse()
 
+	var nacosConf config.NacosConf
+	conf.MustLoad(*configFile, &nacosConf)
 	var c config.Config
-	conf.MustLoad(*configFile, &c)
+	nacosConf.LoadConfig(&c)
+	nacosConf.ListenConfig(func(namespace, group, dataId, data string) {
+		fmt.Printf("配置文件发生变化\n")
+		fmt.Printf("namespace: %s, group: %s, dataId: %s, data: %s", namespace, group, dataId, data)
+	})
 
 	server := rest.MustNewServer(c.RestConf)
 	defer server.Stop()

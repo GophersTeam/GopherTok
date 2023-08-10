@@ -7,16 +7,27 @@ import (
 	"strconv"
 )
 
-func NewFavorModel(c redis.Options) FavorModel {
+//	func NewFavorModel(c redis.Options) FavorModel {
+//		return &customModel{
+//			defaultModel: NewDefaultModel(c),
+//		}
+//	}
+func NewFavorModel(c *redis.ClusterClient) FavorModel {
 	return &customModel{
 		defaultModel: NewDefaultModel(c),
 	}
 }
 
-func NewDefaultModel(c redis.Options) defaultModel {
-	client := redis.NewClient(&c)
+//func NewDefaultModel(c redis.Options) defaultModel {
+//	client := redis.NewClient(&c)
+//	return defaultModel{
+//		*client,
+//	}
+//}
+
+func NewDefaultModel(c *redis.ClusterClient) defaultModel {
 	return defaultModel{
-		*client,
+		c,
 	}
 }
 
@@ -26,7 +37,8 @@ type (
 	}
 
 	defaultModel struct {
-		redis.Client
+		//redis.Client
+		*redis.ClusterClient
 	}
 	FavorModel interface {
 		favorModel
@@ -44,7 +56,8 @@ type (
 // 使用哈希和集合
 func (m *defaultModel) Insert(ctx context.Context, UserId int64, VideoId int64) error {
 	var err error
-	tx := m.Client.TxPipeline()
+
+	tx := m.TxPipeline()
 
 	// 在事务中执行命令
 	if err = tx.SAdd(ctx, strconv.Itoa(int(VideoId)), UserId).Err(); err != nil {
@@ -61,7 +74,7 @@ func (m *defaultModel) Insert(ctx context.Context, UserId int64, VideoId int64) 
 
 func (m *defaultModel) Delete(ctx context.Context, UserId int64, VideoId int64) error {
 	var err error
-	tx := m.Client.TxPipeline()
+	tx := m.TxPipeline()
 
 	// 在事务中执行命令
 	if err = tx.SRem(ctx, strconv.Itoa(int(VideoId)), UserId).Err(); err != nil {
@@ -77,7 +90,7 @@ func (m *defaultModel) Delete(ctx context.Context, UserId int64, VideoId int64) 
 }
 
 func (m *defaultModel) SearchByUid(ctx context.Context, UserId int64) ([]int64, error) {
-	result, err := m.Client.HVals(ctx, strconv.Itoa(int(UserId))).Result()
+	result, err := m.HVals(ctx, strconv.Itoa(int(UserId))).Result()
 	if err != nil {
 		return nil, err
 	}
@@ -94,7 +107,7 @@ func (m *defaultModel) SearchByUid(ctx context.Context, UserId int64) ([]int64, 
 }
 
 func (m *defaultModel) NumOfFavor(ctx context.Context, VideoId int64) (int, error) {
-	result, err := m.Client.SCard(ctx, strconv.Itoa(int(VideoId))).Result()
+	result, err := m.SCard(ctx, strconv.Itoa(int(VideoId))).Result()
 	if err != nil {
 		return 0, err
 	}
@@ -102,7 +115,7 @@ func (m *defaultModel) NumOfFavor(ctx context.Context, VideoId int64) (int, erro
 }
 
 func (m *defaultModel) IsFavor(ctx context.Context, UserId int64, VideoId int64) (bool, error) {
-	result, err := m.Client.Exists(ctx, strconv.Itoa(int(UserId)), strconv.Itoa(int(VideoId))).Result()
+	result, err := m.Exists(ctx, strconv.Itoa(int(UserId)), strconv.Itoa(int(VideoId))).Result()
 	if err != nil {
 		return false, err
 	}
@@ -113,7 +126,7 @@ func (m *defaultModel) IsFavor(ctx context.Context, UserId int64, VideoId int64)
 }
 
 func (m *defaultModel) FavorNumOfUser(ctx context.Context, UserId int64) (int, error) {
-	result, err := m.Client.HLen(ctx, strconv.Itoa(int(UserId))).Result()
+	result, err := m.HLen(ctx, strconv.Itoa(int(UserId))).Result()
 	if err != nil {
 		return 0, err
 	}
