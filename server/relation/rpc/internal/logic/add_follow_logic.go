@@ -3,6 +3,7 @@ package logic
 import (
 	"GopherTok/common/errorx"
 	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/pkg/errors"
 	"gorm.io/gorm"
@@ -36,17 +37,29 @@ func (l *AddFollowLogic) AddFollow(in *pb.AddFollowReq) (*pb.AddFollowResp, erro
 			errors.Wrapf(errorx.NewDefaultError("redis set err:"+intcmd.Err().Error()), "redis set err ：%v", intcmd.Err())
 
 	}
-	err := l.svcCtx.MysqlDb.WithContext(l.ctx).Table("follow_subject").Create(&pb.FollowSubject{
+
+	kd, err := json.Marshal(pb.FollowSubject{
 		UserId:     in.ToUserId,
 		FollowerId: in.UserId,
 		IsFollow:   true,
-	}).Error
+	})
 	if err != nil {
-		return &pb.AddFollowResp{StatusCode: "-1",
-				StatusMsg: err.Error()},
-			errors.Wrapf(errorx.NewDefaultError("mysql add err:"+err.Error()), "mysql add err ：%v", err)
-
+		logx.Errorf("addFollow json.Marshal error: %v", err)
 	}
+	if err = l.svcCtx.KqPusherClient.Push(string(kd)); err != nil {
+		logx.Errorf("KafkaPusher.Push kd: %s error: %v", string(kd), err)
+	}
+	//err := l.svcCtx.MysqlDb.WithContext(l.ctx).Table("follow_subject").Create(&pb.FollowSubject{
+	//	UserId:     in.ToUserId,
+	//	FollowerId: in.UserId,
+	//	IsFollow:   true,
+	//}).Error
+	//if err != nil {
+	//	return &pb.AddFollowResp{StatusCode: "-1",
+	//			StatusMsg: err.Error()},
+	//		errors.Wrapf(errorx.NewDefaultError("mysql add err:"+err.Error()), "mysql add err ：%v", err)
+	//
+	//}
 
 	//更新redis数据
 	//更新followCount

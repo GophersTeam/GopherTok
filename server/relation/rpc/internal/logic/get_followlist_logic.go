@@ -10,6 +10,7 @@ import (
 	"GopherTok/server/relation/rpc/internal/svc"
 	"GopherTok/server/relation/rpc/pb"
 
+	"github.com/jinzhu/copier"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -30,7 +31,7 @@ func NewGetFollowListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Get
 func (l *GetFollowListLogic) GetFollowList(in *pb.GetFollowListReq) (*pb.GetFollowListResp, error) {
 	follow := []pb.FollowSubject{}
 	followList := []*pb.User{}
-	err := l.svcCtx.MysqlDb.WithContext(l.ctx).Table("follow_subject").Where("follower_id = ?", in.ToUserId).Find(&follow).Error
+	err := l.svcCtx.MysqlDb.WithContext(l.ctx).Table("follow_subject").Where("follower_id = ?", in.Userid).Find(&follow).Error
 	if err != nil {
 		if err != gorm.ErrRecordNotFound {
 			return &pb.GetFollowListResp{
@@ -62,19 +63,9 @@ func (l *GetFollowListLogic) GetFollowList(in *pb.GetFollowListReq) (*pb.GetFoll
 				},
 				errors.Wrapf(errorx.NewDefaultError("userInfo get err:"+err.Error()), "userInfo get err ：%v", err)
 		}
-		follow1 := pb.User{
-			Id:              use.Id,
-			Name:            use.Name,
-			FollowCount:     use.FollowCount,
-			FollowerCount:   use.FollowerCount,
-			IsFollow:        use.IsFollow,
-			Avatar:          use.Avatar,
-			BackgroundImage: use.BackgroundImage,
-			Signature:       use.Signature,
-			TotalFavourited: use.TotalFavorited,
-			WorkCount:       use.WorkCount,
-			FavouriteCount:  use.FavoriteCount,
-		}
+		follow1 := pb.User{}
+
+		_ = copier.Copy(&follow1, &use)
 
 		followList = append(followList, &follow1)
 	}

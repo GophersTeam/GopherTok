@@ -6,6 +6,7 @@ import (
 	"GopherTok/server/user/rpc/types/user"
 	"context"
 	"fmt"
+	"github.com/jinzhu/copier"
 
 	"GopherTok/server/relation/api/internal/svc"
 	"GopherTok/server/relation/api/internal/types"
@@ -44,24 +45,9 @@ func (l *FriendListLogic) FriendList(req *types.FriendListReq) (resp *types.Frie
 			UserList:   nil,
 		}, nil
 	}
-	exists, err = l.svcCtx.UserRpc.UserIsExists(l.ctx, &user.UserIsExistsReq{Id: req.UserId})
-	if err != nil {
-		return &types.FriendListRes{
-			StatusCode: "-1",
-			StatusMsg:  err.Error(),
-			UserList:   nil,
-		}, err
-	}
-	if exists.Exists == false {
-		return &types.FriendListRes{
-			StatusCode: "-1",
-			StatusMsg:  "user doesn't exist",
-			UserList:   nil,
-		}, nil
-	}
 
-	rep, err := l.svcCtx.RelationRpc.GetFriendList(l.ctx, &pb.GetFriendListReq{ToUserId: req.UserId, Userid: userid})
-	userlist := &[]types.User{}
+	rep, err := l.svcCtx.RelationRpc.GetFriendList(l.ctx, &pb.GetFriendListReq{Userid: userid})
+	userlist := []types.FriendUser{}
 
 	if err != nil {
 		if err != nil {
@@ -74,20 +60,9 @@ func (l *FriendListLogic) FriendList(req *types.FriendListReq) (resp *types.Frie
 		}
 	}
 	for _, val := range rep.UserList {
-		user := &types.User{
-			Id:              val.Id,
-			Name:            val.Name,
-			FollowCount:     val.FollowCount,
-			FollowerCount:   val.FollowerCount,
-			IsFollow:        val.IsFollow,
-			Avatar:          val.Avatar,
-			BackgroundImage: val.BackgroundImage,
-			Signature:       val.Signature,
-			TotalFavourited: val.TotalFavourited,
-			WorkCount:       val.WorkCount,
-			FavouriteCount:  val.FavouriteCount,
-		}
-		*userlist = append(*userlist, *user)
+		user := types.FriendUser{}
+		_ = copier.Copy(&user, &val)
+		userlist = append(userlist, user)
 	}
 
 	return &types.FriendListRes{

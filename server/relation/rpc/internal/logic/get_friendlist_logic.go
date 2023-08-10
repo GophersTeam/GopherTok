@@ -4,6 +4,7 @@ import (
 	"GopherTok/common/errorx"
 	"GopherTok/server/user/rpc/types/user"
 	"context"
+	"github.com/jinzhu/copier"
 	"github.com/pkg/errors"
 	"gorm.io/gorm"
 
@@ -30,17 +31,17 @@ func NewGetFriendListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Get
 func (l *GetFriendListLogic) GetFriendList(in *pb.GetFriendListReq) (*pb.GetFriendListResp, error) {
 	friend := []pb.FollowSubject{}
 	err := l.svcCtx.MysqlDb.WithContext(l.ctx).Table("follow_subject").
-		Where("user_id = ?", in.ToUserId).Find(&friend).Error
+		Where("user_id = ?", in.Userid).Find(&friend).Error
 	if err != nil {
 		return &pb.GetFriendListResp{StatusCode: "-1",
 				StatusMsg: err.Error(),
 				UserList:  nil},
 			errors.Wrapf(errorx.NewDefaultError("mysql get err:"+err.Error()), "mysql get err ：%v", err)
 	}
-	friendList := []*pb.User{}
+	friendList := []*pb.FriendUser{}
 	for _, v := range friend {
 		err := l.svcCtx.MysqlDb.WithContext(l.ctx).Table("follow_subject").
-			Where("user_id = ? AND follower_id = ?", v.FollowerId, in.ToUserId).First(&pb.FollowSubject{}).Error
+			Where("user_id = ? AND follower_id = ?", v.FollowerId, in.Userid).First(&pb.FollowSubject{}).Error
 		if err != nil {
 			if err != gorm.ErrRecordNotFound {
 				return &pb.GetFriendListResp{StatusCode: "-1",
@@ -67,19 +68,9 @@ func (l *GetFriendListLogic) GetFriendList(in *pb.GetFriendListReq) (*pb.GetFrie
 				},
 				errors.Wrapf(errorx.NewDefaultError("userInfo get err:"+err.Error()), "userInfo get err ：%v", err)
 		}
-		follow1 := pb.User{
-			Id:              use.Id,
-			Name:            use.Name,
-			FollowCount:     use.FollowCount,
-			FollowerCount:   use.FollowerCount,
-			IsFollow:        use.IsFollow,
-			Avatar:          use.Avatar,
-			BackgroundImage: use.BackgroundImage,
-			Signature:       use.Signature,
-			TotalFavourited: use.TotalFavorited,
-			WorkCount:       use.WorkCount,
-			FavouriteCount:  use.FavoriteCount,
-		}
+
+		follow1 := pb.FriendUser{}
+		_ = copier.Copy(&follow1, &use)
 		friendList = append(friendList, &follow1)
 	}
 
