@@ -1,0 +1,63 @@
+version: '3.5'
+# 网络配置
+networks:
+  gophertok:
+    external: true
+# 服务容器配置
+services:
+  # Traefik网关
+  traefik:
+    image: traefik:v2.4
+    command:
+      - "--providers.docker=true"
+      - "--entrypoints.http.address=:80"
+      - "--entrypoints.gophertok.address=:8888"  # 暴露端口
+      - "--api=true"               # 启用Traefik的API
+      - "--api.insecure=true"      # 启用Traefik的Web UI
+      - "--providers.docker"
+    ports:
+      - "8070:8080"  # Traefik dashboard
+      - "8888:8888"  # gophertok 服务端口
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    networks:
+      - gophertok
+# user服务
+  user-rpc: # 自定义容器名称
+    image: ${DOCKERHUB_IMAGE}user-rpc:latest
+    container_name: gophertok-user-rpc
+    environment: # 设置环境变量
+      - TZ=Asia/Shanghai
+    privileged: true
+    ports: # 设置端口映射
+      - "5002:5002"  # user服务rpc端口
+    stdin_open: true                     # 打开标准输入，可以接受外部输入
+    tty: true
+    networks:
+      - gophertok
+    restart: always                      # 指定容器退出后的重启策略为始终重启
+
+  user-api: # 自定义容器名称
+    image: ${DOCKERHUB_IMAGE}user-api:latest
+
+    #    container_name: gophertok-user-api
+    environment: # 设置环境变量
+      - TZ=Asia/Shanghai
+    privileged: true
+    #    ports: # 设置端口映射
+    #      - "5001:5001"  # user服务api端口
+    stdin_open: true                     # 打开标准输入，可以接受外部输入
+    tty: true
+    networks:
+      - gophertok
+    restart: always                      # 指定容器退出后的重启策略为始终重启
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.gophertok-user-api.rule=Host(`${GOPHERTOKHOST}`) && PathPrefix(`/douyin/user`,`/douyin/relation`)" # 转发规则
+      - "traefik.http.routers.gophertok-user-api.entrypoints=gophertok"
+      - "traefik.http.services.gophertok-user-api.loadbalancer.server.port=3001"    # 实例的端口
+      - "traefik.docker.network=gophertok"
+      - "traefik.http.services.gophertok-user-api.loadbalancer.server.scheme=http"
+      - "traefik.http.services.gophertok-user-api.loadbalancer.passhostheader=true"
+    deploy:
+      replicas: 3 # 启动三个实例
