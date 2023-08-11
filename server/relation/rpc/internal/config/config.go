@@ -20,7 +20,11 @@ type Config struct {
 		Cluster6 string
 	}
 
-	KqPusherConf struct {
+	KqPusherRedisConf struct {
+		Brokers []string
+		Topic   string
+	}
+	KqPusherMysqlConf struct {
 		Brokers []string
 		Topic   string
 	}

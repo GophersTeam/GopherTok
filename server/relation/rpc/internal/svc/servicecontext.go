@@ -12,12 +12,13 @@ import (
 )
 
 type ServiceContext struct {
-	Config         config.Config
-	Rdb            *redis.ClusterClient
-	MysqlDb        *gorm.DB
-	UserRpc        userclient.User
-	ChatRpc        chatrpc.ChatRpc
-	KqPusherClient *kq.Pusher
+	Config              config.Config
+	Rdb                 *redis.ClusterClient
+	MysqlDb             *gorm.DB
+	UserRpc             userclient.User
+	ChatRpc             chatrpc.ChatRpc
+	KqPusherRedisClient *kq.Pusher
+	KqPusherMysqlClient *kq.Pusher
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -31,11 +32,12 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		c.RedisConf.Cluster6)
 	rdb := init_db.InitRedis(rc)
 	return &ServiceContext{
-		Config:         c,
-		MysqlDb:        mysqlDb,
-		Rdb:            rdb,
-		UserRpc:        userclient.NewUser(zrpc.MustNewClient(c.UserRpc)),
-		ChatRpc:        chatrpc.NewChatRpc(zrpc.MustNewClient(c.ChatRpc)),
-		KqPusherClient: kq.NewPusher(c.KqPusherConf.Brokers, c.KqPusherConf.Topic),
+		Config:              c,
+		MysqlDb:             mysqlDb,
+		Rdb:                 rdb,
+		UserRpc:             userclient.NewUser(zrpc.MustNewClient(c.UserRpc)),
+		ChatRpc:             chatrpc.NewChatRpc(zrpc.MustNewClient(c.ChatRpc)),
+		KqPusherRedisClient: kq.NewPusher(c.KqPusherRedisConf.Brokers, c.KqPusherRedisConf.Topic),
+		KqPusherMysqlClient: kq.NewPusher(c.KqPusherMysqlConf.Brokers, c.KqPusherMysqlConf.Topic),
 	}
 }

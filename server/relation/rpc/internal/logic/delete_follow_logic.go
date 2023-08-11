@@ -2,9 +2,11 @@ package logic
 
 import (
 	"GopherTok/common/errorx"
+	"GopherTok/server/relation/dao"
 	"context"
 	"fmt"
 	"github.com/pkg/errors"
+	"github.com/zeromicro/go-zero/core/jsonx"
 	"gorm.io/gorm"
 	"strconv"
 
@@ -38,24 +40,26 @@ func (l *DeleteFollowLogic) DeleteFollow(in *pb.DeleteFollowReq) (*pb.DeleteFoll
 
 	}
 
-	err := l.svcCtx.MysqlDb.WithContext(l.ctx).Table("follow_subject").
-		Where("user_id = ? AND follower_id = ?", in.ToUserId, in.UserId).
-		Delete(&pb.FollowSubject{}).
-		Error
-
+	kdMysql, err := jsonx.MarshalToString(&dao.FollowData{
+		Method:     "delete",
+		UserId:     in.ToUserId,
+		FollowerId: in.UserId,
+		IsFollow:   true,
+	})
 	if err != nil {
-		return &pb.DeleteFollowResp{StatusCode: "-1",
-				StatusMsg: err.Error()},
-			errors.Wrapf(errorx.NewDefaultError("mysql delete err:"+err.Error()), "mysql delete err ：%v", err)
-
+		logx.Errorf("deleteFollow json.Marshal error: %v", err)
+	}
+	if err = l.svcCtx.KqPusherMysqlClient.Push(string(kdMysql)); err != nil {
+		logx.Errorf("KafkaPusherMysql.Push kdMysql: %s error: %v", string(kdMysql), err)
 	}
 
 	//更新redis数据
-	//更新followCount
+	//获取followCount
+
 	db := l.svcCtx.MysqlDb.WithContext(l.ctx).Table("follow_subject").
 		Where("follower_id = ?", in.UserId).Find(&[]pb.FollowSubject{})
 	err = db.Error
-	countMysql := db.RowsAffected
+	followCount := db.RowsAffected
 
 	if err != nil {
 		return &pb.DeleteFollowResp{StatusCode: "-1",
@@ -63,13 +67,11 @@ func (l *DeleteFollowLogic) DeleteFollow(in *pb.DeleteFollowReq) (*pb.DeleteFoll
 			errors.Wrapf(errorx.NewDefaultError("mysql get err:"+err.Error()), "mysql get err ：%v", err)
 	}
 
-	l.svcCtx.Rdb.HSet(l.ctx, "followCount", fmt.Sprintf("%d:followCount", in.UserId), strconv.FormatInt(countMysql, 10))
-
-	//更新followerCount
+	//获取followerCount
 	db = l.svcCtx.MysqlDb.WithContext(l.ctx).Table("follow_subject").
 		Where("user_id = ?", in.UserId).Find(&[]pb.FollowSubject{})
 	err = db.Error
-	countMysql = db.RowsAffected
+	followerCount := db.RowsAffected
 
 	if err != nil {
 		return &pb.DeleteFollowResp{StatusCode: "-1",
@@ -77,9 +79,7 @@ func (l *DeleteFollowLogic) DeleteFollow(in *pb.DeleteFollowReq) (*pb.DeleteFoll
 			errors.Wrapf(errorx.NewDefaultError("mysql get err:"+err.Error()), "mysql get err ：%v", err)
 	}
 
-	l.svcCtx.Rdb.HSet(l.ctx, "followerCount", fmt.Sprintf("%d:followerCount", in.UserId), strconv.FormatInt(countMysql, 10))
-
-	//更新friendCount
+	//获取friendCount
 	friend := []pb.FollowSubject{}
 	err = l.svcCtx.MysqlDb.WithContext(l.ctx).Table("follow_subject").
 		Where("user_id = ?", in.UserId).Find(&friend).Error
@@ -89,7 +89,7 @@ func (l *DeleteFollowLogic) DeleteFollow(in *pb.DeleteFollowReq) (*pb.DeleteFoll
 			},
 			errors.Wrapf(errorx.NewDefaultError("mysql get err:"+err.Error()), "mysql get err ：%v", err)
 	}
-	countMysql = 0
+	var friendCount int64 = 0
 	for _, v := range friend {
 
 		err := l.svcCtx.MysqlDb.WithContext(l.ctx).Table("follow_subject").
@@ -102,9 +102,23 @@ func (l *DeleteFollowLogic) DeleteFollow(in *pb.DeleteFollowReq) (*pb.DeleteFoll
 					errors.Wrapf(errorx.NewDefaultError("mysql get err:"+err.Error()), "mysql get err ：%v", err)
 			}
 		}
-		countMysql++
+		friendCount++
 	}
-	l.svcCtx.Rdb.HSet(l.ctx, "friendCount", fmt.Sprintf("%d:friendCount", in.UserId), strconv.FormatInt(countMysql, 10))
+
+	kdRedis, err := jsonx.MarshalToString(&dao.CountData{
+		FollowCountKey:   fmt.Sprintf("%d:followCount", in.UserId),
+		FollowCount:      strconv.FormatInt(followCount, 10),
+		FollowerCountKey: fmt.Sprintf("%d:followerCount", in.UserId),
+		FollowerCount:    strconv.FormatInt(followerCount, 10),
+		FriendCountKey:   fmt.Sprintf("%d:friendCount", in.UserId),
+		FriendCount:      strconv.FormatInt(friendCount, 10),
+	})
+	if err != nil {
+		logx.Errorf("CountData json.Marshal error: %v", err)
+	}
+	if err = l.svcCtx.KqPusherRedisClient.Push(string(kdRedis)); err != nil {
+		logx.Errorf("KafkaPusherRedis.Push kdRedis: %s error: %v", string(kdMysql), err)
+	}
 
 	return &pb.DeleteFollowResp{
 		StatusCode: "0",

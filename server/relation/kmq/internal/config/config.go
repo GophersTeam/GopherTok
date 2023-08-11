@@ -6,7 +6,8 @@ import (
 )
 
 type Config struct {
-	KqConsumerConf kq.KqConf
+	KqConsumerRedisConf kq.KqConf
+	KqConsumerMysqlConf kq.KqConf
 	service.ServiceConf
 	Mysql struct {
 		DataSource string
