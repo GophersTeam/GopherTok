@@ -22,7 +22,6 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock"
     networks:
       - gophertok
-      -
 # user服务
   user-rpc: # 自定义容器名称
     image: ${DOCKERHUB_IMAGE}user-rpc:latest
