@@ -10,8 +10,8 @@ type Config struct {
 	UserRpcConf    zrpc.RpcClientConf
 	VideoRpcConf   zrpc.RpcClientConf
 	CommentRpcConf zrpc.RpcClientConf
-
-	Token struct {
+	FavorRpcConf   zrpc.RpcClientConf
+	Token          struct {
 		AccessToken  string
 		RefreshToken string
 	}

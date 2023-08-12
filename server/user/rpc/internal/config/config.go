@@ -22,5 +22,9 @@ type Config struct {
 		AccessToken  string
 		RefreshToken string
 	}
-	Salt string
+	Salt         string
+	KqPusherConf struct {
+		Brokers []string
+		Topic   string
+	}
 }

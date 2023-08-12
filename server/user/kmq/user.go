@@ -3,8 +3,8 @@ package main
 import (
 	"GopherTok/common/errorx"
 	"GopherTok/common/logs/zapx"
-	"GopherTok/server/video/kmq/internal/config"
-	"GopherTok/server/video/kmq/internal/service"
+	"GopherTok/server/user/kmq/internal/config"
+	"GopherTok/server/user/kmq/internal/service"
 	"context"
 	"flag"
 	"fmt"
