@@ -19,10 +19,10 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	CommentRpc_AddComment_FullMethodName      = "/CommentRpc/AddComment"
-	CommentRpc_DelComment_FullMethodName      = "/CommentRpc/DelComment"
-	CommentRpc_GetCommentList_FullMethodName  = "/CommentRpc/GetCommentList"
-	CommentRpc_GetCommentCount_FullMethodName = "/CommentRpc/GetCommentCount"
+	CommentRpc_AddComment_FullMethodName      = "/comment.CommentRpc/AddComment"
+	CommentRpc_DelComment_FullMethodName      = "/comment.CommentRpc/DelComment"
+	CommentRpc_GetCommentList_FullMethodName  = "/comment.CommentRpc/GetCommentList"
+	CommentRpc_GetCommentCount_FullMethodName = "/comment.CommentRpc/GetCommentCount"
 )
 
 // CommentRpcClient is the client API for CommentRpc service.
@@ -195,7 +195,7 @@ func _CommentRpc_GetCommentCount_Handler(srv interface{}, ctx context.Context, d
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var CommentRpc_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "CommentRpc",
+	ServiceName: "comment.CommentRpc",
 	HandlerType: (*CommentRpcServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

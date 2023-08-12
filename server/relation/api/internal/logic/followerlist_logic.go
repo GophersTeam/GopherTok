@@ -7,6 +7,7 @@ import (
 	"GopherTok/server/relation/rpc/pb"
 	"GopherTok/server/user/rpc/types/user"
 	"context"
+	"github.com/jinzhu/copier"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -42,24 +43,8 @@ func (l *FollowerListLogic) FollowerList(req *types.FollowerListReq) (resp *type
 		}, nil
 	}
 
-	exists, err = l.svcCtx.UserRpc.UserIsExists(l.ctx, &user.UserIsExistsReq{Id: userid})
-	if err != nil {
-		return &types.FollowerListRes{
-			StatusCode: "-1",
-			StatusMsg:  err.Error(),
-			UserList:   nil,
-		}, err
-	}
-	if exists.Exists == false {
-		return &types.FollowerListRes{
-			StatusCode: "-1",
-			StatusMsg:  "user doesn't exist",
-			UserList:   nil,
-		}, nil
-	}
-	rep, err := l.svcCtx.RelationRpc.GetFollowerList(l.ctx, &pb.GetFollowerReq{Userid: userid,
-		ToUserId: req.UserId})
-	userlist := &[]types.User{}
+	rep, err := l.svcCtx.RelationRpc.GetFollowerList(l.ctx, &pb.GetFollowerReq{Userid: userid})
+	userlist := []types.User{}
 
 	if err != nil {
 		return &types.FollowerListRes{
@@ -69,20 +54,10 @@ func (l *FollowerListLogic) FollowerList(req *types.FollowerListReq) (resp *type
 		}, err
 	}
 	for _, val := range rep.UserList {
-		user := &types.User{
-			Id:              val.Id,
-			Name:            val.Name,
-			FollowCount:     val.FollowCount,
-			FollowerCount:   val.FollowerCount,
-			IsFollow:        val.IsFollow,
-			Avatar:          val.Avatar,
-			BackgroundImage: val.BackgroundImage,
-			Signature:       val.Signature,
-			TotalFavourited: val.TotalFavourited,
-			WorkCount:       val.WorkCount,
-			FavouriteCount:  val.FavouriteCount,
-		}
-		*userlist = append(*userlist, *user)
+		usr := &types.User{}
+		_ = copier.Copy(&usr, &val)
+
+		userlist = append(userlist, *usr)
 	}
 
 	return &types.FollowerListRes{

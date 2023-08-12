@@ -3,8 +3,8 @@ package main
 import (
 	"GopherTok/common/errorx"
 	"GopherTok/common/logs/zapx"
-	"GopherTok/server/video/kmq/internal/config"
-	"GopherTok/server/video/kmq/internal/service"
+	"GopherTok/server/relation/kmq/internal/config"
+	"GopherTok/server/relation/kmq/internal/service"
 	"context"
 	"flag"
 	"fmt"
@@ -15,7 +15,7 @@ import (
 	"net/http"
 )
 
-var configFile = flag.String("f", "etc/user.yaml", "the config file")
+var configFile = flag.String("f", "etc/nacos.yaml", "the config file")
 
 func main() {
 	flag.Parse()
@@ -29,8 +29,10 @@ func main() {
 	})
 
 	srv := service.NewService(c)
-	queue := kq.MustNewQueue(c.KqConsumerConf, kq.WithHandle(srv.Consume))
-	defer queue.Stop()
+	queueRedis := kq.MustNewQueue(c.KqConsumerRedisConf, kq.WithHandle(srv.ConsumeRedis))
+	defer queueRedis.Stop()
+	queueMysql := kq.MustNewQueue(c.KqConsumerMysqlConf, kq.WithHandle(srv.ConsumeMysql))
+	defer queueMysql.Stop()
 	// 自定义错误
 	httpx.SetErrorHandlerCtx(func(ctx context.Context, err error) (int, interface{}) {
 		switch e := err.(type) {
@@ -44,5 +46,6 @@ func main() {
 	logx.Must(err)
 	logx.SetWriter(writer)
 	fmt.Println("seckill started!!!")
-	queue.Start()
+	queueMysql.Start()
+	queueRedis.Start()
 }

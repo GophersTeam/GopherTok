@@ -16,7 +16,7 @@ import (
 // gorm初始化
 func InitGorm(MysqlDataSourece string) *gorm.DB {
 	// 将日志写进kafka
-	logx.SetWriter(*LogxKafka())
+	//logx.SetWriter(*LogxKafka())
 	db, err := gorm.Open(mysql.Open(MysqlDataSourece),
 		&gorm.Config{
 			NamingStrategy: schema.NamingStrategy{

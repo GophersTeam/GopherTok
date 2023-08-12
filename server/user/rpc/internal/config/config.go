@@ -4,9 +4,10 @@ import "github.com/zeromicro/go-zero/zrpc"
 
 type Config struct {
 	zrpc.RpcServerConf
-	RelationRpc  zrpc.RpcClientConf
-	VideoRpcConf zrpc.RpcClientConf
-	MysqlCluster struct {
+	RelationRpcConf zrpc.RpcClientConf
+	VideoRpcConf    zrpc.RpcClientConf
+	FavorRpcConf    zrpc.RpcClientConf
+	MysqlCluster    struct {
 		DataSource string
 	}
 	RedisCluster struct {
@@ -21,5 +22,9 @@ type Config struct {
 		AccessToken  string
 		RefreshToken string
 	}
-	Salt string
+	Salt         string
+	KqPusherConf struct {
+		Brokers []string
+		Topic   string
+	}
 }

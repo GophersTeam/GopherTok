@@ -3,6 +3,7 @@ package logic
 import (
 	"GopherTok/common/errorx"
 	"context"
+	"github.com/jinzhu/copier"
 	"github.com/pkg/errors"
 	"gorm.io/gorm"
 
@@ -30,7 +31,7 @@ func NewGetFollowerListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *G
 func (l *GetFollowerListLogic) GetFollowerList(in *pb.GetFollowerReq) (*pb.GetFollowerResp, error) {
 	follow := []pb.FollowSubject{}
 	followerList := []*pb.User{}
-	err := l.svcCtx.MysqlDb.WithContext(l.ctx).Table("follow_subject").Where("user_id = ?", in.ToUserId).Find(&follow).Error
+	err := l.svcCtx.MysqlDb.WithContext(l.ctx).Table("follow_subject").Where("user_id = ?", in.Userid).Find(&follow).Error
 	if err != nil {
 		if err != gorm.ErrRecordNotFound {
 			return &pb.GetFollowerResp{
@@ -62,19 +63,8 @@ func (l *GetFollowerListLogic) GetFollowerList(in *pb.GetFollowerReq) (*pb.GetFo
 				},
 				errors.Wrapf(errorx.NewDefaultError("userInfo get err:"+err.Error()), "userInfo get err ：%v", err)
 		}
-		follower := pb.User{
-			Id:              use.Id,
-			Name:            use.Name,
-			FollowCount:     use.FollowCount,
-			FollowerCount:   use.FollowerCount,
-			IsFollow:        use.IsFollow,
-			Avatar:          use.Avatar,
-			BackgroundImage: use.BackgroundImage,
-			Signature:       use.Signature,
-			TotalFavourited: use.TotalFavorited,
-			WorkCount:       use.WorkCount,
-			FavouriteCount:  use.FavoriteCount,
-		}
+		follower := pb.User{}
+		_ = copier.Copy(&follower, &use)
 
 		followerList = append(followerList, &follower)
 	}

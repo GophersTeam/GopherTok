@@ -15,6 +15,22 @@ type User struct {
 	FavouriteCount  int64  `json:"favourite_count"`
 }
 
+type FriendUser struct {
+	Id              int64  `json:"id"`
+	Name            string `json:"name"`
+	FollowCount     int64  `json:"follow_count"`
+	FollowerCount   int64  `json:"follower_count"`
+	IsFollow        bool   `json:"is_follow"`
+	Avatar          string `json:"avatar"`
+	BackgroundImage string `json:"background_image"`
+	Signature       string `json:"signature"`
+	TotalFavourited string `json:"total_favourited"`
+	WorkCount       int64  `json:"work_count"`
+	FavouriteCount  int64  `json:"favourite_count"`
+	Message         string `json:"message"`
+	MsgType         int64  `json:"msgType"`
+}
+
 type Follow struct {
 	Id         int64 `json:"id"`
 	UserId     int64 `json:"user_id"`
@@ -39,9 +55,9 @@ type FollowListReq struct {
 }
 
 type FollowListRes struct {
-	StatusCode string  `json:"status_code"`
-	StatusMsg  string  `json:"status_msg"`
-	UserList   *[]User `json:"user_list"`
+	StatusCode string `json:"status_code"`
+	StatusMsg  string `json:"status_msg"`
+	UserList   []User `json:"user_list"`
 }
 
 type FollowerListReq struct {
@@ -50,9 +66,9 @@ type FollowerListReq struct {
 }
 
 type FollowerListRes struct {
-	StatusCode string  `json:"status_code"`
-	StatusMsg  string  `json:"status_msg"`
-	UserList   *[]User `json:"user_list"`
+	StatusCode string `json:"status_code"`
+	StatusMsg  string `json:"status_msg"`
+	UserList   []User `json:"user_list"`
 }
 
 type FriendListReq struct {
@@ -61,7 +77,7 @@ type FriendListReq struct {
 }
 
 type FriendListRes struct {
-	StatusCode string  `json:"status_code"`
-	StatusMsg  string  `json:"status_msg"`
-	UserList   *[]User `json:"user_list"`
+	StatusCode string       `json:"status_code"`
+	StatusMsg  string       `json:"status_msg"`
+	UserList   []FriendUser `json:"user_list"`
 }

@@ -2,13 +2,12 @@ package logic
 
 import (
 	"GopherTok/server/comment/rpc/commentrpc"
+	"GopherTok/server/comment/rpc/internal/svc"
+	"GopherTok/server/comment/rpc/pb"
 	"GopherTok/server/user/rpc/userclient"
 	"context"
 	"github.com/jinzhu/copier"
 	"github.com/zeromicro/go-zero/core/threading"
-
-	"GopherTok/server/comment/rpc/internal/svc"
-	"GopherTok/server/comment/rpc/pb"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

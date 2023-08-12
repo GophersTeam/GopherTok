@@ -7,6 +7,7 @@ import (
 type Config struct {
 	zrpc.RpcServerConf
 	UserRpc zrpc.RpcClientConf
+	ChatRpc zrpc.RpcClientConf
 	Mysql   struct {
 		DataSource string
 	}
@@ -17,5 +18,14 @@ type Config struct {
 		Cluster4 string
 		Cluster5 string
 		Cluster6 string
+	}
+
+	KqPusherRedisConf struct {
+		Brokers []string
+		Topic   string
+	}
+	KqPusherMysqlConf struct {
+		Brokers []string
+		Topic   string
 	}
 }

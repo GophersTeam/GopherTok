@@ -6,7 +6,7 @@ on:
 
 jobs:
 # user-api
-  build-and-push-gophertok-user-api:
+  build-and-push-user-api:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repository
@@ -24,16 +24,16 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      - name: Create and push gophertok-user-api Docker image
+      - name: Create and push user-api Docker image
         uses: docker/build-push-action@v2
         with:
           context: .
           file: ./server/user/api/Dockerfile
           push: true
-          tags: liuxian123/gophertok-user-api:latest
+          tags: ${{ secrets.DOCKERHUB_IMAGE }}user-api:latest
           platforms: linux/amd64,linux/arm64  # 构建多个架构的镜像
 # user-rpc
-  build-and-push-gophertok-user-rpc:
+  build-and-push-user-rpc:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repository
@@ -51,19 +51,19 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      - name: Create and push gophertok-user-rpc Docker image
+      - name: Create and push user-rpc Docker image
         uses: docker/build-push-action@v2
         with:
           context: .
           file: ./server/user/rpc/Dockerfile
           push: true
-          tags: liuxian123/gophertok-user-rpc:latest
+          tags: ${{ secrets.DOCKERHUB_IMAGE }}user-rpc:latest
           platforms: linux/amd64,linux/arm64  # 构建多个架构的镜像
 
 
 
 # video-rpc
-  build-and-push-gophertok-video-rpc:
+  build-and-push-video-rpc:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repository
@@ -81,16 +81,16 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      - name: Create and push gophertok-video-rpc Docker image
+      - name: Create and push video-rpc Docker image
         uses: docker/build-push-action@v2
         with:
           context: .
           file: ./server/video/rpc/Dockerfile
           push: true
-          tags: liuxian123/gophertok-video-rpc:latest
+          tags: ${{ secrets.DOCKERHUB_IMAGE }}video-rpc:latest
           platforms: linux/amd64,linux/arm64  # 构建多个架构的镜像
 # video-api
-  build-and-push-gophertok-video-api:
+  build-and-push-video-api:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repository
@@ -108,17 +108,17 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      - name: Create and push gophertok-video-api Docker image
+      - name: Create and push video-api Docker image
         uses: docker/build-push-action@v2
         with:
           context: .
           file: ./server/video/api/Dockerfile
           push: true
-          tags: liuxian123/gophertok-video-api:latest
+          tags: ${{ secrets.DOCKERHUB_IMAGE }}video-api:latest
           platforms: linux/amd64,linux/arm64  # 构建多个架构的镜像
 
 # video-mq
-  build-and-push-gophertok-video-mq:
+  build-and-push-video-mq:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repository
@@ -136,13 +136,13 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      - name: Create and push gophertok-video-mq Docker image
+      - name: Create and push video-mq Docker image
         uses: docker/build-push-action@v2
         with:
           context: .
           file: ./server/video/kmq/Dockerfile
           push: true
-          tags: liuxian123/gophertok-video-mq:latest
+          tags: ${{ secrets.DOCKERHUB_IMAGE }}video-mq:latest
           platforms: linux/amd64,linux/arm64  # 构建多个架构的镜像  
 
 
@@ -150,7 +150,7 @@ jobs:
 
 
   # chat-rpc
-  build-and-push-gophertok-chat-rpc:
+  build-and-push-chat-rpc:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repository
@@ -168,16 +168,16 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      - name: Create and push gophertok-chat-rpc Docker image
+      - name: Create and push chat-rpc Docker image
         uses: docker/build-push-action@v2
         with:
           context: .
           file: ./server/chat/rpc/Dockerfile
           push: true
-          tags: liuxian123/gophertok-chat-rpc:latest
+          tags: ${{ secrets.DOCKERHUB_IMAGE }}chat-rpc:latest
           platforms: linux/amd64,linux/arm64  # 构建多个架构的镜像
 # chat-api
-  build-and-push-gophertok-chat-api:
+  build-and-push-chat-api:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repository
@@ -195,17 +195,17 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      - name: Create and push gophertok-chat-api Docker image
+      - name: Create and push chat-api Docker image
         uses: docker/build-push-action@v2
         with:
           context: .
           file: ./server/chat/api/Dockerfile
           push: true
-          tags: liuxian123/gophertok-chat-api:latest
+          tags: ${{ secrets.DOCKERHUB_IMAGE }}chat-api:latest
           platforms: linux/amd64,linux/arm64  # 构建多个架构的镜像
 
 # chat-mq
-  build-and-push-gophertok-chat-mq:
+  build-and-push-chat-mq:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repository
@@ -223,19 +223,19 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      - name: Create and push gophertok-chat-mq Docker image
+      - name: Create and push chat-mq Docker image
         uses: docker/build-push-action@v2
         with:
           context: .
           file: ./server/chat/mq/Dockerfile
           push: true
-          tags: liuxian123/gophertok-chat-mq:latest
+          tags: ${{ secrets.DOCKERHUB_IMAGE }}chat-mq:latest
           platforms: linux/amd64,linux/arm64  # 构建多个架构的镜像
 
 
 
   # comment-rpc
-  build-and-push-gophertok-comment-rpc:
+  build-and-push-comment-rpc:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repository
@@ -253,16 +253,16 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      - name: Create and push gophertok-comment-rpc Docker image
+      - name: Create and push comment-rpc Docker image
         uses: docker/build-push-action@v2
         with:
           context: .
           file: ./server/comment/rpc/Dockerfile
           push: true
-          tags: liuxian123/gophertok-comment-rpc:latest
+          tags: ${{ secrets.DOCKERHUB_IMAGE }}comment-rpc:latest
           platforms: linux/amd64,linux/arm64  # 构建多个架构的镜像
   # comment-api
-  build-and-push-gophertok-comment-api:
+  build-and-push-comment-api:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repository
@@ -280,17 +280,17 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      - name: Create and push gophertok-comment-api Docker image
+      - name: Create and push comment-api Docker image
         uses: docker/build-push-action@v2
         with:
           context: .
           file: ./server/comment/api/Dockerfile
           push: true
-          tags: liuxian123/gophertok-comment-api:latest
+          tags: ${{ secrets.DOCKERHUB_IMAGE }}comment-api:latest
           platforms: linux/amd64,linux/arm64  # 构建多个架构的镜像
 
   # comment-mq
-  build-and-push-gophertok-comment-mq:
+  build-and-push-comment-mq:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repository
@@ -308,17 +308,17 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      - name: Create and push gophertok-comment-mq Docker image
+      - name: Create and push comment-mq Docker image
         uses: docker/build-push-action@v2
         with:
           context: .
           file: ./server/comment/mq/Dockerfile
           push: true
-          tags: liuxian123/gophertok-comment-mq:latest
+          tags: ${{ secrets.DOCKERHUB_IMAGE }}comment-mq:latest
           platforms: linux/amd64,linux/arm64  # 构建多个架构的镜像
 
   # favor-api
-  build-and-push-gophertok-favor-api:
+  build-and-push-favor-api:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repository
@@ -336,19 +336,19 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      - name: Create and push gophertok-favor-api Docker image
+      - name: Create and push favor-api Docker image
         uses: docker/build-push-action@v2
         with:
           context: .
           file: ./server/favor/api/Dockerfile
           push: true
-          tags: liuxian123/gophertok-favor-api:latest
+          tags: ${{ secrets.DOCKERHUB_IMAGE }}favor-api:latest
           platforms: linux/amd64,linux/arm64  # 构建多个架构的镜像
 
 
 
   # favor-rpc
-  build-and-push-gophertok-favor-rpc:
+  build-and-push-favor-rpc:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repository
@@ -366,18 +366,18 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      - name: Create and push gophertok-favor-rpc Docker image
+      - name: Create and push favor-rpc Docker image
         uses: docker/build-push-action@v2
         with:
           context: .
           file: ./server/favor/rpc/Dockerfile
           push: true
-          tags: liuxian123/gophertok-favor-rpc:latest
+          tags: ${{ secrets.DOCKERHUB_IMAGE }}favor-rpc:latest
           platforms: linux/amd64,linux/arm64  # 构建多个架构的镜像
 
 
   # relation-rpc
-  build-and-push-gophertok-relation-rpc:
+  build-and-push-relation-rpc:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repository
@@ -395,18 +395,16 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      - name: Create and push gophertok-relation-rpc Docker image
+      - name: Create and push relation-rpc Docker image
         uses: docker/build-push-action@v2
         with:
           context: .
           file: ./server/relation/rpc/Dockerfile
           push: true
-          tags: liuxian123/gophertok-relation-rpc:latest
+          tags: ${{ secrets.DOCKERHUB_IMAGE }}relation-rpc:latest
           platforms: linux/amd64,linux/arm64  # 构建多个架构的镜像
-
-
   # relation-api
-  build-and-push-gophertok-relation-api:
+  build-and-push-relation-api:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repository
@@ -424,17 +422,17 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      - name: Create and push gophertok-relation-api Docker image
+      - name: Create and push relation-api Docker image
         uses: docker/build-push-action@v2
         with:
           context: .
           file: ./server/relation/api/Dockerfile
           push: true
-          tags: liuxian123/gophertok-relation-api:latest
+          tags: ${{ secrets.DOCKERHUB_IMAGE }}relation-api:latest
           platforms: linux/amd64,linux/arm64  # 构建多个架构的镜像
 
   # relation-mq
-  build-and-push-gophertok-relation-mq:
+  build-and-push-relation-mq:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repository
@@ -452,11 +450,11 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      - name: Create and push gophertok-relation-mq Docker image
+      - name: Create and push relation-mq Docker image
         uses: docker/build-push-action@v2
         with:
           context: .
           file: ./server/relation/kmq/Dockerfile
           push: true
-          tags: liuxian123/gophertok-relation-mq:latest
+          tags: ${{ secrets.DOCKERHUB_IMAGE }}relation-mq:latest
           platforms: linux/amd64,linux/arm64  # 构建多个架构的镜像

@@ -1,6 +1,7 @@
 package svc
 
 import (
+	"GopherTok/server/chat/rpc/chatrpc"
 	"GopherTok/server/relation/api/internal/config"
 	"GopherTok/server/relation/api/internal/middleware"
 	"GopherTok/server/relation/rpc/pb"
@@ -14,6 +15,7 @@ type ServiceContext struct {
 	Config      config.Config
 	RelationRpc pb.RelationRpcClient
 	UserRpc     userclient.User
+	ChatRpc     chatrpc.ChatRpc
 	Jwt         rest.Middleware
 }
 
@@ -23,5 +25,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Jwt:         middleware.NewJwtMiddleware(c).Handle,
 		RelationRpc: relationrpc.NewRelationRpc(zrpc.MustNewClient(c.RelationRpc)),
 		UserRpc:     userclient.NewUser(zrpc.MustNewClient(c.UserRpc)),
+		ChatRpc:     chatrpc.NewChatRpc(zrpc.MustNewClient(c.ChatRpc)),
 	}
 }

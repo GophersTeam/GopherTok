@@ -3,9 +3,9 @@ Clusters:
       Kafka:
         Name: gostash
         Brokers:
-          - "kafka:9092"
+          - "kafka1:9093"
         Topics:
-          - gopan-log
+          - gophertok-log
         Group: pro
         Consumers: 16
     Filters:
@@ -42,4 +42,4 @@ Clusters:
       ElasticSearch:
         Hosts:
           - "http://elasticsearch:9201"
-        Index: "gopan-{{yyyy-MM-dd}}"
+        Index: "gophter-{{yyyy-MM-dd}}"

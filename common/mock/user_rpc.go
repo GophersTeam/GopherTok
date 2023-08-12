@@ -28,7 +28,7 @@ func (u UserRpc) Login(ctx context.Context, in *userclient.LoginReq, opts ...grp
 func (u UserRpc) UserInfo(ctx context.Context, in *userclient.UserInfoReq, opts ...grpc.CallOption) (*userclient.UserInfoResp, error) {
 	//TODO implement me
 	return &userclient.UserInfoResp{
-		Id:              1,
+		Id:              in.Id,
 		Name:            "hhhh",
 		Avatar:          "htpp://xxx",
 		BackgroundImage: "htpp://xxx",
