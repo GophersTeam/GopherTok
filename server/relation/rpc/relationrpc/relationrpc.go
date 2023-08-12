@@ -20,6 +20,7 @@ type (
 	DeleteFollowReq      = pb.DeleteFollowReq
 	DeleteFollowResp     = pb.DeleteFollowResp
 	FollowSubject        = pb.FollowSubject
+	FriendUser           = pb.FriendUser
 	GetFollowCountReq    = pb.GetFollowCountReq
 	GetFollowCountResp   = pb.GetFollowCountResp
 	GetFollowListReq     = pb.GetFollowListReq

@@ -2,7 +2,8 @@ version: '3.5'
 # 网络配置
 networks:
   gophertok:
-    driver: bridge
+    external: true
+
 
 # 服务容器配置
 services:
@@ -97,8 +98,8 @@ services:
 
   #消费kafka中filebeat收集的数据输出到es - The data output collected by FileBeat in Kafka is output to ES
   go-stash:
-   # image: kevinwan/go-stash:1.0 # if you "macOs intel" or "linux amd"
-    image: kevinwan/go-stash:1.0-arm64 #  if you "macOs m1" or "linux arm"
+    image: kevinwan/go-stash:1.0 # if you "macOs intel" or "linux amd"
+    #image: kevinwan/go-stash:1.0-arm64 #  if you "macOs m1" or "linux arm"
     container_name: go-stash
     environment:
       # 时区上海 - Time zone Shanghai (Change if needed)
@@ -135,39 +136,39 @@ services:
       - kafka
 
 
-  #zookeeper是kafka的依赖 - Zookeeper is the dependencies of Kafka
-  zookeeper:
-    container_name: zookeeper
-    build:
-      context: ./zookeeper
-    environment:
-      - TZ=Asia/Shanghai
-    privileged: true
-    networks:
-      - gophertok
-    ports:
-      - "2181:2181"
-    restart: always
-
-  #消息队列 - Message queue
-  kafka:
-    build:
-      context: ./kafka
-    container_name: kafka
-    ports:
-      - "9092:9092"
-    environment:
-      - KAFKA_ADVERTISED_HOST_NAME=kafka
-      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
-      - KAFKA_AUTO_CREATE_TOPICS_ENABLE=false
-      - TZ=Asia/Shanghai
-      - ALLOW_PLAINTEXT_LISTENER=yes
-    restart: always
-    privileged: true
-    networks:
-      - gophertok
-    depends_on:
-      - zookeeper
+#  #zookeeper是kafka的依赖 - Zookeeper is the dependencies of Kafka
+#  zookeeper:
+#    container_name: zookeeper
+#    build:
+#      context: ./zookeeper
+#    environment:
+#      - TZ=Asia/Shanghai
+#    privileged: true
+#    networks:
+#      - gophertok
+#    ports:
+#      - "2181:2181"
+#    restart: always
+#
+#  #消息队列 - Message queue
+#  kafka:
+#    build:
+#      context: ./kafka
+#    container_name: kafka
+#    ports:
+#      - "9092:9092"
+#    environment:
+#      - KAFKA_ADVERTISED_HOST_NAME=kafka
+#      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+#      - KAFKA_AUTO_CREATE_TOPICS_ENABLE=false
+#      - TZ=Asia/Shanghai
+#      - ALLOW_PLAINTEXT_LISTENER=yes
+#    restart: always
+#    privileged: true
+#    networks:
+#      - gophertok
+#    depends_on:
+#      - zookeeper
 ## 映射mac docker容器位置
   nsenter1:
     image: justincormack/nsenter1

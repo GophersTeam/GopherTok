@@ -9,6 +9,7 @@ type Config struct {
 	rest.RestConf
 	RelationRpc zrpc.RpcClientConf
 	UserRpc     zrpc.RpcClientConf
+	ChatRpc     zrpc.RpcClientConf
 	Token       struct {
 		AccessToken  string
 		RefreshToken string

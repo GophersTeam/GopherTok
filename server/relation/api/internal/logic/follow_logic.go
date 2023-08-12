@@ -2,6 +2,7 @@ package logic
 
 import (
 	con "GopherTok/common/consts"
+	"GopherTok/server/chat/rpc/chatrpc"
 	"GopherTok/server/relation/api/internal/svc"
 	"GopherTok/server/relation/api/internal/types"
 	"GopherTok/server/relation/rpc/pb"
@@ -88,6 +89,19 @@ func (l *FollowLogic) Follow(req *types.FollowReq) (resp *types.FollowRes, err e
 			}, err
 		}
 
+		isFriend, _ := l.svcCtx.RelationRpc.CheckIsFollow(l.ctx, &pb.CheckIsFollowReq{
+			UserId:   req.ToUserId,
+			ToUserId: userid,
+		})
+
+		if isFriend.IsFollow {
+			_, _ = l.svcCtx.ChatRpc.MessageAction(l.ctx, &chatrpc.MessageActionRequest{
+				FromUserId: userid,
+				ToUserId:   req.ToUserId,
+				Action:     1,
+				Content:    "我们已经是好友啦！",
+			})
+		}
 		return &types.FollowRes{
 			StatusCode: follow.StatusCode,
 			StatusMsg:  follow.StatusMsg,
