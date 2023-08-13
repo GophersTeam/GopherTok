@@ -10,6 +10,7 @@ import (
 	"github.com/bwmarrin/snowflake"
 	"github.com/zeromicro/go-queue/kq"
 	"github.com/zeromicro/go-zero/core/stores/redis"
+	"github.com/zeromicro/go-zero/zrpc"
 )
 
 type ServiceContext struct {
@@ -35,7 +36,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Config:       c,
 		CommentModel: model.NewCommentModel(c.MongoConf.Url, c.MongoConf.DB, c.MongoConf.Collection),
 		Snowflake:    snowflakeNode,
-		//UserRpc:             userclient.NewUser(zrpc.MustNewClient(c.UserRpcConf)),
+		//UserRpc:      mock.UserRpc{},
+		UserRpc:             userclient.NewUser(zrpc.MustNewClient(c.UserRpcConf)),
 		SensitiveWordFilter: trie,
 		KafkaPusher:         kq.NewPusher(c.KafkaConf.Addrs, c.KafkaConf.Topic),
 		RedisClient:         redis.MustNewRedis(c.RedisConf),
