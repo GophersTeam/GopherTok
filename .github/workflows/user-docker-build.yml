@@ -2,8 +2,9 @@ name: Docker Build and Push User
 on:
   push:
     branches:
-      - main
-
+      - dev
+    author:
+      - liuxianloveqiqi  # Replace with the actual GitHub username
 jobs:
   # user-api
   build-and-push-user-api:

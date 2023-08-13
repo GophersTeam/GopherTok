@@ -19,6 +19,7 @@ require (
 	github.com/tencentyun/cos-go-sdk-v5 v0.7.42
 	github.com/zeromicro/go-queue v1.1.8
 	github.com/zeromicro/go-zero v1.5.4
+	go.mongodb.org/mongo-driver v1.12.0
 	go.uber.org/zap v1.24.0
 	google.golang.org/grpc v1.56.2
 	google.golang.org/protobuf v1.31.0
@@ -102,7 +103,6 @@ require (
 	go.etcd.io/etcd/api/v3 v3.5.9 // indirect
 	go.etcd.io/etcd/client/pkg/v3 v3.5.9 // indirect
 	go.etcd.io/etcd/client/v3 v3.5.9 // indirect
-	go.mongodb.org/mongo-driver v1.12.0 // indirect
 	go.opentelemetry.io/otel v1.14.0 // indirect
 	go.opentelemetry.io/otel/exporters/jaeger v1.14.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/internal/retry v1.14.0 // indirect
