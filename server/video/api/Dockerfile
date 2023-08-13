@@ -6,7 +6,7 @@ ENV CGO_ENABLED 0
 ENV GOPROXY https://goproxy.cn,direct
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 
-RUN apk update --no-cache && apk add --no-cache tzdata
+RUN apk update --no-cache && apk add --no-cache tzdata ffmpeg
 
 WORKDIR /build
 
@@ -23,7 +23,7 @@ FROM scratch
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /usr/share/zoneinfo/Asia/Shanghai /usr/share/zoneinfo/Asia/Shanghai
 ENV TZ Asia/Shanghai
-RUN apk update --no-cache && apk add --no-cache tzdata ffmpeg # 添加 ffmpeg 安装步骤
+
 WORKDIR /app
 COPY --from=builder /app/video /app/video
 COPY --from=builder /app/etc /app/etc
