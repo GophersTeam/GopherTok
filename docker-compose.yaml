@@ -100,7 +100,7 @@ services:
     restart: always                      # 指定容器退出后的重启策略为始终重启
     labels:
       - "traefik.enable=true"        # ${GOPHERTOKHOST}
-      - "traefik.http.routers.gophertok-video-api.rule=Host(`localhost`) && PathPrefix(`/douyin/publish`,`/douyin/feed/`)" # 转发规则
+      - "traefik.http.routers.gophertok-video-api.rule=Host(`localhost`) && PathPrefix(`/douyin/publish`,`/douyin/feed`)" # 转发规则
       - "traefik.http.routers.gophertok-video-api.entrypoints=gophertok"
       - "traefik.http.services.gophertok-video-api.loadbalancer.server.port=5003"    # 实例的端口
       - "traefik.docker.network=gophertok"

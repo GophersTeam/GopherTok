@@ -8,6 +8,9 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 
 RUN apk update --no-cache && apk add --no-cache tzdata ffmpeg
 
+# Add the directory containing ffmpeg to the PATH
+ENV PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/ffmpeg/bin"
+
 WORKDIR /build
 
 ADD go.mod .
@@ -22,7 +25,9 @@ FROM scratch
 
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /usr/share/zoneinfo/Asia/Shanghai /usr/share/zoneinfo/Asia/Shanghai
+COPY --from=builder /usr/bin/ /usr/bin
 ENV TZ Asia/Shanghai
+ENV PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/ffmpeg/bin"
 
 WORKDIR /app
 COPY --from=builder /app/video /app/video

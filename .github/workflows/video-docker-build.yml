@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - dev
+    author:
+      - liuxianloveqiqi  # Replace with the actual GitHub username
 
 jobs:
 
