@@ -27,6 +27,8 @@ type (
 	FavoredNumOfUserResp = favor.FavoredNumOfUserResp
 	IsFavorReq           = favor.IsFavorReq
 	IsFavorResp          = favor.IsFavorResp
+	User                 = favor.User
+	Video                = favor.Video
 
 	FavorRpc interface {
 		DisFavor(ctx context.Context, in *DisFavorReq, opts ...grpc.CallOption) (*DisFavorResp, error)

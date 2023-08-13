@@ -15,9 +15,9 @@ processors:
 
 output.kafka:
   enabled: true
-  hosts: ["kafka:9092"]
+  hosts: ["kafka1:9093"]
   #要提前创建topic
-  topic: "gopan-log"
+  topic: "gophertok-log"
   partition.hash:
     reachable_only: true
   compression: gzip

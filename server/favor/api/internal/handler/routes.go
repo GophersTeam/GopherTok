@@ -11,17 +11,6 @@ import (
 
 func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodPost,
-				Path:    "/favornum",
-				Handler: FavorNumHandler(serverCtx),
-			},
-		},
-		rest.WithPrefix("/douyin/favor"),
-	)
-
-	server.AddRoutes(
 		rest.WithMiddlewares(
 			[]rest.Middleware{serverCtx.JWT},
 			[]rest.Route{
@@ -29,11 +18,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodPost,
 					Path:    "/favor",
 					Handler: FavorHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
-					Path:    "/disfavor",
-					Handler: DisFavorHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,

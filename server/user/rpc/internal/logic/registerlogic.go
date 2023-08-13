@@ -5,6 +5,7 @@ import (
 	"GopherTok/common/utils"
 	"GopherTok/server/user/model"
 	"context"
+	"encoding/json"
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logc"
@@ -27,6 +28,7 @@ func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Register
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
+
 }
 
 func (l *RegisterLogic) Register(in *user.RegisterReq) (*user.RegisterResp, error) {
@@ -37,7 +39,6 @@ func (l *RegisterLogic) Register(in *user.RegisterReq) (*user.RegisterResp, erro
 		return nil, errors.Wrapf(errorx.NewDefaultError(err.Error()), "redis查询错误 err：%v", err)
 
 	}
-
 	if exists {
 		logc.Info(l.ctx, "Username already exists.")
 		return nil, errors.Wrapf(errorx.NewDefaultError("用户名已经存在，请更换用户名"), "用户名已经存在，请更换用户名 RegisterReq：%v", in)
@@ -51,15 +52,24 @@ func (l *RegisterLogic) Register(in *user.RegisterReq) (*user.RegisterResp, erro
 		ID:       l.svcCtx.Snowflake.Generate().Int64(),
 		Username: in.Username,
 		// 加盐加密
-		Password:        utils.Md5Password(in.Password, l.svcCtx.Config.Salt),
-		Avatar:          utils.GetRandomImageUrl(),
-		BackgroundImage: utils.GetRandomImageUrl(),
-		Signature:       utils.GetRandomYiYan(),
+		Password: utils.Md5Password(in.Password, l.svcCtx.Config.Salt),
 	}
-	if err := l.svcCtx.MysqlDb.Create(&u).Error; err != nil {
-		logx.Error(err)
-		return nil, errors.Wrapf(errorx.NewDefaultError(err.Error()), "gorm creat user 错误 err：%v", err)
+	// kafka异步处理msg
+	uMsg, err := json.Marshal(&u)
+	if err != nil {
+		logx.Errorf("json.Marshal msgs: %v error: %v", uMsg, err)
+		return nil, errors.Wrapf(errorx.NewDefaultError("userinfo jons转换错误"), "用户名已经存在，请更换用户名 RegisterReq：%v", in)
+
 	}
+	if err = l.svcCtx.KqPusherClient.Push(string(uMsg)); err != nil {
+		logx.Errorf("KafkaPusher.Push kd: %s error: %v", string(uMsg), err)
+		return nil, errors.Wrapf(errorx.NewDefaultError("userinfo 写入kafka错误"), "用户名已经存在，请更换用户名 RegisterReq：%v", in)
+
+	}
+	//if err := l.svcCtx.MysqlDb.Create(&u).Error; err != nil {
+	//	logx.Error(err)
+	//	return nil, errors.Wrapf(errorx.NewDefaultError(err.Error()), "gorm creat user 错误 err：%v", err)
+	//}
 	// 生成token
 	AccessToken, RefreshToken := utils.GetToken(u.ID, uuid.New().String(), l.svcCtx.Config.Token.AccessToken, l.svcCtx.Config.Token.RefreshToken)
 	token := AccessToken + " " + RefreshToken

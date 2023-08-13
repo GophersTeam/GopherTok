@@ -13,6 +13,7 @@ import (
 	"gorm.io/gorm"
 	"log"
 	"sync"
+	"time"
 )
 
 const (
@@ -79,8 +80,8 @@ func (s *Service) consume(ch chan *model.Video) {
 			Title:       m.Title,
 			PlayURL:     m.PlayURL,
 			CoverURL:    m.CoverURL,
-			CreateTime:  m.CreateTime,
-			UpdateTime:  m.UpdateTime,
+			CreateTime:  time.Now(),
+			UpdateTime:  time.Now(),
 			VideoSha256: m.VideoSha256,
 		}
 		fmt.Println(v)

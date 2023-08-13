@@ -31,6 +31,7 @@ func NewVideoListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *VideoLi
 
 func (l *VideoListLogic) VideoList(in *video.VideoListReq) (*video.VideoListResp, error) {
 	// todo: add your logic here and delete this line
+
 	timestampInt, err := strconv.ParseInt(in.LatestTime, 10, 64)
 	if err != nil {
 		fmt.Println("解析时间戳出错:", err)

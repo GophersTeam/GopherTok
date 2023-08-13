@@ -1,8 +1,7 @@
 package logic
 
 import (
-	"GopherTok/common/consts"
-	"GopherTok/common/errorx"
+	"GopherTok/server/comment/rpc/commentrpc"
 	"GopherTok/server/favor/rpc/types/favor"
 	"context"
 	"fmt"
@@ -30,11 +29,11 @@ func NewFavorListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *FavorLi
 
 func (l *FavorListLogic) FavorList(req *types.FavorlistReq) (resp *types.FavorlistResp, err error) {
 	// todo: add your logic here and delete this line
-	userId, ok := l.ctx.Value(consts.UserId).(int64)
-	if !ok {
-		return nil, errors.Wrapf(errorx.NewDefaultError("user_id获取失败"), "user_id获取失败 user_id:%v", userId)
-	}
+	userId := req.UserId
+
 	fmt.Println("user id =", userId)
+
+	videos := make([]types.Video, 0)
 
 	list, err := l.svcCtx.FavorRpc.FavorList(l.ctx, &favor.FavorListReq{
 		Userid: userId,
@@ -43,8 +42,56 @@ func (l *FavorListLogic) FavorList(req *types.FavorlistReq) (resp *types.Favorli
 		return nil, errors.Wrapf(err, "req: %+v", req)
 	}
 
+	for i, video := range list.Videos {
+		videos[i] = types.Video{
+			ID: video.Id,
+			Author: types.Author{
+				ID:              video.Author.Id,
+				Name:            video.Author.Name,
+				FollowCount:     video.Author.FollowCount,
+				FollowerCount:   video.Author.FollowerCount,
+				IsFollow:        video.Author.IsFollow,
+				Avatar:          video.Author.Avatar,
+				BackgroundImage: video.Author.BackgroundImage,
+				Signature:       video.Author.Signature,
+				TotalFavorited:  video.Author.TotalFavorited,
+				WorkCount:       video.Author.WorkCount,
+				FavoriteCount:   video.Author.FavoriteCount,
+			},
+			PlayURL:  video.PlayUrl,
+			CoverURL: video.CoverUrl,
+			//FavoriteCount: num.Num,
+			//CommentCount:  0,
+			//IsFavorite:    false,
+			Title: video.Title,
+		}
+
+		num, err := l.svcCtx.FavorRpc.FavorNum(l.ctx, &favor.FavorNumReq{
+			VideoId: req.UserId,
+		})
+		if err == nil {
+			videos[i].FavoriteCount = num.Num
+		}
+		count, err := l.svcCtx.CommenRpc.GetCommentCount(l.ctx, &commentrpc.GetCommentCountRequest{
+			VideoId: video.Id,
+		})
+		if err == nil {
+			videos[i].CommentCount = count.Count
+		}
+		isFavor, err := l.svcCtx.FavorRpc.IsFavor(l.ctx, &favor.IsFavorReq{
+			UserId:  req.UserId,
+			VideoId: video.Id,
+		})
+		if err == nil {
+			videos[i].IsFavorite = isFavor.IsFavor
+		}
+	}
+
 	return &types.FavorlistResp{
-		BaseResponse: types.BaseResponse{},
-		Video_ids:    list.VideoIds,
+		BaseResponse: types.BaseResponse{
+			Code:    0,
+			Message: "success",
+		},
+		Videos: videos,
 	}, nil
 }

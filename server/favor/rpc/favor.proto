@@ -4,8 +4,10 @@ package favor;
 
 option go_package = "./favor";
 
+
+
 service FavorRpc{
-  rpc DisFavor(DisFavorReq) returns (DisFavorResp);//取消点赞
+  rpc DisFavor(DisFavorReq) returns (DisFavorResp); // 取消点赞
   rpc Favor(FavorReq) returns (FavorResp); // 点赞
   rpc FavorList(FavorListReq) returns(FavorListResp);  //点赞列表
   rpc FavorNum(FavorNumReq) returns (FavorNumResp); //点赞数目
@@ -14,30 +16,55 @@ service FavorRpc{
   rpc FavoredNumOfUser(FavoredNumOfUserReq) returns (FavoredNumOfUserResp); // 用户的获赞数
 }
 
-//
-message DisFavorReq{
-  int64 UserId = 1;
-  int64 VideoId = 2;
-  string Token = 3;
-}
-message DisFavorResp{}
 
 //
 message FavorReq{
   int64 Userid = 1;
   int64 VideoId = 2;
-  string Token = 3;
 }
 message FavorResp{}
 
 //
+message DisFavorReq{
+  int64 Userid = 1;
+  int64 VideoId = 2;
+}
+message DisFavorResp{}
+
+//
 message FavorListReq{
   int64 Userid = 1;
-  string Token = 2;
 }
+
 message FavorListResp{
-  repeated int64 VideoIds = 1;
+  repeated video Videos = 1;
 }
+
+message video {
+  int64 id = 1;
+  user author = 2;
+  string title = 3;
+  string play_url = 4;
+  string cover_url = 5;
+  string create_time = 6;
+  string update_time = 7;
+  string video_sha256=8;
+}
+
+message user {
+  int64 id = 1;
+  string name = 2;
+  string avatar = 6;
+  string background_image = 7;
+  string signature = 8;
+  bool is_follow = 9;
+  int64 follow_count = 10;
+  int64 follower_count = 11;
+  string total_favorited = 12;
+  int64 work_count = 13;
+  int64 favorite_count = 14;
+}
+
 
 //
 message FavorNumReq{

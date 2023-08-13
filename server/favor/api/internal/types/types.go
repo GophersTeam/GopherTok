@@ -7,37 +7,46 @@ type BaseResponse struct {
 }
 
 type FavorReq struct {
-	User_id  int64 `json:"userId"`
-	Video_id int64 `json:"videoId"`
+	Video_id    int64  `form:"videoId"`
+	Action_type int64  `form:"actionType"`
+	Token       string `form:"token"`
 }
 
 type FavorResp struct {
 	BaseResponse
 }
 
-type DisFavorReq struct {
-	User_id  int64 `json:"userId"`
-	Video_id int64 `json:"videoId"`
-}
-
-type DisFavorResp struct {
-	BaseResponse
-}
-
 type FavorlistReq struct {
-	UserId int64 `form:"user_id"`
+	UserId int64  `form:"userId"`
+	Token  string `form:"token"`
 }
 
 type FavorlistResp struct {
 	BaseResponse
-	Video_ids []int64 `json:"videoIds"`
+	Videos []Video `json:"videos"`
 }
 
-type FavorNumReq struct {
-	Video_id int64 `json:"videoId"`
+type Author struct {
+	ID              int64  `json:"id"`
+	Name            string `json:"name"`
+	FollowCount     int64  `json:"follow_count"`
+	FollowerCount   int64  `json:"follower_count"`
+	IsFollow        bool   `json:"is_follow"`
+	Avatar          string `json:"avatar"`
+	BackgroundImage string `json:"background_image"`
+	Signature       string `json:"signature"`
+	TotalFavorited  string `json:"total_favorited"`
+	WorkCount       int64  `json:"work_count"`
+	FavoriteCount   int64  `json:"favorite_count"`
 }
 
-type FavorNumResp struct {
-	BaseResponse
-	FavorNum int64 `json:"FavorNum"`
+type Video struct {
+	ID            int64  `json:"id"`
+	Author        Author `json:"author"`
+	PlayURL       string `json:"play_url"`
+	CoverURL      string `json:"cover_url"`
+	FavoriteCount int64  `json:"favorite_count"`
+	CommentCount  int64  `json:"comment_count"`
+	IsFavorite    bool   `json:"is_favorite"`
+	Title         string `json:"title"`
 }

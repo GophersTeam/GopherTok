@@ -115,14 +115,14 @@ func (m *defaultModel) NumOfFavor(ctx context.Context, VideoId int64) (int, erro
 }
 
 func (m *defaultModel) IsFavor(ctx context.Context, UserId int64, VideoId int64) (bool, error) {
-	result, err := m.Exists(ctx, strconv.Itoa(int(UserId)), strconv.Itoa(int(VideoId))).Result()
-	if err != nil {
-		return false, err
+	get := m.HGet(ctx, strconv.Itoa(int(UserId)), strconv.Itoa(int(VideoId)))
+	if get.Err() != nil {
+		if get.Err() == redis.Nil {
+			return false, nil
+		}
+		return false, get.Err()
 	}
-	if result != 0 {
-		return true, nil
-	}
-	return false, nil
+	return true, nil
 }
 
 func (m *defaultModel) FavorNumOfUser(ctx context.Context, UserId int64) (int, error) {

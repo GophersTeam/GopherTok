@@ -13,60 +13,51 @@ type BaseResponse {
 }
 
 type (
-
 	// Favor
 	FavorReq {
-		User_id  int64 `json:"userId"`
-		Video_id int64 `json:"videoId"`
+		Video_id    int64  `form:"videoId"`
+		Action_type int64  `form:"actionType"`
+		Token       string `form:"token"`
 	}
 
 	FavorResp {
 		BaseResponse
 	}
 
-	// DisFavor
-	DisFavorReq {
-		User_id  int64 `json:"userId"`
-		Video_id int64 `json:"videoId"`
-	}
-
-	DisFavorResp {
-		BaseResponse
-	}
-
-	// Favor list
+	// Favorlist
 	FavorlistReq {
-		UserId int64 `form:"user_id"`
+		UserId int64  `form:"userId"`
+		Token  string `form:"token"`
 	}
 	FavorlistResp {
 		BaseResponse
-		Video_ids []int64 `json:"videoIds"`
+		Videos []video `json:"videos"`
+	}
+	author {
+		ID              int64  `json:"id"`
+		Name            string `json:"name"`
+		FollowCount     int64  `json:"follow_count"`
+		FollowerCount   int64  `json:"follower_count"`
+		IsFollow        bool   `json:"is_follow"`
+		Avatar          string `json:"avatar"`
+		BackgroundImage string `json:"background_image"`
+		Signature       string `json:"signature"`
+		TotalFavorited  string `json:"total_favorited"`
+		WorkCount       int64  `json:"work_count"`
+		FavoriteCount   int64  `json:"favorite_count"`
 	}
 
-	// FavorNum
-	FavorNumReq {
-		Video_id int64 `json:"videoId"`
-	}
-
-	FavorNumResp {
-	    FavorNum int64 `json:"favorNum"`
-		BaseResponse
+	video {
+		ID            int64  `json:"id"`
+		Author        author `json:"author"`
+		PlayURL       string `json:"play_url"`
+		CoverURL      string `json:"cover_url"`
+		FavoriteCount int64  `json:"favorite_count"`
+		CommentCount  int64  `json:"comment_count"`
+		IsFavorite    bool   `json:"is_favorite"`
+		Title         string `json:"title"`
 	}
 )
-
-@server(
-	prefix: douyin/favor
-)
-
-service favor {
-	
-	@doc(
-		summary: "点赞数目"
-	)
-	@handler FavorNum
-	post /favornum (FavorNumReq) returns (FavorNumResp)
-	
-}
 
 @server(
 	prefix: douyin/favor
@@ -75,16 +66,10 @@ service favor {
 
 service favor {
 	@doc(
-		summary:  "点赞"
+		summary:  "点赞/取消点赞"
 	)
 	@handler Favor
 	post /favor (FavorReq) returns (FavorResp)
-	
-	@doc(
-		summary:  "取消点赞"
-	)
-	@handler DisFavor
-	post /disfavor (DisFavorReq) returns (DisFavorResp)
 	
 	@doc(
 		summary: "点赞列表"

@@ -97,6 +97,7 @@ func (l *PublishVideoLogic) PublishVideo(in *video.PublishVideoReq) (*video.Comm
 		DeleteTime:  gorm.DeletedAt{},
 		VideoSha256: in.VideoSha256,
 	}
+	fmt.Println(000000, v)
 	// kafka异步处理file元数据
 	err = l.batcher.Add(strconv.FormatInt(in.UserId, 10), &v)
 	if err != nil {
