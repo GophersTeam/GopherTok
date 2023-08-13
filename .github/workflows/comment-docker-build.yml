@@ -1,0 +1,91 @@
+name: Docker Build and Push Comment
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+
+  # comment-rpc
+  build-and-push-comment-rpc:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Create and push comment-rpc Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./server/comment/rpc/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKERHUB_IMAGE }}comment-rpc:latest
+          platforms: linux/amd64,linux/arm64  # 构建多个架构的镜像
+  # comment-api
+  build-and-push-comment-api:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Create and push comment-api Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./server/comment/api/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKERHUB_IMAGE }}comment-api:latest
+          platforms: linux/amd64,linux/arm64  # 构建多个架构的镜像
+
+  # comment-mq
+  build-and-push-comment-mq:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Create and push comment-mq Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./server/comment/mq/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKERHUB_IMAGE }}comment-mq:latest
+          platforms: linux/amd64,linux/arm64  # 构建多个架构的镜像
+
