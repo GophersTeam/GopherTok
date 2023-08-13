@@ -2,9 +2,8 @@ name: Docker Build and Push Video
 on:
   push:
     branches:
-      - dev
-    author:
-      - liuxianloveqiqi  # Replace with the actual GitHub username
+      - main
+
 
 jobs:
 
