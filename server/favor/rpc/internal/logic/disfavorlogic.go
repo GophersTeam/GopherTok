@@ -1,9 +1,9 @@
 package logic
 
 import (
-	"GopherTok/server/favor/rpc/internal/svc"
 	"context"
 
+	"GopherTok/server/favor/rpc/internal/svc"
 	"GopherTok/server/favor/rpc/types/favor"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -12,6 +12,7 @@ import (
 type DisFavorLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
+
 	logx.Logger
 }
 

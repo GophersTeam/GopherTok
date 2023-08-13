@@ -5,11 +5,6 @@ import "github.com/zeromicro/go-zero/zrpc"
 type Config struct {
 	zrpc.RpcServerConf
 
-	//RedisConf struct {
-	//	Host string
-	//	Pass string
-	//}
-
 	RedisCluster struct {
 		Cluster1 string
 		Cluster2 string
@@ -20,4 +15,5 @@ type Config struct {
 	}
 
 	VideoRpcConf zrpc.RpcClientConf
+	UserRpcConf  zrpc.RpcClientConf
 }

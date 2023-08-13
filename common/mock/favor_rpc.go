@@ -22,7 +22,7 @@ func (f FavorRpc) Favor(ctx context.Context, in *favorrpc.FavorReq, opts ...grpc
 
 func (f FavorRpc) FavorList(ctx context.Context, in *favorrpc.FavorListReq, opts ...grpc.CallOption) (*favorrpc.FavorListResp, error) {
 	return &favorrpc.FavorListResp{
-		VideoIds: nil,
+		Videos: nil,
 	}, nil
 }
 
