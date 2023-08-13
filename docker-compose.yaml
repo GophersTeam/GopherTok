@@ -42,8 +42,8 @@ services:
     environment: # 设置环境变量
       - TZ=Asia/Shanghai
     privileged: true
-    ports: # 设置端口映射
-      - "5001:5001"  # user服务api端口
+    #ports: # 设置端口映射
+    #  - "5001:5001"  # user服务api端口
     stdin_open: true                     # 打开标准输入，可以接受外部输入
     tty: true
     networks:
@@ -51,9 +51,9 @@ services:
     restart: always                      # 指定容器退出后的重启策略为始终重启
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.gophertok-user-api.rule=Host(`${GOPHERTOKHOST}`) && PathPrefix(`/douyin/user`)" # 转发规则
+      - "traefik.http.routers.gophertok-user-api.rule=Host(`localhost`) && PathPrefix(`/douyin/user`)" # 转发规则
       - "traefik.http.routers.gophertok-user-api.entrypoints=gophertok"
-      - "traefik.http.services.gophertok-user-api.loadbalancer.server.port=6001"    # 实例的端口
+      - "traefik.http.services.gophertok-user-api.loadbalancer.server.port=5001"    # 实例的端口
       - "traefik.docker.network=gophertok"
       - "traefik.http.services.gophertok-user-api.loadbalancer.server.scheme=http"
       - "traefik.http.services.gophertok-user-api.loadbalancer.passhostheader=true"
