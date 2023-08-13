@@ -91,16 +91,16 @@ services:
     environment: # 设置环境变量
       - TZ=Asia/Shanghai
     privileged: true
-    ports: # 设置端口映射
-      - "5003:5003"  # video服务api端口
     stdin_open: true                     # 打开标准输入，可以接受外部输入
     tty: true
+    volumes:
+      - /Users/liuxian/temp/:/Users/liuxian/temp/
     networks:
       - gophertok
     restart: always                      # 指定容器退出后的重启策略为始终重启
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.gophertok-video-api.rule=Host(`${GOPHERTOKHOST}`) && PathPrefix(`/douyin/publish`,`/douyin/feed/`)" # 转发规则
+      - "traefik.enable=true"        # ${GOPHERTOKHOST}
+      - "traefik.http.routers.gophertok-video-api.rule=Host(`localhost`) && PathPrefix(`/douyin/publish`,`/douyin/feed/`)" # 转发规则
       - "traefik.http.routers.gophertok-video-api.entrypoints=gophertok"
       - "traefik.http.services.gophertok-video-api.loadbalancer.server.port=5003"    # 实例的端口
       - "traefik.docker.network=gophertok"
