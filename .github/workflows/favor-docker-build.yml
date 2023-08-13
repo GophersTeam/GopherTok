@@ -1,4 +1,4 @@
-name: Docker Build and Push Chat
+name: Docker Build and Push Favor
 on:
   push:
     branches:

@@ -2,7 +2,7 @@ name: Docker Build and Push User
 on:
   push:
     branches:
-      - dev
+      - main
 
 jobs:
   # user-api

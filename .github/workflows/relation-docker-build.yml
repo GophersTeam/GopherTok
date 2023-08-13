@@ -1,4 +1,4 @@
-name: Docker Build and Push Realtion
+name: Docker Build and Push Relation
 on:
   push:
     branches:
