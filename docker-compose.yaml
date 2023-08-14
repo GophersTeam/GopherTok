@@ -95,8 +95,8 @@ services:
     stdin_open: true                     # 打开标准输入，可以接受外部输入
     tty: true
     volumes:
-      - /Users/liuxian/temp/:/Users/liuxian/temp/
-      - /Users/liuxian/Downloads/ffmpeg-6.0-amd64-static/ffmpeg:/usr/bin/ffmpeg
+      - /home/project/gophertok/temp/:/home/project/gophertok/temp/
+      - /home/project/gophertok/ffmpeg:/usr/bin/ffmpeg
     networks:
       - gophertok
     restart: always                      # 指定容器退出后的重启策略为始终重启
@@ -248,7 +248,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.gophertok-relation-api.rule=Host(`${GOPHERTOKHOST}`) && PathPrefix(`/douyin/relation`)" # 转发规则
       - "traefik.http.routers.gophertok-relation-api.entrypoints=gophertok"
-      - "traefik.http.services.gophertok-relation-api.loadbalancer.server.port=20001"    # 实例的端口
+      - "traefik.http.services.gophertok-relation-api.loadbalancer.server.port=7888"    # 实例的端口
       - "traefik.docker.network=gophertok"
       - "traefik.http.services.gophertok-relation-api.loadbalancer.server.scheme=http"
       - "traefik.http.services.gophertok-relation-api.loadbalancer.passhostheader=true"

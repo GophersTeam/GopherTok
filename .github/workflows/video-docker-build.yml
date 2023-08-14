@@ -1,8 +1,14 @@
 name: Docker Build and Push Video
+#on:
+#  push:
+#    branches:
+#      - main
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+    inputs:
+      parameter_name:
+        description: 'Description of the parameter'
+        required: true
 
 
 jobs:
