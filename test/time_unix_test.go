@@ -7,5 +7,7 @@ import (
 )
 
 func TestUnix(t *testing.T) {
+	fmt.Println(time.Now().UnixNano())
 	fmt.Println(time.Now().Unix())
+
 }

@@ -11,6 +11,19 @@ type BaseResponse {
 	Message string `json:"status_msg,omitempty"`
 }
 type (
+	User {
+		ID              int64  `json:"id"`
+		Name            string `json:"name"`
+		FollowCount     int64  `json:"follow_count"`
+		FollowerCount   int64  `json:"follower_count"`
+		IsFollow        bool   `json:"is_follow"`
+		Avatar          string `json:"avatar"`
+		BackgroundImage string `json:"background_image"`
+		Signature       string `json:"signature"`
+		TotalFavorited  string `json:"total_favorited"`
+		WorkCount       int64  `json:"work_count"`
+		FavoriteCount   int64  `json:"favorite_count"`
+	}
 	// 用户注册
 	RegisterReq {
 		Username string `form:"username" validate:"required,max=32,min=4"`
@@ -39,17 +52,7 @@ type (
 	}
 	UserInfoResp {
 		BaseResponse
-		ID              int64  `json:"id"`
-		Name            string `json:"name"`
-		FollowCount     int64  `json:"follow_count"`
-		FollowerCount   int64  `json:"follower_count"`
-		IsFollow        bool   `json:"is_follow"`
-		Avatar          string `json:"avatar"`
-		BackgroundImage string `json:"background_image"`
-		Signature       string `json:"signature"`
-		TotalFavorited  string `json:"total_favorited"`
-		WorkCount       int64  `json:"work_count"`
-		FavoriteCount   int64  `json:"favorite_count"`
+		UserInfo User `json:"user"`
 	}
 )
 @server(
@@ -67,7 +70,6 @@ service user {
 	)
 	@handler Login
 	post /login (LoginReq) returns (LoginResp)
-	
 }
 
 @server(
@@ -75,11 +77,9 @@ service user {
 	middleware: JWT // 路由中间件声明
 )
 service user {
-	
 	@doc(
 		summary: "获取用户信息"
 	)
 	@handler userinfo
 	get / (UserInfoReq) returns (UserInfoResp)
-	
 }

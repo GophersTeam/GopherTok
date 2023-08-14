@@ -11,9 +11,6 @@ import (
 	"context"
 	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logc"
-	"strconv"
-	"time"
-
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -39,9 +36,6 @@ func (l *VideoListLogic) VideoList(req *types.VideoListReq) (resp *types.VideoLi
 		//return nil, errors.Wrapf(errorx.NewDefaultError("user_id获取失败"), "user_id获取失败 user_id:%v", uid)
 	}
 
-	if req.LatestTime == "" {
-		req.LatestTime = strconv.FormatInt(time.Now().Unix(), 10)
-	}
 	UserVideoListCnt, err := l.svcCtx.VideoRpc.VideoList(l.ctx, &video.VideoListReq{
 		LatestTime: req.LatestTime,
 	})
