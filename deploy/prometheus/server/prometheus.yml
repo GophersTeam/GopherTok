@@ -24,13 +24,7 @@ scrape_configs:
           job: user-api
           app: user-api
           env: dev
-  - job_name: 'gophertok-user-api-3'
-    static_configs:
-      - targets: [ 'gophertok-user-api-3:6001' ]
-        labels:
-          job: user-api
-          app: user-api
-          env: dev
+
 
   - job_name: 'gophertok-user-rpc-1'
     static_configs:
@@ -46,13 +40,7 @@ scrape_configs:
           job: user-rpc
           app: user-rpc
           env: dev
-  - job_name: 'gophertok-user-rpc-3'
-    static_configs:
-      - targets: [ 'gophertok-user-rpc-3:6002' ]
-        labels:
-          job: user-rpc
-          app: user-rpc
-          env: dev
+
   - job_name: 'gophertok-user-mq'
     static_configs:
       - targets: [ 'gophertok-user-mq:6012' ]
@@ -77,13 +65,7 @@ scrape_configs:
           job: video-api
           app: video-api
           env: dev
-  - job_name: 'gophertok-video-api-3'
-    static_configs:
-      - targets: [ 'gophertok-video-api-3:6003' ]
-        labels:
-          job: video-api
-          app: video-api
-          env: dev
+
 
   - job_name: 'gophertok-video-rpc-1'
     static_configs:
@@ -99,13 +81,7 @@ scrape_configs:
           job: video-rpc
           app: video-rpc
           env: dev
-  - job_name: 'gophertok-video-rpc-3'
-    static_configs:
-      - targets: [ 'gophertok-video-rpc-3:6004' ]
-        labels:
-          job: video-rpc
-          app: video-rpc
-          env: dev
+
   - job_name: 'gophertok-video-mq'
     static_configs:
       - targets: [ 'gophertok-video-mq:6014' ]
@@ -129,13 +105,7 @@ scrape_configs:
           job: chat-api
           app: chat-api
           env: dev
-  - job_name: 'gophertok-chat-api-3'
-    static_configs:
-      - targets: [ 'gophertok-chat-api-3:21002' ]
-        labels:
-          job: chat-api
-          app: chat-api
-          env: dev
+
 
   - job_name: 'gophertok-chat-rpc-1'
     static_configs:
@@ -151,13 +121,7 @@ scrape_configs:
           job: chat-rpc
           app: chat-rpc
           env: dev
-  - job_name: 'gophertok-chat-rpc-3'
-    static_configs:
-      - targets: [ 'gophertok-chat-rpc-3:21004' ]
-        labels:
-          job: chat-rpc
-          app: chat-rpc
-          env: dev
+
   - job_name: 'gophertok-chat-mq'
     static_configs:
       - targets: [ 'gophertok-chat-mq:21014' ]
@@ -183,13 +147,7 @@ scrape_configs:
           job: comment-api
           app: comment-api
           env: dev
-  - job_name: 'gophertok-comment-api-3'
-    static_configs:
-      - targets: [ 'gophertok-comment-api-3:21001' ]
-        labels:
-          job: comment-api
-          app: comment-api
-          env: dev
+
 
   - job_name: 'gophertok-comment-rpc-1'
     static_configs:
@@ -205,13 +163,7 @@ scrape_configs:
           job: comment-rpc
           app: comment-rpc
           env: dev
-  - job_name: 'gophertok-comment-rpc-3'
-    static_configs:
-      - targets: [ 'gophertok-comment-rpc-3:21003' ]
-        labels:
-          job: comment-rpc
-          app: comment-rpc
-          env: dev
+
   - job_name: 'gophertok-comment-mq'
     static_configs:
       - targets: [ 'gophertok-comment-mq:21019' ]
@@ -236,13 +188,7 @@ scrape_configs:
           job: relation-api
           app: relation-api
           env: dev
-  - job_name: 'gophertok-relation-api-3'
-    static_configs:
-      - targets: [ 'gophertok-relation-api-3:7988' ]
-        labels:
-          job: relation-api
-          app: relation-api
-          env: dev
+
 
   - job_name: 'gophertok-relation-rpc-1'
     static_configs:
@@ -258,13 +204,7 @@ scrape_configs:
           job: relation-rpc
           app: relation-rpc
           env: dev
-  - job_name: 'gophertok-relation-rpc-3'
-    static_configs:
-      - targets: [ 'gophertok-relation-rpc-3:7081' ]
-        labels:
-          job: relation-rpc
-          app: relation-rpc
-          env: dev
+
   - job_name: 'gophertok-relation-mq'
     static_configs:
       - targets: [ 'gophertok-relation-mq:7090' ]
@@ -288,13 +228,7 @@ scrape_configs:
           job: favor-api
           app: favor-api
           env: dev
-  - job_name: 'gophertok-favor-api-3'
-    static_configs:
-      - targets: [ 'gophertok-favor-api-3:9080' ]
-        labels:
-          job: favor-api
-          app: favor-api
-          env: dev
+
 
   - job_name: 'gophertok-favor-rpc-1'
     static_configs:
@@ -306,13 +240,6 @@ scrape_configs:
   - job_name: 'gophertok-favor-rpc-2'
     static_configs:
       - targets: [ 'gophertok-favor-rpc-2:9081' ]
-        labels:
-          job: favor-rpc
-          app: favor-rpc
-          env: dev
-  - job_name: 'gophertok-favor-rpc-3'
-    static_configs:
-      - targets: [ 'gophertok-favor-rpc-3:9081' ]
         labels:
           job: favor-rpc
           app: favor-rpc
