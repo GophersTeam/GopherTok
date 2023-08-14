@@ -23,7 +23,7 @@ type FavorlistReq struct {
 
 type FavorlistResp struct {
 	BaseResponse
-	Videos []video `json:"videos"`
+	Videos []Video `json:"videos"`
 }
 
 type Author struct {
@@ -42,7 +42,7 @@ type Author struct {
 
 type Video struct {
 	ID            int64  `json:"id"`
-	Author        author `json:"author"`
+	Author        Author `json:"author"`
 	PlayURL       string `json:"play_url"`
 	CoverURL      string `json:"cover_url"`
 	FavoriteCount int64  `json:"favorite_count"`

@@ -76,7 +76,7 @@ services:
       - ./data/elasticsearch/data:/usr/share/elasticsearch/data
     restart: always
     ports:
-      - "9201:9200"
+      - "9200:9200"
       - "9300:9300"
     networks:
       - gophertok
