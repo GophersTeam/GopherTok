@@ -72,6 +72,9 @@ func (l *UserInfoLogic) UserInfo(in *user.UserInfoReq) (*user.UserInfoResp, erro
 	favoriteCount, err := l.svcCtx.FavorRpc.FavorNumOfUser(l.ctx, &favorrpc.FavorNumOfUserReq{
 		UserId: in.Id,
 	})
+	if err != nil {
+		return nil, errors.Wrapf(err, "req: %+v", in)
+	}
 	return &user.UserInfoResp{
 		Id:              u.ID,
 		Name:            u.Username,

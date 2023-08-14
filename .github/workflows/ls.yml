@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       parameter_name:
-        description: 'Description of the parameter'
+        description: 'go'
         required: true
 
 

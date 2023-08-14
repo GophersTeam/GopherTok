@@ -44,7 +44,7 @@ func (l *VideoListLogic) VideoList(req *types.VideoListReq) (resp *types.VideoLi
 		return nil, errors.Wrapf(err, "req: %+v", req)
 	}
 	videoList := make([]*types.VideoInfo, 0) // Assuming VideoList is a struct that matches your needs
-
+	nextTime := "2099-08-14 23:41:02"
 	for i := 0; i < len(list); i++ {
 		// 查看视频的作者信息
 		userinfo, err := l.svcCtx.UserRpc.UserInfo(l.ctx, &user.UserInfoReq{
@@ -81,6 +81,9 @@ func (l *VideoListLogic) VideoList(req *types.VideoListReq) (resp *types.VideoLi
 			}
 			isFavorite = isFavoriteCnt.IsFavor
 		}
+		if list[i].CreateTime < nextTime {
+			nextTime = list[i].CreateTime
+		}
 		videoItem := &types.VideoInfo{
 			ID: list[i].Id,
 			Author: types.AuthorInfo{
@@ -111,6 +114,7 @@ func (l *VideoListLogic) VideoList(req *types.VideoListReq) (resp *types.VideoLi
 			Code:    0,
 			Message: "success!",
 		},
+		NextTime:  nextTime,
 		VideoList: types.VideoList{List: videoList},
 	}, nil
 }
