@@ -16,16 +16,16 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
-					Path:    "/favor",
+					Path:    "/action",
 					Handler: FavorHandler(serverCtx),
 				},
 				{
-					Method:  http.MethodPost,
-					Path:    "/favorlist",
+					Method:  http.MethodGet,
+					Path:    "/list",
 					Handler: FavorListHandler(serverCtx),
 				},
 			}...,
 		),
-		rest.WithPrefix("/douyin/favor"),
+		rest.WithPrefix("/douyin/favorite"),
 	)
 }

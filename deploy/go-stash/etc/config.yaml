@@ -42,4 +42,4 @@ Clusters:
       ElasticSearch:
         Hosts:
           - "http://elasticsearch:9201"
-        Index: "gophter-{{yyyy-MM-dd}}"
+        Index: "gophtertok-{{yyyy-MM-dd}}"

@@ -7,8 +7,8 @@ type BaseResponse struct {
 }
 
 type FavorReq struct {
-	Video_id    int64  `form:"videoId"`
-	Action_type int64  `form:"actionType"`
+	Video_id    int64  `form:"video_id"`
+	Action_type int64  `form:"action_type"`
 	Token       string `form:"token"`
 }
 
@@ -17,13 +17,13 @@ type FavorResp struct {
 }
 
 type FavorlistReq struct {
-	UserId int64  `form:"userId"`
+	UserId int64  `form:"user_id"`
 	Token  string `form:"token"`
 }
 
 type FavorlistResp struct {
 	BaseResponse
-	Videos []Video `json:"videos"`
+	Videos []video `json:"videos"`
 }
 
 type Author struct {
@@ -42,7 +42,7 @@ type Author struct {
 
 type Video struct {
 	ID            int64  `json:"id"`
-	Author        Author `json:"author"`
+	Author        author `json:"author"`
 	PlayURL       string `json:"play_url"`
 	CoverURL      string `json:"cover_url"`
 	FavoriteCount int64  `json:"favorite_count"`

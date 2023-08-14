@@ -112,7 +112,6 @@ services:
       - gophertok
     depends_on:
       - elasticsearch
-      - kafka
 
   #收集业务数据 - Collect business data
   filebeat:
@@ -132,8 +131,7 @@ services:
       - /var/lib/docker/containers:/var/lib/docker/containers
     networks:
       - gophertok
-    depends_on:
-      - kafka
+
 
 
 #  #zookeeper是kafka的依赖 - Zookeeper is the dependencies of Kafka
@@ -170,8 +168,8 @@ services:
 #    depends_on:
 #      - zookeeper
 ## 映射mac docker容器位置
-  nsenter1:
-    image: justincormack/nsenter1
-    privileged: true
-    pid: host
+#  nsenter1:
+#    image: justincormack/nsenter1
+#    privileged: true
+#    pid: host
 
