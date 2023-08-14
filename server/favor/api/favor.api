@@ -15,8 +15,8 @@ type BaseResponse {
 type (
 	// Favor
 	FavorReq {
-		Video_id    int64  `form:"videoId"`
-		Action_type int64  `form:"actionType"`
+		Video_id    int64  `form:"video_id"`
+		Action_type int64  `form:"action_type"`
 		Token       string `form:"token"`
 	}
 
@@ -26,7 +26,7 @@ type (
 
 	// Favorlist
 	FavorlistReq {
-		UserId int64  `form:"userId"`
+		UserId int64  `form:"user_id"`
 		Token  string `form:"token"`
 	}
 	FavorlistResp {
@@ -60,7 +60,7 @@ type (
 )
 
 @server(
-	prefix: douyin/favor
+	prefix: douyin/favorite
 	middleware: JWT // 路由中间件声明
 )
 
@@ -69,12 +69,12 @@ service favor {
 		summary:  "点赞/取消点赞"
 	)
 	@handler Favor
-	post /favor (FavorReq) returns (FavorResp)
+	post /action (FavorReq) returns (FavorResp)
 	
 	@doc(
 		summary: "点赞列表"
 	)
 	@handler FavorList
-	post /favorlist (FavorlistReq) returns (FavorlistResp)
+	get /list (FavorlistReq) returns (FavorlistResp)
 	
 }

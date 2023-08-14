@@ -7,8 +7,8 @@ type BaseResponse struct {
 }
 
 type FavorReq struct {
-	Video_id    int64  `form:"videoId"`
-	Action_type int64  `form:"actionType"`
+	Video_id    int64  `form:"video_id"`
+	Action_type int64  `form:"action_type"`
 	Token       string `form:"token"`
 }
 
@@ -17,7 +17,7 @@ type FavorResp struct {
 }
 
 type FavorlistReq struct {
-	UserId int64  `form:"userId"`
+	UserId int64  `form:"user_id"`
 	Token  string `form:"token"`
 }
 
