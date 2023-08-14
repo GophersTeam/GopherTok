@@ -72,8 +72,7 @@ services:
       - discovery.type=single-node
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - TZ=Asia/Shanghai
-    volumes:
-      - ./data/elasticsearch/data:/usr/share/elasticsearch/data
+
     restart: always
     ports:
       - "9200:9200"

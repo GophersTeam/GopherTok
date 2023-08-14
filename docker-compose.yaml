@@ -143,8 +143,6 @@ services:
     environment: # 设置环境变量
       - TZ=Asia/Shanghai
     privileged: true
-    ports: # 设置端口映射
-      - "20002:20002"  # chat服务api端口
     stdin_open: true                     # 打开标准输入，可以接受外部输入
     tty: true
     networks:
@@ -192,8 +190,7 @@ services:
     environment: # 设置环境变量
       - TZ=Asia/Shanghai
     privileged: true
-    ports: # 设置端口映射
-      - "20001:20001"  # comment服务api端口
+
     stdin_open: true                     # 打开标准输入，可以接受外部输入
     tty: true
     networks:
@@ -241,8 +238,7 @@ services:
     environment: # 设置环境变量
       - TZ=Asia/Shanghai
     privileged: true
-    ports: # 设置端口映射
-      - "7888:7888"  # relation服务api端口
+
     stdin_open: true                     # 打开标准输入，可以接受外部输入
     tty: true
     networks:
@@ -291,8 +287,6 @@ services:
     environment: # 设置环境变量
       - TZ=Asia/Shanghai
     privileged: true
-    ports: # 设置端口映射
-      - "7888:7888"  # favor服务api端口
     stdin_open: true                     # 打开标准输入，可以接受外部输入
     tty: true
     networks:
@@ -302,7 +296,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.gophertok-favor-api.rule=Host(`${GOPHERTOKHOST}`) && PathPrefix(`/douyin/favorite`)" # 转发规则
       - "traefik.http.routers.gophertok-favor-api.entrypoints=gophertok"
-      - "traefik.http.services.gophertok-favor-api.loadbalancer.server.port=7888"    # 实例的端口
+      - "traefik.http.services.gophertok-favor-api.loadbalancer.server.port=8081"    # 实例的端口
       - "traefik.docker.network=gophertok"
       - "traefik.http.services.gophertok-favor-api.loadbalancer.server.scheme=http"
       - "traefik.http.services.gophertok-favor-api.loadbalancer.passhostheader=true"
