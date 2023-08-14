@@ -28,4 +28,4 @@ WORKDIR /app
 COPY --from=builder /app/comment /app/comment
 COPY --from=builder /app/etc /app/etc
 
-CMD ["./comment", "-f", "etc/comment.yaml"]
+CMD ["./comment", "-f", "etc/nacos.yaml"]
