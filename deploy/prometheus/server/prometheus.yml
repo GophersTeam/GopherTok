@@ -9,126 +9,311 @@ scrape_configs:
     scrape_interval: 5s  #重写了全局抓取间隔时间，由15秒重写成5秒
     static_configs:
       - targets: ['127.0.0.1:9090']
-
+## User服务
   - job_name: 'gophertok-user-api-1'
     static_configs:
-      - targets: [ 'gophertok-user-api-1:5001' ]
+      - targets: [ 'gophertok-user-api-1:6001' ]
         labels:
           job: user-api
-          app: uesr-api
+          app: user-api
           env: dev
   - job_name: 'gophertok-user-api-2'
     static_configs:
-      - targets: [ 'gophertok-user-api-2:5001' ]
+      - targets: [ 'gophertok-user-api-2:6001' ]
         labels:
           job: user-api
-          app: uesr-api
+          app: user-api
           env: dev
   - job_name: 'gophertok-user-api-3'
     static_configs:
-      - targets: [ 'gophertok-user-api-3:5001' ]
+      - targets: [ 'gophertok-user-api-3:6001' ]
         labels:
           job: user-api
-          app: uesr-api
+          app: user-api
+          env: dev
+
+  - job_name: 'gophertok-user-rpc-1'
+    static_configs:
+      - targets: [ 'gophertok-user-rpc-1:6002' ]
+        labels:
+          job: user-rpc
+          app: user-rpc
+          env: dev
+  - job_name: 'gophertok-user-rpc-2'
+    static_configs:
+      - targets: [ 'gophertok-user-rpc-2:6002' ]
+        labels:
+          job: user-rpc
+          app: user-rpc
+          env: dev
+  - job_name: 'gophertok-user-rpc-3'
+    static_configs:
+      - targets: [ 'gophertok-user-rpc-3:6002' ]
+        labels:
+          job: user-rpc
+          app: user-rpc
+          env: dev
+  - job_name: 'gophertok-user-mq'
+    static_configs:
+      - targets: [ 'gophertok-user-mq:6012' ]
+        labels:
+          job: user-mq
+          app: user-mq
+          env: dev
+
+
+ ## Video服务
+  - job_name: 'gophertok-video-api-1'
+    static_configs:
+      - targets: [ 'gophertok-video-api-1:6003' ]
+        labels:
+          job: video-api
+          app: video-api
+          env: dev
+  - job_name: 'gophertok-video-api-2'
+    static_configs:
+      - targets: [ 'gophertok-video-api-2:6003' ]
+        labels:
+          job: video-api
+          app: video-api
+          env: dev
+  - job_name: 'gophertok-video-api-3'
+    static_configs:
+      - targets: [ 'gophertok-video-api-3:6003' ]
+        labels:
+          job: video-api
+          app: video-api
+          env: dev
+
+  - job_name: 'gophertok-video-rpc-1'
+    static_configs:
+      - targets: [ 'gophertok-video-rpc-1:6004' ]
+        labels:
+          job: video-rpc
+          app: video-rpc
+          env: dev
+  - job_name: 'gophertok-video-rpc-2'
+    static_configs:
+      - targets: [ 'gophertok-video-rpc-2:6004' ]
+        labels:
+          job: video-rpc
+          app: video-rpc
+          env: dev
+  - job_name: 'gophertok-video-rpc-3'
+    static_configs:
+      - targets: [ 'gophertok-video-rpc-3:6004' ]
+        labels:
+          job: video-rpc
+          app: video-rpc
+          env: dev
+  - job_name: 'gophertok-video-mq'
+    static_configs:
+      - targets: [ 'gophertok-video-mq:6014' ]
+        labels:
+          job: video-mq
+          app: video-mq
+          env: dev
+
+  ## Chat服务
+  - job_name: 'gophertok-chat-api-1'
+    static_configs:
+      - targets: [ 'gophertok-chat-api-1:21002' ]
+        labels:
+          job: chat-api
+          app: chat-api
+          env: dev
+  - job_name: 'gophertok-chat-api-2'
+    static_configs:
+      - targets: [ 'gophertok-chat-api-2:21002' ]
+        labels:
+          job: chat-api
+          app: chat-api
+          env: dev
+  - job_name: 'gophertok-chat-api-3'
+    static_configs:
+      - targets: [ 'gophertok-chat-api-3:21002' ]
+        labels:
+          job: chat-api
+          app: chat-api
+          env: dev
+
+  - job_name: 'gophertok-chat-rpc-1'
+    static_configs:
+      - targets: [ 'gophertok-chat-rpc-1:21004' ]
+        labels:
+          job: chat-rpc
+          app: chat-rpc
+          env: dev
+  - job_name: 'gophertok-chat-rpc-2'
+    static_configs:
+      - targets: [ 'gophertok-chat-rpc-2:21004' ]
+        labels:
+          job: chat-rpc
+          app: chat-rpc
+          env: dev
+  - job_name: 'gophertok-chat-rpc-3'
+    static_configs:
+      - targets: [ 'gophertok-chat-rpc-3:21004' ]
+        labels:
+          job: chat-rpc
+          app: chat-rpc
+          env: dev
+  - job_name: 'gophertok-chat-mq'
+    static_configs:
+      - targets: [ 'gophertok-chat-mq:21014' ]
+        labels:
+          job: chat-mq
+          app: chat-mq
           env: dev
 
 
 
-  - job_name: 'order-api'
+  ## Chat服务
+  - job_name: 'gophertok-comment-api-1'
     static_configs:
-      - targets: ['looklook:3002']
+      - targets: [ 'gophertok-comment-api-1:21001' ]
         labels:
-          job: order-api
-          app: order-api
+          job: comment-api
+          app: comment-api
           env: dev
-  - job_name: 'order-rpc'
+  - job_name: 'gophertok-comment-api-2'
     static_configs:
-      - targets: ['looklook:3003']
+      - targets: [ 'gophertok-comment-api-2:21001' ]
         labels:
-          job: order-rpc
-          app: order-rpc
+          job: comment-api
+          app: comment-api
           env: dev
-  - job_name: 'order-mq'
+  - job_name: 'gophertok-comment-api-3'
     static_configs:
-      - targets: ['looklook:3004']
+      - targets: [ 'gophertok-comment-api-3:21001' ]
         labels:
-          job: order-mq
-          app: order-mq
+          job: comment-api
+          app: comment-api
           env: dev
-  - job_name: 'usercenter-api'
+
+  - job_name: 'gophertok-comment-rpc-1'
     static_configs:
-      - targets: ['looklook:3005']
+      - targets: [ 'gophertok-comment-rpc-1:21003' ]
         labels:
-          job: usercenter-api
-          app: usercenter-api
+          job: comment-rpc
+          app: comment-rpc
           env: dev
-  - job_name: 'usercenter-rpc'
+  - job_name: 'gophertok-comment-rpc-2'
     static_configs:
-      - targets: ['looklook:3006']
+      - targets: [ 'gophertok-comment-rpc-2:21003' ]
         labels:
-          job: usercenter-rpc
-          app: usercenter-rpc
+          job: comment-rpc
+          app: comment-rpc
           env: dev
-  - job_name: 'travel-api'
+  - job_name: 'gophertok-comment-rpc-3'
     static_configs:
-      - targets: ['looklook:3007']
+      - targets: [ 'gophertok-comment-rpc-3:21003' ]
         labels:
-          job: travel-api
-          app: travel-api
+          job: comment-rpc
+          app: comment-rpc
           env: dev
-  - job_name: 'travel-rpc'
+  - job_name: 'gophertok-comment-mq'
     static_configs:
-      - targets: ['looklook:3008']
+      - targets: [ 'gophertok-comment-mq:21019' ]
         labels:
-          job: travel-rpc
-          app: travel-rpc
+          job: comment-mq
+          app: comment-mq
           env: dev
-  - job_name: 'payment-api'
+
+
+  ## Relation服务
+  - job_name: 'gophertok-relation-api-1'
     static_configs:
-      - targets: ['looklook:3009']
+      - targets: [ 'gophertok-relation-api-1:7988' ]
         labels:
-          job: payment-api
-          app: payment-api
+          job: relation-api
+          app: relation-api
           env: dev
-  - job_name: 'payment-rpc'
+  - job_name: 'gophertok-relation-api-2'
     static_configs:
-      - targets: ['looklook:3010']
+      - targets: [ 'gophertok-relation-api-2:7988' ]
         labels:
-          job: payment-rpc
-          app: payment-rpc
+          job: relation-api
+          app: relation-api
           env: dev
-  - job_name: 'mqueue-rpc'
+  - job_name: 'gophertok-relation-api-3'
     static_configs:
-      - targets: ['looklook:3011']
+      - targets: [ 'gophertok-relation-api-3:7988' ]
         labels:
-          job: mqueue-rpc
-          app: mqueue-rpc
+          job: relation-api
+          app: relation-api
           env: dev
-  - job_name: 'message-mq'
+
+  - job_name: 'gophertok-relation-rpc-1'
     static_configs:
-      - targets: ['looklook:3012']
+      - targets: [ 'gophertok-relation-rpc-1:7081' ]
         labels:
-          job: message-mq
-          app: message-mq
+          job: relation-rpc
+          app: relation-rpc
           env: dev
-  - job_name: 'identity-api'
+  - job_name: 'gophertok-relation-rpc-2'
     static_configs:
-      - targets: ['looklook:3013']
+      - targets: [ 'gophertok-relation-rpc-2:7081' ]
         labels:
-          job: identity-api
-          app: identity-api
+          job: relation-rpc
+          app: relation-rpc
           env: dev
-  - job_name: 'identity-rpc'
+  - job_name: 'gophertok-relation-rpc-3'
     static_configs:
-      - targets: [ 'looklook:3014' ]
+      - targets: [ 'gophertok-relation-rpc-3:7081' ]
         labels:
-          job: identity-rpc
-          app: identity-rpc
+          job: relation-rpc
+          app: relation-rpc
           env: dev
-  - job_name: 'admin-api'
+  - job_name: 'gophertok-relation-mq'
     static_configs:
-      - targets: [ 'admin-api:3015' ]
+      - targets: [ 'gophertok-relation-mq:7090' ]
         labels:
-          job: identity-rpc
-          app: identity-rpc
+          job: relation-mq
+          app: relation-mq
+          env: dev
+
+  ## Fafor服务
+  - job_name: 'gophertok-favor-api-1'
+    static_configs:
+      - targets: [ 'gophertok-favor-api-1:9080' ]
+        labels:
+          job: favor-api
+          app: favor-api
+          env: dev
+  - job_name: 'gophertok-favor-api-2'
+    static_configs:
+      - targets: [ 'gophertok-favor-api-2:9080' ]
+        labels:
+          job: favor-api
+          app: favor-api
+          env: dev
+  - job_name: 'gophertok-favor-api-3'
+    static_configs:
+      - targets: [ 'gophertok-favor-api-3:9080' ]
+        labels:
+          job: favor-api
+          app: favor-api
+          env: dev
+
+  - job_name: 'gophertok-favor-rpc-1'
+    static_configs:
+      - targets: [ 'gophertok-favor-rpc-1:9081' ]
+        labels:
+          job: favor-rpc
+          app: favor-rpc
+          env: dev
+  - job_name: 'gophertok-favor-rpc-2'
+    static_configs:
+      - targets: [ 'gophertok-favor-rpc-2:9081' ]
+        labels:
+          job: favor-rpc
+          app: favor-rpc
+          env: dev
+  - job_name: 'gophertok-favor-rpc-3'
+    static_configs:
+      - targets: [ 'gophertok-favor-rpc-3:9081' ]
+        labels:
+          job: favor-rpc
+          app: favor-rpc
           env: dev
