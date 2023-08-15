@@ -16,7 +16,7 @@ jobs:
     steps:
 
       - name: SSH into the remote server and perform actions
-        uses: appleboy/ssh-action@v0.3.0
+        uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.REMOTE_SERVER_HOST }}
           username: ${{ secrets.REMOTE_SERVER_USERNAME }}
