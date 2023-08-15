@@ -1,6 +1,7 @@
 package model
 
 import (
+	"GopherTok/common/consts"
 	"context"
 	"fmt"
 	"github.com/redis/go-redis/v9"
@@ -42,18 +43,17 @@ type (
 	}
 )
 
-// 使用哈希和集合
 func (m *defaultModel) Insert(ctx context.Context, UserId int64, VideoId int64) error {
 	var err error
 
 	tx := m.TxPipeline()
 
 	// 在事务中执行命令
-	if err = tx.SAdd(ctx, fmt.Sprintf("%s%s", "favor_VideoId", VideoId), UserId).Err(); err != nil {
+	if err = tx.SAdd(ctx, fmt.Sprintf("%s%d", consts.VideoFavorPrefix, VideoId), UserId).Err(); err != nil {
 		return err
 	}
 
-	if err = tx.HSet(ctx, fmt.Sprintf("%s%s", "favor_UserId", UserId), fmt.Sprintf("&s&s", "favor_VideoId", VideoId), VideoId).Err(); err != nil {
+	if err = tx.HSet(ctx, fmt.Sprintf("%s%d", consts.VideoFavorPrefix, UserId), fmt.Sprintf("%s%d", consts.VideoFavorPrefix, VideoId), VideoId).Err(); err != nil {
 		return err
 	}
 
@@ -66,11 +66,11 @@ func (m *defaultModel) Delete(ctx context.Context, UserId int64, VideoId int64) 
 	tx := m.TxPipeline()
 
 	// 在事务中执行命令
-	if err = tx.SRem(ctx, fmt.Sprintf("%s%s", "favor_VideoId", VideoId), UserId).Err(); err != nil {
+	if err = tx.SRem(ctx, fmt.Sprintf("%s%d", consts.VideoFavorPrefix, VideoId), UserId).Err(); err != nil {
 		return err
 	}
 
-	if err = tx.HDel(ctx, fmt.Sprintf("%s%s", "favor_UserId", UserId), fmt.Sprintf("%s%s", "favor_VideoId", VideoId)).Err(); err != nil {
+	if err = tx.HDel(ctx, fmt.Sprintf("%s%d", consts.VideoFavorPrefix, UserId), fmt.Sprintf("%s%d", consts.VideoFavorPrefix, VideoId)).Err(); err != nil {
 		return err
 	}
 
@@ -79,7 +79,7 @@ func (m *defaultModel) Delete(ctx context.Context, UserId int64, VideoId int64) 
 }
 
 func (m *defaultModel) SearchByUid(ctx context.Context, UserId int64) ([]int64, error) {
-	result, err := m.HVals(ctx, fmt.Sprintf("%s%s", "favor_UserId", UserId)).Result()
+	result, err := m.HVals(ctx, fmt.Sprintf("%s%d", "favor_UserId", UserId)).Result()
 	if err != nil {
 		return nil, err
 	}
@@ -96,7 +96,7 @@ func (m *defaultModel) SearchByUid(ctx context.Context, UserId int64) ([]int64, 
 }
 
 func (m *defaultModel) NumOfFavor(ctx context.Context, VideoId int64) (int, error) {
-	result, err := m.SCard(ctx, fmt.Sprintf("%s%s", "favor_VideoId", VideoId)).Result()
+	result, err := m.SCard(ctx, fmt.Sprintf("%s%d", consts.VideoFavorPrefix, VideoId)).Result()
 	if err != nil {
 		return 0, err
 	}
@@ -104,7 +104,7 @@ func (m *defaultModel) NumOfFavor(ctx context.Context, VideoId int64) (int, erro
 }
 
 func (m *defaultModel) IsFavor(ctx context.Context, UserId int64, VideoId int64) (bool, error) {
-	get := m.HGet(ctx, fmt.Sprintf("%s%s", "favor_UserId", UserId), fmt.Sprintf("%s%s", "favor_VideoId", VideoId))
+	get := m.HGet(ctx, fmt.Sprintf("%s%d", consts.VideoFavorPrefix, UserId), fmt.Sprintf("%s%d", consts.VideoFavorPrefix, VideoId))
 	if get.Err() != nil {
 		if get.Err() == redis.Nil {
 			return false, nil
@@ -115,12 +115,9 @@ func (m *defaultModel) IsFavor(ctx context.Context, UserId int64, VideoId int64)
 }
 
 func (m *defaultModel) FavorNumOfUser(ctx context.Context, UserId int64) (int, error) {
-	result, err := m.HLen(ctx, fmt.Sprintf("%s%s", "favor_UserId", UserId)).Result()
+	result, err := m.HLen(ctx, fmt.Sprintf("%s%d", consts.VideoFavorPrefix, UserId)).Result()
 	if err != nil {
 		return 0, err
 	}
 	return int(result), err
 }
-
-//查询用户是否点赞该视频，用户的获赞数目，用户的总点赞数 ，
-//用户的获赞数目可以通过 id 插叙所属视频， 再查视频的或赞数目

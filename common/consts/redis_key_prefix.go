@@ -4,6 +4,7 @@ const (
 	ProjectNamePrefix  = "douyin:"
 	LastMessagePrefix  = ProjectNamePrefix + "lastMessage:"
 	VideoCommentPrefix = ProjectNamePrefix + "videoComment:"
+	VideoFavorPrefix   = ProjectNamePrefix + "videoFavor:"
 )
 
 const (
