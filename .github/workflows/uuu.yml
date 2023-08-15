@@ -19,12 +19,12 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
-          script: whoami
-            # cd /home/project/gophertok
-#            sudo /usr/local/bin/docker-compose -f docker-compose.yaml stop video-api
-#            ${{ secrets.SSH_PRIVATE_KEY }}
-#            sudo /usr/local/bin/docker-compose -f docker-compose.yaml rm -f video-api
-#            sudo docker image rm ${{ secrets.DOCKERHUB_IMAGE }}video-api:latest
-#            sudo /usr/local/bin/docker-compose -f docker-compose.yaml up -d video-api
-#
+          script: |
+           cd /home/project/gophertok
+           sudo /usr/local/bin/docker-compose -f docker-compose.yaml stop video-api
+           ${{ secrets.PASSWORD }}
+           sudo /usr/local/bin/docker-compose -f docker-compose.yaml rm -f video-api
+           sudo docker image rm ${{ secrets.DOCKERHUB_IMAGE }}video-api:latest
+           sudo /usr/local/bin/docker-compose -f docker-compose.yaml up -d video-api
+
 
