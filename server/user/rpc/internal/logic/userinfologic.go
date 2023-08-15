@@ -39,56 +39,57 @@ func (l *UserInfoLogic) UserInfo(in *user.UserInfoReq) (*user.UserInfoResp, erro
 	if err != nil {
 		return nil, errors.Wrapf(errorx.NewDefaultError(err.Error()), "mysql查询错误 err：%v", err)
 	}
-	followCount, err := l.svcCtx.RelationRpc.GetFollowCount(l.ctx, &pb.GetFollowCountReq{
-		Userid: in.Id,
-	})
-	if err != nil {
-		return nil, errors.Wrapf(err, "req: %+v", in)
+	var followCountResp, followerCountResp, userVideoListResp, isFollowResp, totalFavoritedResp, favoriteCountResp interface{}
+	errChan := make(chan error, 6) // Create a channel to collect potential errors
+
+	// Concurrently execute the RPC calls using goroutines
+	go func() {
+		followCountResp, err = l.svcCtx.RelationRpc.GetFollowCount(l.ctx, &pb.GetFollowCountReq{Userid: in.Id})
+		errChan <- err
+	}()
+	go func() {
+		followerCountResp, err = l.svcCtx.RelationRpc.GetFollowerCount(l.ctx, &pb.GetFollowerCountReq{Userid: in.Id})
+		errChan <- err
+	}()
+	go func() {
+		userVideoListResp, err = l.svcCtx.VideoRpc.UserVideoList(l.ctx, &video.UserVideoListReq{UserId: in.Id})
+		errChan <- err
+	}()
+	go func() {
+		isFollowResp, err = l.svcCtx.RelationRpc.CheckIsFollow(l.ctx, &relationrpc.CheckIsFollowReq{UserId: in.CurrentId, ToUserId: in.Id})
+		errChan <- err
+	}()
+	go func() {
+		totalFavoritedResp, err = l.svcCtx.FavorRpc.FavoredNumOfUser(l.ctx, &favorrpc.FavoredNumOfUserReq{UserId: in.Id})
+		errChan <- err
+	}()
+	go func() {
+		favoriteCountResp, err = l.svcCtx.FavorRpc.FavorNumOfUser(l.ctx, &favorrpc.FavorNumOfUserReq{UserId: in.Id})
+		errChan <- err
+	}()
+
+	// Wait for all RPC calls to complete
+	for i := 0; i < 6; i++ {
+		err := <-errChan // Retrieve errors from the channel
+		if err != nil {
+			// Handle the error, log, and return if needed
+			logc.Error(l.ctx, err, "RPC call error")
+			return nil, errors.Wrapf(err, "req: %+v", in)
+
+		}
 	}
-	followerCount, err := l.svcCtx.RelationRpc.GetFollowerCount(l.ctx, &pb.GetFollowerCountReq{
-		Userid: in.Id,
-	})
-	if err != nil {
-		return nil, errors.Wrapf(err, "req: %+v", in)
-	}
-	userVideoList, err := l.svcCtx.VideoRpc.UserVideoList(l.ctx, &video.UserVideoListReq{
-		UserId: in.Id,
-	})
-	if err != nil {
-		return nil, errors.Wrapf(err, "req: %+v", in)
-	}
-	isFollow, err := l.svcCtx.RelationRpc.CheckIsFollow(l.ctx, &relationrpc.CheckIsFollowReq{
-		UserId:   in.CurrentId,
-		ToUserId: in.Id,
-	})
-	if err != nil {
-		return nil, errors.Wrapf(err, "req: %+v", in)
-	}
-	totalFavorited, err := l.svcCtx.FavorRpc.FavoredNumOfUser(l.ctx, &favorrpc.FavoredNumOfUserReq{
-		UserId: in.Id,
-	})
-	if err != nil {
-		logc.Error(l.ctx, err, "req:", in)
-		return nil, errors.Wrapf(err, "req: %+v", in)
-	}
-	favoriteCount, err := l.svcCtx.FavorRpc.FavorNumOfUser(l.ctx, &favorrpc.FavorNumOfUserReq{
-		UserId: in.Id,
-	})
-	if err != nil {
-		logc.Error(l.ctx, err, "req:", in)
-		return nil, errors.Wrapf(err, "req: %+v", in)
-	}
+
 	return &user.UserInfoResp{
 		Id:              u.ID,
 		Name:            u.Username,
 		Avatar:          u.Avatar,
 		BackgroundImage: u.BackgroundImage,
 		Signature:       u.Signature,
-		IsFollow:        isFollow.IsFollow,
-		FollowCount:     followCount.Count,
-		FollowerCount:   followerCount.Count,
-		TotalFavorited:  strconv.FormatInt(totalFavorited.FavoredNumOfUser, 10),
-		WorkCount:       int64(len(userVideoList.VideoList)),
-		FavoriteCount:   favoriteCount.FavorNumOfUser,
+		IsFollow:        isFollowResp.(*relationrpc.CheckIsFollowResp).IsFollow,
+		FollowCount:     followCountResp.(*pb.GetFollowCountResp).Count,
+		FollowerCount:   followerCountResp.(*pb.GetFollowerCountResp).Count,
+		TotalFavorited:  strconv.FormatInt(totalFavoritedResp.(*favorrpc.FavoredNumOfUserResp).FavoredNumOfUser, 10),
+		WorkCount:       int64(len(userVideoListResp.(*video.UserVideoListResp).VideoList)),
+		FavoriteCount:   favoriteCountResp.(*favorrpc.FavorNumOfUserResp).FavorNumOfUser,
 	}, nil
 }

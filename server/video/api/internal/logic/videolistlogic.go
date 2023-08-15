@@ -13,6 +13,7 @@ import (
 	"github.com/zeromicro/go-zero/core/logc"
 	"github.com/zeromicro/go-zero/core/logx"
 	"math"
+	"sync"
 )
 
 type VideoListLogic struct {
@@ -35,82 +36,131 @@ func (l *VideoListLogic) VideoList(req *types.VideoListReq) (resp *types.VideoLi
 	if !ok {
 		logc.Info(l.ctx, "匿名用户")
 		uid = 0
-		//return nil, errors.Wrapf(errorx.NewDefaultError("user_id获取失败"), "user_id获取失败 user_id:%v", uid)
 	}
 
 	UserVideoListCnt, err := l.svcCtx.VideoRpc.VideoList(l.ctx, &video.VideoListReq{
 		LatestTime: req.LatestTime,
 	})
-	list := UserVideoListCnt.VideoList
 	if err != nil {
 		return nil, errors.Wrapf(err, "req: %+v", req)
 	}
-	videoList := make([]*types.VideoInfo, 0) // Assuming VideoList is a struct that matches your needs
-	nextTime := int64(math.MaxInt64)
-	for i := 0; i < len(list); i++ {
-		// 查看视频的作者信息
-		userinfo, err := l.svcCtx.UserRpc.UserInfo(l.ctx, &user.UserInfoReq{
-			Id:        list[i].UserId,
-			CurrentId: uid,
-		})
-		if err != nil {
-			return nil, errors.Wrapf(err, "req: %+v", req)
-		}
+	list := UserVideoListCnt.VideoList
 
-		commentCount, err := l.svcCtx.CommentRpc.GetCommentCount(l.ctx, &pb.GetCommentCountRequest{
-			VideoId: list[i].Id,
-		})
-		if err != nil {
-			return nil, errors.Wrapf(err, "req: %+v", req)
-		}
-		favoriteCount, err := l.svcCtx.FavorRpc.FavorNum(l.ctx, &favorrpc.FavorNumReq{
-			VideoId: list[i].Id,
-		})
-		if err != nil {
-			return nil, errors.Wrapf(err, "req: %+v", req)
-		}
-		// 未登陆的用户,直接设置未点赞该视频,并且未关注该用户
-		isFavorite := false
-		if uid == 0 {
-			userinfo.IsFollow = false
-		} else {
-			isFavoriteCnt, err := l.svcCtx.FavorRpc.IsFavor(l.ctx, &favorrpc.IsFavorReq{
-				UserId:  userinfo.Id,
+	// ...
+
+	videoList := make([]*types.VideoInfo, 0)
+	nextTime := int64(math.MaxInt64)
+	errChan := make(chan error, len(list)) // Create a channel to collect potential errors
+
+	var wg sync.WaitGroup
+	for i := 0; i < len(list); i++ {
+		wg.Add(1)
+		go func(i int) {
+			defer wg.Done()
+
+			// 查看视频的作者信息
+			userInfoChan := make(chan *user.UserInfoResp)
+			errChanUserInfo := make(chan error)
+			go func() {
+				userinfo, err := l.svcCtx.UserRpc.UserInfo(l.ctx, &user.UserInfoReq{
+					Id:        list[i].UserId,
+					CurrentId: uid,
+				})
+				if err != nil {
+					errChanUserInfo <- err
+				} else {
+					userInfoChan <- userinfo
+				}
+			}()
+
+			// 获取评论数
+			commentCountChan := make(chan *pb.GetCommentCountResponse)
+			errChanCommentCount := make(chan error)
+			go func() {
+				commentCount, err := l.svcCtx.CommentRpc.GetCommentCount(l.ctx, &pb.GetCommentCountRequest{
+					VideoId: list[i].Id,
+				})
+				if err != nil {
+					errChanCommentCount <- err
+				} else {
+					commentCountChan <- commentCount
+				}
+			}()
+
+			// Wait for goroutines to complete
+			userinfo := <-userInfoChan
+			errUserInfo := <-errChanUserInfo
+			commentCountResp := <-commentCountChan
+			errCommentCount := <-errChanCommentCount
+
+			if errUserInfo != nil || errCommentCount != nil {
+				errChan <- errors.Wrapf(errUserInfo, "req: %+v", req)
+				return
+			}
+
+			// ... Other parts of your loop ...
+
+			// 获取 favoriteCount 和 isFavorite
+			favoriteCount, err := l.svcCtx.FavorRpc.FavorNum(l.ctx, &favorrpc.FavorNumReq{
 				VideoId: list[i].Id,
 			})
 			if err != nil {
-				return nil, errors.Wrapf(err, "req: %+v", req)
+				errChan <- errors.Wrapf(err, "req: %+v", req)
+				return
 			}
-			isFavorite = isFavoriteCnt.IsFavor
-		}
-		if list[i].CreateTime < nextTime {
-			nextTime = list[i].CreateTime
-		}
-		videoItem := &types.VideoInfo{
-			ID: list[i].Id,
-			Author: types.AuthorInfo{
-				ID:              userinfo.Id,
-				Name:            userinfo.Name,
-				FollowCount:     userinfo.FollowCount,
-				FollowerCount:   userinfo.FollowerCount,
-				IsFollow:        userinfo.IsFollow,
-				Avatar:          userinfo.Avatar,
-				BackgroundImage: userinfo.BackgroundImage,
-				Signature:       userinfo.Signature,
-				TotalFavorited:  userinfo.TotalFavorited,
-				WorkCount:       userinfo.WorkCount,
-				FavoriteCount:   userinfo.FavoriteCount,
-			},
-			Title:         list[i].Title,
-			PlayURL:       list[i].PlayUrl,
-			CoverURL:      list[i].CoverUrl,
-			FavoriteCount: favoriteCount.Num,
-			CommentCount:  commentCount.Count,
-			IsFavorite:    isFavorite,
-		}
-		videoList = append(videoList, videoItem)
+
+			isFavorite := false
+			if uid != 0 {
+				isFavoriteCnt, err := l.svcCtx.FavorRpc.IsFavor(l.ctx, &favorrpc.IsFavorReq{
+					UserId:  userinfo.Id,
+					VideoId: list[i].Id,
+				})
+				if err != nil {
+					errChan <- errors.Wrapf(err, "req: %+v", req)
+					return
+				}
+				isFavorite = isFavoriteCnt.IsFavor
+			}
+
+			if list[i].CreateTime < nextTime {
+				nextTime = list[i].CreateTime
+			}
+			videoItem := &types.VideoInfo{
+				ID: list[i].Id,
+				Author: types.AuthorInfo{
+					ID:              userinfo.Id,
+					Name:            userinfo.Name,
+					FollowCount:     userinfo.FollowCount,
+					FollowerCount:   userinfo.FollowerCount,
+					IsFollow:        userinfo.IsFollow,
+					Avatar:          userinfo.Avatar,
+					BackgroundImage: userinfo.BackgroundImage,
+					Signature:       userinfo.Signature,
+					TotalFavorited:  userinfo.TotalFavorited,
+					WorkCount:       userinfo.WorkCount,
+					FavoriteCount:   userinfo.FavoriteCount,
+				},
+				Title:         list[i].Title,
+				PlayURL:       list[i].PlayUrl,
+				CoverURL:      list[i].CoverUrl,
+				FavoriteCount: favoriteCount.Num,
+				CommentCount:  commentCountResp.Count,
+				IsFavorite:    isFavorite,
+			}
+			videoList = append(videoList, videoItem)
+		}(i)
 	}
 
+	// Wait for all goroutines to complete
+	wg.Wait()
+	close(errChan)
+
+	// Collect errors
+	for err := range errChan {
+		if err != nil {
+			return nil, err
+		}
+	}
 	return &types.VideoListResp{
 		BaseResponse: types.BaseResponse{
 			Code:    0,
