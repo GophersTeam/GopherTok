@@ -22,8 +22,8 @@ jobs:
           script: |
            cd /home/project/gophertok
            echo "${{ secrets.PASSWORD }}" | sudo -S /usr/local/bin/docker-compose -f docker-compose.yaml stop video-api
-           sudo /usr/local/bin/docker-compose -f docker-compose.yaml rm -f video-api
-           sudo docker image rm ${{ secrets.DOCKERHUB_IMAGE }}video-api:latest
-           sudo /usr/local/bin/docker-compose -f docker-compose.yaml up -d video-api
+           echo "${{ secrets.PASSWORD }}" | sudo /usr/local/bin/docker-compose -f docker-compose.yaml rm -f video-api
+           echo "${{ secrets.PASSWORD }}" | sudo docker image rm ${{ secrets.DOCKERHUB_IMAGE }}video-api:latest
+           echo "${{ secrets.PASSWORD }}" | sudo /usr/local/bin/docker-compose -f docker-compose.yaml up -d video-api
 
 
