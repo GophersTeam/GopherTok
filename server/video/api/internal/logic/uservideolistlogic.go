@@ -41,10 +41,11 @@ func (l *UserVideoListLogic) UserVideoList(req *types.UserVideoListReq) (resp *t
 	UserVideoListCnt, err := l.svcCtx.VideoRpc.UserVideoList(l.ctx, &video.UserVideoListReq{
 		UserId: userId,
 	})
-	list := UserVideoListCnt.VideoList
 	if err != nil {
 		return nil, errors.Wrapf(err, "req: %+v", req)
 	}
+	list := UserVideoListCnt.VideoList
+
 	userinfo, err := l.svcCtx.UserRpc.UserInfo(l.ctx, &user.UserInfoReq{
 		Id:        userId,
 		CurrentId: uid,
@@ -52,52 +53,76 @@ func (l *UserVideoListLogic) UserVideoList(req *types.UserVideoListReq) (resp *t
 	if err != nil {
 		return nil, errors.Wrapf(err, "req: %+v", req)
 	}
-	videoList := make([]*types.VideoInfo, 0) // Assuming VideoList is a struct that matches your needs
+
+	var (
+		videoList    []*types.VideoInfo
+		videoResults = make(chan *types.VideoInfo, len(list))
+		errorChannel = make(chan error, len(list))
+	)
 
 	for i := 0; i < len(list); i++ {
-		commentCount, err := l.svcCtx.CommentRpc.GetCommentCount(l.ctx, &pb.GetCommentCountRequest{
-			VideoId: list[i].Id,
-		})
-		if err != nil {
-			return nil, errors.Wrapf(err, "req: %+v", req)
-		}
-		favoriteCount, err := l.svcCtx.FavorRpc.FavorNum(l.ctx, &favorrpc.FavorNumReq{
-			VideoId: list[i].Id,
-		})
-		if err != nil {
-			return nil, errors.Wrapf(err, "req: %+v", req)
-		}
-		isFavorite, err := l.svcCtx.FavorRpc.IsFavor(l.ctx, &favorrpc.IsFavorReq{
-			UserId:  userinfo.Id,
-			VideoId: list[i].Id,
-		})
-		if err != nil {
-			return nil, errors.Wrapf(err, "req: %+v", req)
-		}
-		videoItem := &types.VideoInfo{
-			ID: list[i].Id,
-			Author: types.AuthorInfo{
-				ID:              userinfo.Id,
-				Name:            userinfo.Name,
-				FollowCount:     userinfo.FollowCount,
-				FollowerCount:   userinfo.FollowerCount,
-				IsFollow:        userinfo.IsFollow,
-				Avatar:          userinfo.Avatar,
-				BackgroundImage: userinfo.BackgroundImage,
-				Signature:       userinfo.Signature,
-				TotalFavorited:  userinfo.TotalFavorited,
-				WorkCount:       userinfo.WorkCount,
-				FavoriteCount:   userinfo.FavoriteCount,
-			},
-			Title:         list[i].Title,
-			PlayURL:       list[i].PlayUrl,
-			CoverURL:      list[i].CoverUrl,
-			FavoriteCount: favoriteCount.Num,
-			CommentCount:  commentCount.Count,
-			IsFavorite:    isFavorite.IsFavor,
-		}
-		videoList = append(videoList, videoItem)
+		go func(i int) {
+			commentCount, cErr := l.svcCtx.CommentRpc.GetCommentCount(l.ctx, &pb.GetCommentCountRequest{
+				VideoId: list[i].Id,
+			})
+			if cErr != nil {
+				errorChannel <- cErr
+				return
+			}
+
+			favoriteCount, fErr := l.svcCtx.FavorRpc.FavorNum(l.ctx, &favorrpc.FavorNumReq{
+				VideoId: list[i].Id,
+			})
+			if fErr != nil {
+				errorChannel <- fErr
+				return
+			}
+
+			isFavorite, favErr := l.svcCtx.FavorRpc.IsFavor(l.ctx, &favorrpc.IsFavorReq{
+				UserId:  userinfo.Id,
+				VideoId: list[i].Id,
+			})
+			if favErr != nil {
+				errorChannel <- favErr
+				return
+			}
+
+			videoItem := &types.VideoInfo{
+				ID: list[i].Id,
+				Author: types.AuthorInfo{
+					ID:              userinfo.Id,
+					Name:            userinfo.Name,
+					FollowCount:     userinfo.FollowCount,
+					FollowerCount:   userinfo.FollowerCount,
+					IsFollow:        userinfo.IsFollow,
+					Avatar:          userinfo.Avatar,
+					BackgroundImage: userinfo.BackgroundImage,
+					Signature:       userinfo.Signature,
+					TotalFavorited:  userinfo.TotalFavorited,
+					WorkCount:       userinfo.WorkCount,
+					FavoriteCount:   userinfo.FavoriteCount,
+				},
+				Title:         list[i].Title,
+				PlayURL:       list[i].PlayUrl,
+				CoverURL:      list[i].CoverUrl,
+				FavoriteCount: favoriteCount.Num,
+				CommentCount:  commentCount.Count,
+				IsFavorite:    isFavorite.IsFavor,
+			}
+
+			videoResults <- videoItem
+		}(i)
 	}
+
+	for i := 0; i < len(list); i++ {
+		select {
+		case videoItem := <-videoResults:
+			videoList = append(videoList, videoItem)
+		case err := <-errorChannel:
+			return nil, err
+		}
+	}
+
 	return &types.UserVideoListResp{
 		BaseResponse: types.BaseResponse{
 			Code:    0,
