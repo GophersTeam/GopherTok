@@ -1,8 +1,10 @@
 package logic
 
 import (
+	"GopherTok/common/errorx"
 	"GopherTok/server/video/rpc/videoclient"
 	"context"
+	"github.com/pkg/errors"
 
 	"GopherTok/server/favor/rpc/internal/svc"
 	"GopherTok/server/favor/rpc/types/favor"
@@ -30,7 +32,8 @@ func (l *FavoredNumOfUserLogic) FavoredNumOfUser(in *favor.FavoredNumOfUserReq) 
 		UserId: in.UserId,
 	})
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrapf(errorx.NewDefaultError(err.Error()), "err:%v", err)
+
 	}
 	var sum int = 0
 	for _, j := range list.VideoList {

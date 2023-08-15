@@ -35,7 +35,6 @@ type VideoInfo {
 	CommentCount  int64      `json:"comment_count"`
 	IsFavorite    bool       `json:"is_favorite"`
 	Title         string     `json:"title"`
-
 }
 // video list
 type VideoList {
@@ -67,7 +66,7 @@ type (
 	}
 	VideoListResp {
 		BaseResponse
-		NextTime string `json:"next_time"`
+		NextTime int64 `json:"next_time"`
 		VideoList
 	}
 )

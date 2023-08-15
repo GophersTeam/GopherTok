@@ -61,6 +61,6 @@ type VideoListReq struct {
 
 type VideoListResp struct {
 	BaseResponse
-	NextTime string `json:"next_time"`
+	NextTime int64 `json:"next_time"`
 	VideoList
 }
