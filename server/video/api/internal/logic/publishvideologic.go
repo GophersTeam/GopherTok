@@ -50,10 +50,10 @@ func (l *PublishVideoLogic) PublishVideo(req *types.PublishVideoReq, r *http.Req
 		return nil, errors.Wrapf(errorx.NewCodeError(40001, errorx.ErrFileOpen), "打开文件错误 err:%v", err)
 	}
 	defer file.Close()
-	// 检查文件类型是否为视频
-	if !isVideoFile(head) {
-		return nil, errors.Wrapf(errorx.NewDefaultError("文件不是视频类型，请上传视频类型文件"), "文件不是视频类型，请上传视频类型文件 req:%v", req)
-	}
+	//// 检查文件类型是否为视频
+	//if !isVideoFile(head) {
+	//	return nil, errors.Wrapf(errorx.NewDefaultError("文件不是视频类型，请上传视频类型文件"), "文件不是视频类型，请上传视频类型文件 req:%v", req)
+	//}
 	// 计算视频sha256值
 	file.Seek(0, 0)
 	fileSha256 := utils.FileSha256(file)

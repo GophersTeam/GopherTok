@@ -1,8 +1,10 @@
 name: Docker Build and Push User
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+    inputs:
+      parameter_name:
+        description: 'go'
+        required: true
 
 jobs:
   # user-api
@@ -32,6 +34,20 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_IMAGE }}user-api:latest
           platforms: linux/amd64,linux/arm64  # 构建多个架构的镜像
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd /home/project/gophertok
+            echo "${{ secrets.PASSWORD }}" | sudo -S /usr/local/bin/docker-compose -f docker-compose.yaml stop user-api
+            echo "${{ secrets.PASSWORD }}" | sudo /usr/local/bin/docker-compose -f docker-compose.yaml rm -f user-api
+            echo "${{ secrets.PASSWORD }}" | sudo docker image rm ${{ secrets.DOCKERHUB_IMAGE }}user-api:latest
+            echo "${{ secrets.PASSWORD }}" | sudo /usr/local/bin/docker-compose -f docker-compose.yaml up -d user-api
+
   # user-rpc
   build-and-push-user-rpc:
     runs-on: ubuntu-latest
@@ -59,6 +75,19 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_IMAGE }}user-rpc:latest
           platforms: linux/amd64,linux/arm64  # 构建多个架构的镜像
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd /home/project/gophertok
+            echo "${{ secrets.PASSWORD }}" | sudo -S /usr/local/bin/docker-compose -f docker-compose.yaml stop user-rpc
+            echo "${{ secrets.PASSWORD }}" | sudo /usr/local/bin/docker-compose -f docker-compose.yaml rm -f user-rpc
+            echo "${{ secrets.PASSWORD }}" | sudo docker image rm ${{ secrets.DOCKERHUB_IMAGE }}user-rpc:latest
+            echo "${{ secrets.PASSWORD }}" | sudo /usr/local/bin/docker-compose -f docker-compose.yaml up -d user-rpc
 
   # user-mq
   build-and-push-user-mq:
@@ -87,5 +116,18 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_IMAGE }}user-mq:latest
           platforms: linux/amd64,linux/arm64  # 构建多个架构的镜像
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd /home/project/gophertok
+            echo "${{ secrets.PASSWORD }}" | sudo -S /usr/local/bin/docker-compose -f docker-compose.yaml stop user-mq
+            echo "${{ secrets.PASSWORD }}" | sudo /usr/local/bin/docker-compose -f docker-compose.yaml rm -f user-mq
+            echo "${{ secrets.PASSWORD }}" | sudo docker image rm ${{ secrets.DOCKERHUB_IMAGE }}user-mq:latest
+            echo "${{ secrets.PASSWORD }}" | sudo /usr/local/bin/docker-compose -f docker-compose.yaml up -d user-mq
 
 

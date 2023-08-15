@@ -10,8 +10,8 @@ import (
 	"GopherTok/server/user/rpc/types/user"
 	"GopherTok/server/video/rpc/types/video"
 	"context"
-	"fmt"
 	"github.com/pkg/errors"
+	"github.com/zeromicro/go-zero/core/logc"
 	"strconv"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -68,13 +68,14 @@ func (l *UserInfoLogic) UserInfo(in *user.UserInfoReq) (*user.UserInfoResp, erro
 		UserId: in.Id,
 	})
 	if err != nil {
+		logc.Error(l.ctx, err, "req:", in)
 		return nil, errors.Wrapf(err, "req: %+v", in)
 	}
 	favoriteCount, err := l.svcCtx.FavorRpc.FavorNumOfUser(l.ctx, &favorrpc.FavorNumOfUserReq{
 		UserId: in.Id,
 	})
-	fmt.Println("xxx", favoriteCount.FavorNumOfUser)
 	if err != nil {
+		logc.Error(l.ctx, err, "req:", in)
 		return nil, errors.Wrapf(err, "req: %+v", in)
 	}
 	return &user.UserInfoResp{

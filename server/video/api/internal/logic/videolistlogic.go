@@ -34,6 +34,7 @@ func (l *VideoListLogic) VideoList(req *types.VideoListReq) (resp *types.VideoLi
 	uid, ok := l.ctx.Value(consts.UserId).(int64)
 	if !ok {
 		logc.Info(l.ctx, "匿名用户")
+		uid = 0
 		//return nil, errors.Wrapf(errorx.NewDefaultError("user_id获取失败"), "user_id获取失败 user_id:%v", uid)
 	}
 
