@@ -1,29 +1,26 @@
-name: Docker Build and Push uuu
+
+name: remote ssh command
 on:
   workflow_dispatch:
     inputs:
       parameter_name:
         description: 'go'
         required: true
-
-
 jobs:
 
-
-  # video-rpc
-  build-and-push-video-rpc:
+  build:
+    name: Build
     runs-on: ubuntu-latest
     steps:
-
-      - name: SSH into the remote server and perform actions
-        uses: appleboy/ssh-action@v1.0.0
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@v0.1.10
         with:
-          host: ${{ secrets.REMOTE_SERVER_HOST }}
-          username: ${{ secrets.REMOTE_SERVER_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
-          script: |
-            cd /home/project/gophertok
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: whoami
+            # cd /home/project/gophertok
 #            sudo /usr/local/bin/docker-compose -f docker-compose.yaml stop video-api
 #            ${{ secrets.SSH_PRIVATE_KEY }}
 #            sudo /usr/local/bin/docker-compose -f docker-compose.yaml rm -f video-api
