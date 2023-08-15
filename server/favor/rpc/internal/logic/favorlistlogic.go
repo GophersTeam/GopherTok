@@ -5,6 +5,7 @@ import (
 	"GopherTok/server/user/rpc/userclient"
 	"GopherTok/server/video/rpc/videoclient"
 	"context"
+	"time"
 
 	"GopherTok/server/favor/rpc/types/favor"
 
@@ -46,8 +47,8 @@ func (l *FavorListLogic) FavorList(in *favor.FavorListReq) (*favor.FavorListResp
 			Title:       video.Video.Title,
 			PlayUrl:     video.Video.PlayUrl,
 			CoverUrl:    video.Video.CoverUrl,
-			CreateTime:  video.Video.CreateTime,
-			UpdateTime:  video.Video.UpdateTime,
+			CreateTime:  time.Unix(video.Video.CreateTime, 0).Format("2006-01-02 15:04:05"),
+			UpdateTime:  time.Unix(video.Video.UpdateTime, 0).Format("2006-01-02 15:04:05"),
 			VideoSha256: video.Video.VideoSha256,
 		}
 
