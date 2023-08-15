@@ -1,9 +1,10 @@
 name: Docker Build and Push Chat
 on:
-  push:
-    branches:
-      - main
-
+  workflow_dispatch:
+    inputs:
+      parameter_name:
+        description: 'go'
+        required: true
 jobs:
   # chat-rpc
   build-and-push-chat-rpc:
@@ -32,6 +33,20 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_IMAGE }}chat-rpc:latest
           platforms: linux/amd64,linux/arm64  # 构建多个架构的镜像
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd /home/project/gophertok
+            echo "${{ secrets.PASSWORD }}" | sudo -S /usr/local/bin/docker-compose -f docker-compose.yaml stop chat-rpc
+            echo "${{ secrets.PASSWORD }}" | sudo /usr/local/bin/docker-compose -f docker-compose.yaml rm -f chat-rpc
+            echo "${{ secrets.PASSWORD }}" | sudo docker image rm ${{ secrets.DOCKERHUB_IMAGE }}chat-rpc:latest
+            echo "${{ secrets.PASSWORD }}" | sudo /usr/local/bin/docker-compose -f docker-compose.yaml up -d chat-rpc
+
   # chat-api
   build-and-push-chat-api:
     runs-on: ubuntu-latest
@@ -59,6 +74,19 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_IMAGE }}chat-api:latest
           platforms: linux/amd64,linux/arm64  # 构建多个架构的镜像
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd /home/project/gophertok
+            echo "${{ secrets.PASSWORD }}" | sudo -S /usr/local/bin/docker-compose -f docker-compose.yaml stop chat-api
+            echo "${{ secrets.PASSWORD }}" | sudo /usr/local/bin/docker-compose -f docker-compose.yaml rm -f chat-api
+            echo "${{ secrets.PASSWORD }}" | sudo docker image rm ${{ secrets.DOCKERHUB_IMAGE }}chat-api:latest
+            echo "${{ secrets.PASSWORD }}" | sudo /usr/local/bin/docker-compose -f docker-compose.yaml up -d chat-api
 
   # chat-mq
   build-and-push-chat-mq:
@@ -87,3 +115,16 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_IMAGE }}chat-mq:latest
           platforms: linux/amd64,linux/arm64  # 构建多个架构的镜像
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd /home/project/gophertok
+            echo "${{ secrets.PASSWORD }}" | sudo -S /usr/local/bin/docker-compose -f docker-compose.yaml stop chat-mq
+            echo "${{ secrets.PASSWORD }}" | sudo /usr/local/bin/docker-compose -f docker-compose.yaml rm -f chat-mq
+            echo "${{ secrets.PASSWORD }}" | sudo docker image rm ${{ secrets.DOCKERHUB_IMAGE }}chat-mq:latest
+            echo "${{ secrets.PASSWORD }}" | sudo /usr/local/bin/docker-compose -f docker-compose.yaml up -d chat-mq

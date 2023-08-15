@@ -1,8 +1,10 @@
 name: Docker Build and Push Favor
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+    inputs:
+      parameter_name:
+        description: 'go'
+        required: true
 
 jobs:
   # favor-api
@@ -32,6 +34,19 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_IMAGE }}favor-api:latest
           platforms: linux/amd64,linux/arm64  # 构建多个架构的镜像
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd /home/project/gophertok
+            echo "${{ secrets.PASSWORD }}" | sudo -S /usr/local/bin/docker-compose -f docker-compose.yaml stop favor-api
+            echo "${{ secrets.PASSWORD }}" | sudo /usr/local/bin/docker-compose -f docker-compose.yaml rm -f favor-api
+            echo "${{ secrets.PASSWORD }}" | sudo docker image rm ${{ secrets.DOCKERHUB_IMAGE }}favor-api:latest
+            echo "${{ secrets.PASSWORD }}" | sudo /usr/local/bin/docker-compose -f docker-compose.yaml up -d favor-api
 
 
 
@@ -62,5 +77,18 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_IMAGE }}favor-rpc:latest
           platforms: linux/amd64,linux/arm64  # 构建多个架构的镜像
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd /home/project/gophertok
+            echo "${{ secrets.PASSWORD }}" | sudo -S /usr/local/bin/docker-compose -f docker-compose.yaml stop favor-rpc
+            echo "${{ secrets.PASSWORD }}" | sudo /usr/local/bin/docker-compose -f docker-compose.yaml rm -f favor-rpc
+            echo "${{ secrets.PASSWORD }}" | sudo docker image rm ${{ secrets.DOCKERHUB_IMAGE }}favor-rpc:latest
+            echo "${{ secrets.PASSWORD }}" | sudo /usr/local/bin/docker-compose -f docker-compose.yaml up -d favor-rpc
 
 
