@@ -7,8 +7,10 @@ import (
 
 type Config struct {
 	rest.RestConf
-	FavorRpcConf zrpc.RpcClientConf
-	Token        struct {
+	FavorRpcConf   zrpc.RpcClientConf
+	CommentRpcConf zrpc.RpcClientConf
+
+	Token struct {
 		AccessToken  string
 		RefreshToken string
 	}
