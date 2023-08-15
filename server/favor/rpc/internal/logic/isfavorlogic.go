@@ -1,7 +1,9 @@
 package logic
 
 import (
+	"GopherTok/common/errorx"
 	"context"
+	"github.com/pkg/errors"
 
 	"GopherTok/server/favor/rpc/internal/svc"
 	"GopherTok/server/favor/rpc/types/favor"
@@ -27,7 +29,8 @@ func (l *IsFavorLogic) IsFavor(in *favor.IsFavorReq) (*favor.IsFavorResp, error)
 
 	isFavor, err := l.svcCtx.FavorModel.IsFavor(l.ctx, in.UserId, in.VideoId)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrapf(errorx.NewDefaultError(err.Error()), "err:%v", err)
+
 	}
 	return &favor.IsFavorResp{
 		IsFavor: isFavor,

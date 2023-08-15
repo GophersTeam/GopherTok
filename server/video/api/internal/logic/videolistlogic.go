@@ -11,10 +11,8 @@ import (
 	"context"
 	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logc"
-	"strconv"
-	"time"
-
 	"github.com/zeromicro/go-zero/core/logx"
+	"math"
 )
 
 type VideoListLogic struct {
@@ -39,9 +37,6 @@ func (l *VideoListLogic) VideoList(req *types.VideoListReq) (resp *types.VideoLi
 		//return nil, errors.Wrapf(errorx.NewDefaultError("user_id获取失败"), "user_id获取失败 user_id:%v", uid)
 	}
 
-	if req.LatestTime == "" {
-		req.LatestTime = strconv.FormatInt(time.Now().Unix(), 10)
-	}
 	UserVideoListCnt, err := l.svcCtx.VideoRpc.VideoList(l.ctx, &video.VideoListReq{
 		LatestTime: req.LatestTime,
 	})
@@ -50,7 +45,7 @@ func (l *VideoListLogic) VideoList(req *types.VideoListReq) (resp *types.VideoLi
 		return nil, errors.Wrapf(err, "req: %+v", req)
 	}
 	videoList := make([]*types.VideoInfo, 0) // Assuming VideoList is a struct that matches your needs
-
+	nextTime := int64(math.MaxInt64)
 	for i := 0; i < len(list); i++ {
 		// 查看视频的作者信息
 		userinfo, err := l.svcCtx.UserRpc.UserInfo(l.ctx, &user.UserInfoReq{
@@ -87,6 +82,9 @@ func (l *VideoListLogic) VideoList(req *types.VideoListReq) (resp *types.VideoLi
 			}
 			isFavorite = isFavoriteCnt.IsFavor
 		}
+		if list[i].CreateTime < nextTime {
+			nextTime = list[i].CreateTime
+		}
 		videoItem := &types.VideoInfo{
 			ID: list[i].Id,
 			Author: types.AuthorInfo{
@@ -117,6 +115,7 @@ func (l *VideoListLogic) VideoList(req *types.VideoListReq) (resp *types.VideoLi
 			Code:    0,
 			Message: "success!",
 		},
+		NextTime:  nextTime * 1000,
 		VideoList: types.VideoList{List: videoList},
 	}, nil
 }

@@ -34,7 +34,7 @@ services:
       - gophertok
     restart: always                      # 指定容器退出后的重启策略为始终重启
     deploy:
-      replicas: 3 # 启动三个实例
+      replicas: 2 # 启动三个实例
 
   user-api: # 自定义容器名称
     image: ${DOCKERHUB_IMAGE}user-api:latest
@@ -51,14 +51,14 @@ services:
     restart: always                      # 指定容器退出后的重启策略为始终重启
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.gophertok-user-api.rule=Host(`localhost`) && PathPrefix(`/douyin/user`)" # 转发规则
+      - "traefik.http.routers.gophertok-user-api.rule=Host(`${GOPHERTOKHOST}`) && PathPrefix(`/douyin/user`)" # 转发规则
       - "traefik.http.routers.gophertok-user-api.entrypoints=gophertok"
       - "traefik.http.services.gophertok-user-api.loadbalancer.server.port=5001"    # 实例的端口
       - "traefik.docker.network=gophertok"
       - "traefik.http.services.gophertok-user-api.loadbalancer.server.scheme=http"
       - "traefik.http.services.gophertok-user-api.loadbalancer.passhostheader=true"
     deploy:
-      replicas: 3 # 启动三个实例
+      replicas: 2 # 启动三个实例
 
   user-mq: # 自定义容器名称
     image: ${DOCKERHUB_IMAGE}user-mq:latest
@@ -83,9 +83,10 @@ services:
       - gophertok
     restart: always                      # 指定容器退出后的重启策略为始终重启
     deploy:
-      replicas: 3 # 启动三个实例
+      replicas: 2 # 启动三个实例
 
   video-api: # 自定义容器名称
+    #image: video-api-0:latest
     image: ${DOCKERHUB_IMAGE}video-api:latest
     #    container_name: gophertok-user-api
     environment: # 设置环境变量
@@ -94,20 +95,21 @@ services:
     stdin_open: true                     # 打开标准输入，可以接受外部输入
     tty: true
     volumes:
-      - /Users/liuxian/temp/:/Users/liuxian/temp/
+      - /home/project/gophertok/temp/:/home/project/gophertok/temp/
+      - /home/project/gophertok/ffmpeg:/usr/bin/ffmpeg
     networks:
       - gophertok
     restart: always                      # 指定容器退出后的重启策略为始终重启
     labels:
       - "traefik.enable=true"        # ${GOPHERTOKHOST}
-      - "traefik.http.routers.gophertok-video-api.rule=Host(`localhost`) && PathPrefix(`/douyin/publish`,`/douyin/feed/`)" # 转发规则
+      - "traefik.http.routers.gophertok-video-api.rule=Host(`${GOPHERTOKHOST}`) && PathPrefix(`/douyin/publish`,`/douyin/feed`)" # 转发规则
       - "traefik.http.routers.gophertok-video-api.entrypoints=gophertok"
       - "traefik.http.services.gophertok-video-api.loadbalancer.server.port=5003"    # 实例的端口
       - "traefik.docker.network=gophertok"
       - "traefik.http.services.gophertok-video-api.loadbalancer.server.scheme=http"
       - "traefik.http.services.gophertok-video-api.loadbalancer.passhostheader=true"
     deploy:
-      replicas: 3 # 启动三个实例
+      replicas: 2 # 启动三个实例
 
   video-mq: # 自定义容器名称
     image: ${DOCKERHUB_IMAGE}video-mq:latest
@@ -133,7 +135,7 @@ services:
       - gophertok
     restart: always                      # 指定容器退出后的重启策略为始终重启
     deploy:
-      replicas: 3 # 启动三个实例
+      replicas: 2 # 启动三个实例
 
   chat-api: # 自定义容器名称
     image: ${DOCKERHUB_IMAGE}chat-api:latest
@@ -141,8 +143,6 @@ services:
     environment: # 设置环境变量
       - TZ=Asia/Shanghai
     privileged: true
-    ports: # 设置端口映射
-      - "20002:20002"  # chat服务api端口
     stdin_open: true                     # 打开标准输入，可以接受外部输入
     tty: true
     networks:
@@ -157,7 +157,7 @@ services:
       - "traefik.http.services.gophertok-chat-api.loadbalancer.server.scheme=http"
       - "traefik.http.services.gophertok-chat-api.loadbalancer.passhostheader=true"
     deploy:
-      replicas: 3 # 启动三个实例
+      replicas: 2 # 启动三个实例
 
   chat-mq: # 自定义容器名称
     image: ${DOCKERHUB_IMAGE}chat-mq:latest
@@ -182,7 +182,7 @@ services:
       - gophertok
     restart: always                      # 指定容器退出后的重启策略为始终重启
     deploy:
-      replicas: 3 # 启动三个实例
+      replicas: 2 # 启动三个实例
 
   comment-api: # 自定义容器名称
     image: ${DOCKERHUB_IMAGE}comment-api:latest
@@ -190,8 +190,7 @@ services:
     environment: # 设置环境变量
       - TZ=Asia/Shanghai
     privileged: true
-    ports: # 设置端口映射
-      - "20001:20001"  # comment服务api端口
+
     stdin_open: true                     # 打开标准输入，可以接受外部输入
     tty: true
     networks:
@@ -206,7 +205,7 @@ services:
       - "traefik.http.services.gophertok-comment-api.loadbalancer.server.scheme=http"
       - "traefik.http.services.gophertok-comment-api.loadbalancer.passhostheader=true"
     deploy:
-      replicas: 3 # 启动三个实例
+      replicas: 2 # 启动三个实例
 
   comment-mq: # 自定义容器名称
     image: ${DOCKERHUB_IMAGE}comment-mq:latest
@@ -231,7 +230,7 @@ services:
       - gophertok
     restart: always                      # 指定容器退出后的重启策略为始终重启
     deploy:
-      replicas: 3 # 启动三个实例
+      replicas: 2 # 启动三个实例
 
   relation-api: # 自定义容器名称
     image: ${DOCKERHUB_IMAGE}relation-api:latest
@@ -239,8 +238,7 @@ services:
     environment: # 设置环境变量
       - TZ=Asia/Shanghai
     privileged: true
-    ports: # 设置端口映射
-      - "7888:7888"  # relation服务api端口
+
     stdin_open: true                     # 打开标准输入，可以接受外部输入
     tty: true
     networks:
@@ -250,12 +248,12 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.gophertok-relation-api.rule=Host(`${GOPHERTOKHOST}`) && PathPrefix(`/douyin/relation`)" # 转发规则
       - "traefik.http.routers.gophertok-relation-api.entrypoints=gophertok"
-      - "traefik.http.services.gophertok-relation-api.loadbalancer.server.port=20001"    # 实例的端口
+      - "traefik.http.services.gophertok-relation-api.loadbalancer.server.port=7888"    # 实例的端口
       - "traefik.docker.network=gophertok"
       - "traefik.http.services.gophertok-relation-api.loadbalancer.server.scheme=http"
       - "traefik.http.services.gophertok-relation-api.loadbalancer.passhostheader=true"
     deploy:
-      replicas: 3 # 启动三个实例
+      replicas: 2 # 启动三个实例
 
   relation-mq: # 自定义容器名称
     image: ${DOCKERHUB_IMAGE}relation-mq:latest
@@ -281,7 +279,7 @@ services:
       - gophertok
     restart: always                      # 指定容器退出后的重启策略为始终重启
     deploy:
-      replicas: 3 # 启动三个实例
+      replicas: 2 # 启动三个实例
 
   favor-api: # 自定义容器名称
     image: ${DOCKERHUB_IMAGE}favor-api:latest
@@ -289,8 +287,6 @@ services:
     environment: # 设置环境变量
       - TZ=Asia/Shanghai
     privileged: true
-    ports: # 设置端口映射
-      - "7888:7888"  # favor服务api端口
     stdin_open: true                     # 打开标准输入，可以接受外部输入
     tty: true
     networks:
@@ -300,9 +296,9 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.gophertok-favor-api.rule=Host(`${GOPHERTOKHOST}`) && PathPrefix(`/douyin/favorite`)" # 转发规则
       - "traefik.http.routers.gophertok-favor-api.entrypoints=gophertok"
-      - "traefik.http.services.gophertok-favor-api.loadbalancer.server.port=7888"    # 实例的端口
+      - "traefik.http.services.gophertok-favor-api.loadbalancer.server.port=8081"    # 实例的端口
       - "traefik.docker.network=gophertok"
       - "traefik.http.services.gophertok-favor-api.loadbalancer.server.scheme=http"
       - "traefik.http.services.gophertok-favor-api.loadbalancer.passhostheader=true"
     deploy:
-      replicas: 3 # 启动三个实例
+      replicas: 2 # 启动三个实例

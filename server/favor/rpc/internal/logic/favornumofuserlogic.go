@@ -1,7 +1,9 @@
 package logic
 
 import (
+	"GopherTok/common/errorx"
 	"context"
+	"github.com/pkg/errors"
 
 	"GopherTok/server/favor/rpc/internal/svc"
 	"GopherTok/server/favor/rpc/types/favor"
@@ -27,7 +29,8 @@ func (l *FavorNumOfUserLogic) FavorNumOfUser(in *favor.FavorNumOfUserReq) (*favo
 	// todo: add your logic here and delete this line
 	num, err := l.svcCtx.FavorModel.FavorNumOfUser(l.ctx, in.UserId)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrapf(errorx.NewDefaultError(err.Error()), "err:%v", err)
+
 	}
 
 	return &favor.FavorNumOfUserResp{

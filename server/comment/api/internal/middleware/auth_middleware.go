@@ -54,6 +54,7 @@ func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 
 		//tokensMap := map[string]int64{
 		//	"zhangsan": 1686435870602694657,
+		//	"lisi":     1686435870602694658,
 		//}
 		//r = r.WithContext(context.WithValue(r.Context(), consts.UserId, tokensMap[token]))
 

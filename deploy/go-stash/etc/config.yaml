@@ -41,5 +41,5 @@ Clusters:
     Output:
       ElasticSearch:
         Hosts:
-          - "http://elasticsearch:9201"
-        Index: "gophter-{{yyyy-MM-dd}}"
+          - "http://elasticsearch:9200"
+        Index: "gophtertok-{{yyyy-MM-dd}}"

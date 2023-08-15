@@ -39,8 +39,8 @@ func (l *FindVideoLogic) FindVideo(in *video.FindVideoReq) (*video.FindVideoResp
 			Title:       v.Title,
 			PlayUrl:     v.PlayURL,
 			CoverUrl:    v.CoverURL,
-			CreateTime:  v.CreateTime.Format("2006-01-02 15:04:05"),
-			UpdateTime:  v.UpdateTime.Format("2006-01-02 15:04:05"),
+			CreateTime:  v.CreateTime.Unix(),
+			UpdateTime:  v.UpdateTime.Unix(),
 			VideoSha256: v.VideoSha256,
 		},
 	}, nil

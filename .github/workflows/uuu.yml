@@ -1,0 +1,30 @@
+
+name: remote ssh command
+on:
+  workflow_dispatch:
+    inputs:
+      parameter_name:
+        description: 'go'
+        required: true
+jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: |
+           cd /home/project/gophertok
+           sudo /usr/local/bin/docker-compose -f docker-compose.yaml stop video-api
+           ${{ secrets.PASSWORD }}
+           sudo /usr/local/bin/docker-compose -f docker-compose.yaml rm -f video-api
+           sudo docker image rm ${{ secrets.DOCKERHUB_IMAGE }}video-api:latest
+           sudo /usr/local/bin/docker-compose -f docker-compose.yaml up -d video-api
+
+

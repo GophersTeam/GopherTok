@@ -43,8 +43,8 @@ func (l *UserVideoListLogic) UserVideoList(in *video.UserVideoListReq) (*video.U
 			Title:       list[i].Title,
 			PlayUrl:     list[i].PlayURL,
 			CoverUrl:    list[i].CoverURL,
-			CreateTime:  list[i].CreateTime.Format("2006-01-02 15:04:05"),
-			UpdateTime:  list[i].UpdateTime.Format("2006-01-02 15:04:05"),
+			CreateTime:  list[i].CreateTime.Unix(),
+			UpdateTime:  list[i].UpdateTime.Unix(),
 			VideoSha256: list[i].VideoSha256,
 		}
 		videoList = append(videoList, videoItem)

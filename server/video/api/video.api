@@ -66,6 +66,7 @@ type (
 	}
 	VideoListResp {
 		BaseResponse
+		NextTime int64 `json:"next_time"`
 		VideoList
 	}
 )

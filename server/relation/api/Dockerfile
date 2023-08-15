@@ -1,5 +1,4 @@
-FROM golang:1.20.5-alpine AS builder
-
+FROM golang:1.19-alpine AS builder
 
 LABEL stage=gobuilder
 
@@ -15,9 +14,9 @@ ADD go.mod .
 ADD go.sum .
 RUN go mod download
 COPY . .
-COPY server/user/kmq/etc /app/etc
-RUN go build -ldflags="-s -w" -o /app/user server/user/kmq/user.go
-
+COPY server/relation/api/etc /app/etc
+RUN go build -ldflags="-s -w" -o /app/relation server/relation/api/relation.go
+EXPOSE 7888
 
 FROM scratch
 
@@ -26,7 +25,8 @@ COPY --from=builder /usr/share/zoneinfo/Asia/Shanghai /usr/share/zoneinfo/Asia/S
 ENV TZ Asia/Shanghai
 
 WORKDIR /app
-COPY --from=builder /app/user /app/user
+COPY --from=builder /app/relation /app/relation
 COPY --from=builder /app/etc /app/etc
 
-CMD ["./user", "-f", "etc/user.yaml"]
+CMD ["./relation", "-f", "etc/nacos.yaml"]
+EXPOSE 7888
