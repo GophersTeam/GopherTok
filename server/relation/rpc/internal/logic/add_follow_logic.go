@@ -31,7 +31,7 @@ func NewAddFollowLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AddFoll
 }
 
 func (l *AddFollowLogic) AddFollow(in *pb.AddFollowReq) (*pb.AddFollowResp, error) {
-	intcmd := l.svcCtx.Rdb.SAdd(l.ctx, strconv.FormatInt(in.ToUserId, 10), in.UserId)
+	intcmd := l.svcCtx.Rdb.SAdd(l.ctx, fmt.Sprintf("cache:gopherTok:follow:id:%s", strconv.FormatInt(in.ToUserId, 10)), in.UserId)
 	if intcmd.Err() != nil {
 		return &pb.AddFollowResp{StatusCode: "-1",
 				StatusMsg: intcmd.Err().Error()},

@@ -7,6 +7,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/jinzhu/copier"
+	"github.com/pkg/errors"
 
 	"GopherTok/server/relation/api/internal/svc"
 	"GopherTok/server/relation/api/internal/types"
@@ -32,18 +33,10 @@ func (l *FollowListLogic) FollowList(req *types.FollowListReq) (resp *types.Foll
 	userid := l.ctx.Value(con.UserId).(int64)
 	exists, err := l.svcCtx.UserRpc.UserIsExists(l.ctx, &user.UserIsExistsReq{Id: req.UserId})
 	if err != nil {
-		return &types.FollowListRes{
-			StatusCode: "-1",
-			StatusMsg:  err.Error(),
-			UserList:   nil,
-		}, err
+		return nil, errors.Wrapf(err, "req: %+v", req)
 	}
 	if exists.Exists == false {
-		return &types.FollowListRes{
-			StatusCode: "-1",
-			StatusMsg:  "user doesn't exist",
-			UserList:   nil,
-		}, nil
+		return nil, errors.New("user doesn't exist")
 	}
 
 	followList, err := l.svcCtx.RelationRpc.GetFollowList(l.ctx, &pb.GetFollowListReq{
@@ -51,11 +44,7 @@ func (l *FollowListLogic) FollowList(req *types.FollowListReq) (resp *types.Foll
 	})
 	if err != nil {
 		fmt.Print(err)
-		return &types.FollowListRes{
-			StatusCode: "-1",
-			StatusMsg:  err.Error(),
-			UserList:   nil,
-		}, err
+		return nil, errors.Wrapf(err, "req: %+v", req)
 	}
 	userList := []types.User{}
 	for _, v := range followList.UserList {

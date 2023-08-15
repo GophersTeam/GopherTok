@@ -29,7 +29,7 @@ func NewGetFriendCountLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ge
 }
 
 func (l *GetFriendCountLogic) GetFriendCount(in *pb.GetFriendCountReq) (*pb.GetFriendCountResp, error) {
-	count := l.svcCtx.Rdb.HGet(l.ctx, "friendCount", fmt.Sprintf("%d:friendCount", in.Userid))
+	count := l.svcCtx.Rdb.HGet(l.ctx, "cache:gopherTok:follow:friendCount", fmt.Sprintf("%d:friendCount", in.Userid))
 	if count.Err() != nil {
 		if count.Err().Error() != "redis: nil" {
 			return &pb.GetFriendCountResp{StatusCode: "-1",

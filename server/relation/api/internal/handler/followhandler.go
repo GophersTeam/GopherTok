@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"GopherTok/common/response"
 	"net/http"
 
 	"GopherTok/server/relation/api/internal/logic"
@@ -19,10 +20,6 @@ func FollowHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 
 		l := logic.NewFollowLogic(r.Context(), svcCtx)
 		resp, err := l.Follow(&req)
-		if err != nil {
-			httpx.ErrorCtx(r.Context(), w, err)
-		} else {
-			httpx.OkJsonCtx(r.Context(), w, resp)
-		}
+		response.Response(r, w, resp, err)
 	}
 }
