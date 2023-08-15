@@ -1,7 +1,7 @@
 package consts
 
 const (
-	ProjectNamePrefix  = "douyin:"
+	ProjectNamePrefix  = "gophertok:"
 	LastMessagePrefix  = ProjectNamePrefix + "lastMessage:"
 	VideoCommentPrefix = ProjectNamePrefix + "videoComment:"
 	VideoFavorPrefix   = ProjectNamePrefix + "videoFavor:"
