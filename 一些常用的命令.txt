@@ -3,7 +3,7 @@ goctl api go -api video.api -dir .
 goctl rpc protoc video.proto --go_out=./types --go-grpc_out=./types --zrpc_out=.
 go run favor.go -f etc/favor.yaml
 go run user.go -f etc/user.yaml
-go run favor.go -f etc/favor.yaml
+go run video.go -f etc/video.yaml
 
 go run filemeta.go -f etc/filemeta-api.yaml
 
