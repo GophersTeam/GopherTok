@@ -2,28 +2,17 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/redis/go-redis/v9"
 	"github.com/zeromicro/go-zero/core/logx"
 	"strconv"
 )
 
-//	func NewFavorModel(c redis.Options) FavorModel {
-//		return &customModel{
-//			defaultModel: NewDefaultModel(c),
-//		}
-//	}
 func NewFavorModel(c *redis.ClusterClient) FavorModel {
 	return &customModel{
 		defaultModel: NewDefaultModel(c),
 	}
 }
-
-//func NewDefaultModel(c redis.Options) defaultModel {
-//	client := redis.NewClient(&c)
-//	return defaultModel{
-//		*client,
-//	}
-//}
 
 func NewDefaultModel(c *redis.ClusterClient) defaultModel {
 	return defaultModel{
@@ -60,11 +49,11 @@ func (m *defaultModel) Insert(ctx context.Context, UserId int64, VideoId int64) 
 	tx := m.TxPipeline()
 
 	// 在事务中执行命令
-	if err = tx.SAdd(ctx, strconv.Itoa(int(VideoId)), UserId).Err(); err != nil {
+	if err = tx.SAdd(ctx, fmt.Sprintf("%s%s", "favor_VideoId", VideoId), UserId).Err(); err != nil {
 		return err
 	}
 
-	if err = tx.HSet(ctx, strconv.Itoa(int(UserId)), strconv.Itoa(int(VideoId)), VideoId).Err(); err != nil {
+	if err = tx.HSet(ctx, fmt.Sprintf("%s%s", "favor_UserId", UserId), fmt.Sprintf("&s&s", "favor_VideoId", VideoId), VideoId).Err(); err != nil {
 		return err
 	}
 
@@ -77,11 +66,11 @@ func (m *defaultModel) Delete(ctx context.Context, UserId int64, VideoId int64) 
 	tx := m.TxPipeline()
 
 	// 在事务中执行命令
-	if err = tx.SRem(ctx, strconv.Itoa(int(VideoId)), UserId).Err(); err != nil {
+	if err = tx.SRem(ctx, fmt.Sprintf("%s%s", "favor_VideoId", VideoId), UserId).Err(); err != nil {
 		return err
 	}
 
-	if err = tx.HDel(ctx, strconv.Itoa(int(UserId)), strconv.Itoa(int(VideoId))).Err(); err != nil {
+	if err = tx.HDel(ctx, fmt.Sprintf("%s%s", "favor_UserId", UserId), fmt.Sprintf("%s%s", "favor_VideoId", VideoId)).Err(); err != nil {
 		return err
 	}
 
@@ -90,7 +79,7 @@ func (m *defaultModel) Delete(ctx context.Context, UserId int64, VideoId int64) 
 }
 
 func (m *defaultModel) SearchByUid(ctx context.Context, UserId int64) ([]int64, error) {
-	result, err := m.HVals(ctx, strconv.Itoa(int(UserId))).Result()
+	result, err := m.HVals(ctx, fmt.Sprintf("%s%s", "favor_UserId", UserId)).Result()
 	if err != nil {
 		return nil, err
 	}
@@ -107,7 +96,7 @@ func (m *defaultModel) SearchByUid(ctx context.Context, UserId int64) ([]int64, 
 }
 
 func (m *defaultModel) NumOfFavor(ctx context.Context, VideoId int64) (int, error) {
-	result, err := m.SCard(ctx, strconv.Itoa(int(VideoId))).Result()
+	result, err := m.SCard(ctx, fmt.Sprintf("%s%s", "favor_VideoId", VideoId)).Result()
 	if err != nil {
 		return 0, err
 	}
@@ -115,7 +104,7 @@ func (m *defaultModel) NumOfFavor(ctx context.Context, VideoId int64) (int, erro
 }
 
 func (m *defaultModel) IsFavor(ctx context.Context, UserId int64, VideoId int64) (bool, error) {
-	get := m.HGet(ctx, strconv.Itoa(int(UserId)), strconv.Itoa(int(VideoId)))
+	get := m.HGet(ctx, fmt.Sprintf("%s%s", "favor_UserId", UserId), fmt.Sprintf("%s%s", "favor_VideoId", VideoId))
 	if get.Err() != nil {
 		if get.Err() == redis.Nil {
 			return false, nil
@@ -126,7 +115,7 @@ func (m *defaultModel) IsFavor(ctx context.Context, UserId int64, VideoId int64)
 }
 
 func (m *defaultModel) FavorNumOfUser(ctx context.Context, UserId int64) (int, error) {
-	result, err := m.HLen(ctx, strconv.Itoa(int(UserId))).Result()
+	result, err := m.HLen(ctx, fmt.Sprintf("%s%s", "favor_UserId", UserId)).Result()
 	if err != nil {
 		return 0, err
 	}
