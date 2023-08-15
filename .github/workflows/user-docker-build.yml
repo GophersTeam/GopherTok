@@ -1,11 +1,14 @@
 name: Docker Build and Push User
+#on:
+#  workflow_dispatch:
+#    inputs:
+#      parameter_name:
+#        description: 'go'
+#        required: true
 on:
-  workflow_dispatch:
-    inputs:
-      parameter_name:
-        description: 'go'
-        required: true
-
+  push:
+    branches:
+      - dev
 jobs:
   # user-api
   build-and-push-user-api:

@@ -1,14 +1,14 @@
 name: Docker Build and Push Video
-#on:
-#  push:
-#    branches:
-#      - main
 on:
-  workflow_dispatch:
-    inputs:
-      parameter_name:
-        description: 'go'
-        required: true
+  push:
+    branches:
+      - dev
+#on:
+#  workflow_dispatch:
+#    inputs:
+#      parameter_name:
+#        description: 'go'
+#        required: true
 
 
 jobs:
