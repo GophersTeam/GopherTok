@@ -5,8 +5,8 @@ import (
 	"GopherTok/server/relation/rpc/pb"
 	"GopherTok/server/user/rpc/types/user"
 	"context"
-	"fmt"
 	"github.com/jinzhu/copier"
+	"github.com/pkg/errors"
 
 	"GopherTok/server/relation/api/internal/svc"
 	"GopherTok/server/relation/api/internal/types"
@@ -32,18 +32,10 @@ func (l *FriendListLogic) FriendList(req *types.FriendListReq) (resp *types.Frie
 	userid := l.ctx.Value(con.UserId).(int64)
 	exists, err := l.svcCtx.UserRpc.UserIsExists(l.ctx, &user.UserIsExistsReq{Id: req.UserId})
 	if err != nil {
-		return &types.FriendListRes{
-			StatusCode: "-1",
-			StatusMsg:  err.Error(),
-			UserList:   nil,
-		}, err
+		return nil, errors.Wrapf(err, "req: %+v", req)
 	}
 	if exists.Exists == false {
-		return &types.FriendListRes{
-			StatusCode: "-1",
-			StatusMsg:  "user doesn't exist",
-			UserList:   nil,
-		}, nil
+		return nil, errors.New("user doesn't exist")
 	}
 
 	rep, err := l.svcCtx.RelationRpc.GetFriendList(l.ctx, &pb.GetFriendListReq{Userid: userid})
@@ -51,12 +43,7 @@ func (l *FriendListLogic) FriendList(req *types.FriendListReq) (resp *types.Frie
 
 	if err != nil {
 		if err != nil {
-			fmt.Print(err)
-			return &types.FriendListRes{
-				StatusCode: "-1",
-				StatusMsg:  err.Error(),
-				UserList:   nil,
-			}, err
+			return nil, errors.Wrapf(err, "req: %+v", req)
 		}
 	}
 	for _, val := range rep.UserList {

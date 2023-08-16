@@ -8,7 +8,7 @@ import (
 	"GopherTok/server/relation/rpc/pb"
 	"GopherTok/server/user/rpc/types/user"
 	"context"
-	"fmt"
+	"github.com/pkg/errors"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -31,30 +31,18 @@ func (l *FollowLogic) Follow(req *types.FollowReq) (resp *types.FollowRes, err e
 	userid := l.ctx.Value(con.UserId).(int64)
 	exists, err := l.svcCtx.UserRpc.UserIsExists(l.ctx, &user.UserIsExistsReq{Id: req.ToUserId})
 	if err != nil {
-		return &types.FollowRes{
-			StatusCode: "-1",
-			StatusMsg:  err.Error(),
-		}, err
+		return nil, errors.Wrapf(err, "req: %+v", req)
 	}
 	if exists.Exists == false {
-		return &types.FollowRes{
-			StatusCode: "-1",
-			StatusMsg:  "user doesn't exist",
-		}, nil
+		return nil, errors.New("user doesn't exist")
 	}
 
 	exists, err = l.svcCtx.UserRpc.UserIsExists(l.ctx, &user.UserIsExistsReq{Id: userid})
 	if err != nil {
-		return &types.FollowRes{
-			StatusCode: "-1",
-			StatusMsg:  err.Error(),
-		}, err
+		return nil, errors.Wrapf(err, "req: %+v", req)
 	}
 	if exists.Exists == false {
-		return &types.FollowRes{
-			StatusCode: "-1",
-			StatusMsg:  "user doesn't exist",
-		}, nil
+		return nil, errors.New("user doesn't exist")
 	}
 
 	if req.ActionType == 1 {
@@ -63,18 +51,11 @@ func (l *FollowLogic) Follow(req *types.FollowReq) (resp *types.FollowRes, err e
 			ToUserId: req.ToUserId,
 		})
 		if err != nil {
-			fmt.Print(err)
-			return &types.FollowRes{
-				StatusCode: isFollow.StatusCode,
-				StatusMsg:  isFollow.StatusMsg,
-			}, err
+			return nil, errors.Wrapf(err, "req: %+v", req)
 		}
 
 		if isFollow.IsFollow {
-			return &types.FollowRes{
-				StatusCode: "-1",
-				StatusMsg:  "follow has exist",
-			}, nil
+			return nil, errors.New("follow has exist")
 		}
 
 		follow, err := l.svcCtx.RelationRpc.AddFollow(l.ctx, &pb.AddFollowReq{
@@ -82,11 +63,7 @@ func (l *FollowLogic) Follow(req *types.FollowReq) (resp *types.FollowRes, err e
 			ToUserId: req.ToUserId,
 		})
 		if err != nil {
-			fmt.Print(err)
-			return &types.FollowRes{
-				StatusCode: follow.StatusCode,
-				StatusMsg:  follow.StatusMsg,
-			}, err
+			return nil, errors.Wrapf(err, "req: %+v", req)
 		}
 
 		isFriend, _ := l.svcCtx.RelationRpc.CheckIsFollow(l.ctx, &pb.CheckIsFollowReq{
@@ -113,18 +90,11 @@ func (l *FollowLogic) Follow(req *types.FollowReq) (resp *types.FollowRes, err e
 			ToUserId: req.ToUserId,
 		})
 		if err != nil {
-			fmt.Print(err)
-			return &types.FollowRes{
-				StatusCode: isFollow.StatusCode,
-				StatusMsg:  isFollow.StatusMsg,
-			}, err
+			return nil, errors.Wrapf(err, "req: %+v", req)
 		}
 
 		if !isFollow.IsFollow {
-			return &types.FollowRes{
-				StatusCode: "-1",
-				StatusMsg:  "follow doesn't exist",
-			}, nil
+			return nil, errors.New("follow doesn't exist")
 		}
 
 		follow, err := l.svcCtx.RelationRpc.DeleteFollow(l.ctx, &pb.DeleteFollowReq{
@@ -132,11 +102,7 @@ func (l *FollowLogic) Follow(req *types.FollowReq) (resp *types.FollowRes, err e
 			ToUserId: req.ToUserId,
 		})
 		if err != nil {
-			fmt.Print(err)
-			return &types.FollowRes{
-				StatusCode: follow.StatusCode,
-				StatusMsg:  follow.StatusMsg,
-			}, err
+			return nil, errors.Wrapf(err, "req: %+v", req)
 		}
 
 		return &types.FollowRes{
@@ -144,10 +110,7 @@ func (l *FollowLogic) Follow(req *types.FollowReq) (resp *types.FollowRes, err e
 			StatusMsg:  follow.StatusMsg,
 		}, nil
 	} else {
-		return &types.FollowRes{
-			StatusCode: "-1",
-			StatusMsg:  "action_type err",
-		}, nil
+		return nil, errors.New("action_type err")
 	}
 
 }

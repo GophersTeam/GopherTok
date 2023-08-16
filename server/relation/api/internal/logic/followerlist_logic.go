@@ -8,6 +8,7 @@ import (
 	"GopherTok/server/user/rpc/types/user"
 	"context"
 	"github.com/jinzhu/copier"
+	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -29,29 +30,17 @@ func (l *FollowerListLogic) FollowerList(req *types.FollowerListReq) (resp *type
 	userid := l.ctx.Value(con.UserId).(int64)
 	exists, err := l.svcCtx.UserRpc.UserIsExists(l.ctx, &user.UserIsExistsReq{Id: req.UserId})
 	if err != nil {
-		return &types.FollowerListRes{
-			StatusCode: "-1",
-			StatusMsg:  err.Error(),
-			UserList:   nil,
-		}, err
+		return nil, errors.Wrapf(err, "req: %+v", req)
 	}
 	if exists.Exists == false {
-		return &types.FollowerListRes{
-			StatusCode: "-1",
-			StatusMsg:  "user doesn't exist",
-			UserList:   nil,
-		}, nil
+		return nil, errors.New("user doesn't exist")
 	}
 
 	rep, err := l.svcCtx.RelationRpc.GetFollowerList(l.ctx, &pb.GetFollowerReq{Userid: userid})
 	userlist := []types.User{}
 
 	if err != nil {
-		return &types.FollowerListRes{
-			StatusCode: "-1",
-			StatusMsg:  err.Error(),
-			UserList:   nil,
-		}, err
+		return nil, errors.Wrapf(err, "req: %+v", req)
 	}
 	for _, val := range rep.UserList {
 		usr := &types.User{}

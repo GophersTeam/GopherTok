@@ -1,11 +1,14 @@
 name: Docker Build and Push Favor
+#on:
+#  workflow_dispatch:
+#    inputs:
+#      parameter_name:
+#        description: 'go'
+#        required: true
 on:
-  workflow_dispatch:
-    inputs:
-      parameter_name:
-        description: 'go'
-        required: true
-
+  push:
+    branches:
+      - dev
 jobs:
   # favor-api
   build-and-push-favor-api:

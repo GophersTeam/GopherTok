@@ -35,7 +35,7 @@ func (m *customMessageModel) FindPage(ctx context.Context, pageNum int, pageSize
 }
 
 func (m *customMessageModel) GetMessages(ctx context.Context, fromUserId int64, toUserId int64, preMsgTime int64) ([]*Message, error) {
-	query := fmt.Sprintf(`select %s from %s where ((from_user_id = ? and to_user_id = ?) or (from_user_id = ? and to_user_id = ?)) and create_time < ? order by create_time`, messageRows, m.table)
+	query := fmt.Sprintf(`select %s from %s where ((from_user_id = ? and to_user_id = ?) or (from_user_id = ? and to_user_id = ?)) and create_time > ? order by create_time`, messageRows, m.table)
 	var resp []*Message
 	err := m.QueryRowsNoCacheCtx(ctx, &resp, query, fromUserId, toUserId, toUserId, fromUserId, preMsgTime)
 

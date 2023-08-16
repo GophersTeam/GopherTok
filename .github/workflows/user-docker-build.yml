@@ -5,7 +5,10 @@ on:
       parameter_name:
         description: 'go'
         required: true
-
+#on:
+#  push:
+#    branches:
+#      - dev
 jobs:
   # user-api
   build-and-push-user-api:

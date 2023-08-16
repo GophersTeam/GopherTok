@@ -28,7 +28,7 @@ func NewGetFollowerCountLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 }
 
 func (l *GetFollowerCountLogic) GetFollowerCount(in *pb.GetFollowerCountReq) (*pb.GetFollowerCountResp, error) {
-	count := l.svcCtx.Rdb.HGet(l.ctx, "followerCount", fmt.Sprintf("%d:followerCount", in.Userid))
+	count := l.svcCtx.Rdb.HGet(l.ctx, "cache:gopherTok:follow:followerCount", fmt.Sprintf("%d:followerCount", in.Userid))
 	if count.Err() != nil {
 		if count.Err().Error() != "redis: nil" {
 			return &pb.GetFollowerCountResp{StatusCode: "-1",

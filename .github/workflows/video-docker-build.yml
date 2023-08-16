@@ -2,7 +2,7 @@ name: Docker Build and Push Video
 #on:
 #  push:
 #    branches:
-#      - main
+#      - dev
 on:
   workflow_dispatch:
     inputs:

@@ -32,7 +32,7 @@ func NewDeleteFollowLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Dele
 
 func (l *DeleteFollowLogic) DeleteFollow(in *pb.DeleteFollowReq) (*pb.DeleteFollowResp, error) {
 
-	cmd := l.svcCtx.Rdb.SRem(l.ctx, strconv.FormatInt(in.ToUserId, 10), in.UserId)
+	cmd := l.svcCtx.Rdb.SRem(l.ctx, fmt.Sprintf("cache:gopherTok:follow:id:%s", strconv.FormatInt(in.ToUserId, 10)), in.UserId)
 	if cmd.Err() != nil {
 		return &pb.DeleteFollowResp{StatusCode: "-1",
 				StatusMsg: cmd.Err().Error()},
@@ -49,8 +49,8 @@ func (l *DeleteFollowLogic) DeleteFollow(in *pb.DeleteFollowReq) (*pb.DeleteFoll
 	if err != nil {
 		logx.Errorf("deleteFollow json.Marshal error: %v", err)
 	}
-	if err = l.svcCtx.KqPusherMysqlClient.Push(string(kdMysql)); err != nil {
-		logx.Errorf("KafkaPusherMysql.Push kdMysql: %s error: %v", string(kdMysql), err)
+	if err = l.svcCtx.KqPusherMysqlClient.Push(kdMysql); err != nil {
+		logx.Errorf("KafkaPusherMysql.Push kdMysql: %s error: %v", kdMysql, err)
 	}
 
 	//更新redis数据

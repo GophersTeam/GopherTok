@@ -44,7 +44,7 @@ func (l *VideoListLogic) VideoList(in *video.VideoListReq) (*video.VideoListResp
 		}
 
 		// 使用Unix秒数创建time.Time类型
-		timestampTime := time.Unix(0, timestampInt*int64(time.Millisecond))
+		timestampTime = time.Unix(0, timestampInt*int64(time.Millisecond))
 		fmt.Println("11111111", timestampTime)
 	}
 	var list []model.Video
