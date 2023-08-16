@@ -2,6 +2,7 @@ package logic
 
 import (
 	con "GopherTok/common/consts"
+	"GopherTok/common/errorx"
 	"GopherTok/server/relation/rpc/pb"
 	"GopherTok/server/user/rpc/types/user"
 	"context"
@@ -36,9 +37,9 @@ func (l *FollowListLogic) FollowList(req *types.FollowListReq) (resp *types.Foll
 		return nil, errors.Wrapf(err, "req: %+v", req)
 	}
 	if exists.Exists == false {
-		return nil, errors.New("user doesn't exist")
+		return nil, errors.Wrapf(errorx.NewDefaultError("user doesn't exist"), "user doesn't exist%v", nil)
 	}
-
+	//var userid int64 = 1
 	followList, err := l.svcCtx.RelationRpc.GetFollowList(l.ctx, &pb.GetFollowListReq{
 		Userid: userid,
 	})

@@ -32,9 +32,7 @@ func (l *GetFriendCountLogic) GetFriendCount(in *pb.GetFriendCountReq) (*pb.GetF
 	count := l.svcCtx.Rdb.HGet(l.ctx, "cache:gopherTok:follow:friendCount", fmt.Sprintf("%d:friendCount", in.Userid))
 	if count.Err() != nil {
 		if count.Err().Error() != "redis: nil" {
-			return &pb.GetFriendCountResp{StatusCode: "-1",
-					StatusMsg: count.Err().Error(),
-					Count:     0},
+			return nil,
 				errors.Wrapf(errorx.NewDefaultError("redis get err:"+count.Err().Error()), "redis get err ：%v", count.Err())
 		}
 
@@ -44,9 +42,7 @@ func (l *GetFriendCountLogic) GetFriendCount(in *pb.GetFriendCountReq) (*pb.GetF
 			err := l.svcCtx.MysqlDb.WithContext(l.ctx).Table("follow_subject").
 				Where("user_id = ?", in.Userid).Find(&friend).Error
 			if err != nil {
-				return &pb.GetFriendCountResp{StatusCode: "-1",
-						StatusMsg: err.Error(),
-						Count:     0},
+				return nil,
 					errors.Wrapf(errorx.NewDefaultError("mysql get err:"+err.Error()), "mysql get err ：%v", err)
 			}
 			countMysql := 0
@@ -56,9 +52,7 @@ func (l *GetFriendCountLogic) GetFriendCount(in *pb.GetFriendCountReq) (*pb.GetF
 					Where("user_id = ? AND follower_id = ?", v.FollowerId, in.Userid).First(&pb.FollowSubject{}).Error
 				if err != nil {
 					if err != gorm.ErrRecordNotFound {
-						return &pb.GetFriendCountResp{StatusCode: "-1",
-								StatusMsg: err.Error(),
-								Count:     0},
+						return nil,
 							errors.Wrapf(errorx.NewDefaultError("mysql get err:"+err.Error()), "mysql get err ：%v", err)
 					}
 				}

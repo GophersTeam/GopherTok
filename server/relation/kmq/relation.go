@@ -43,6 +43,7 @@ func main() {
 		}
 	})
 	writer, err := zapx.NewZapWriter()
+	// zap
 	logx.Must(err)
 	logx.SetWriter(writer)
 	fmt.Println("seckill started!!!")

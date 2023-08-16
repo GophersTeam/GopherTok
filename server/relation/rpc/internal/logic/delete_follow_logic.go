@@ -32,7 +32,7 @@ func NewDeleteFollowLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Dele
 
 func (l *DeleteFollowLogic) DeleteFollow(in *pb.DeleteFollowReq) (*pb.DeleteFollowResp, error) {
 
-	cmd := l.svcCtx.Rdb.SRem(l.ctx, fmt.Sprintf("cache:gopherTok:follow:id:%s", strconv.FormatInt(in.ToUserId, 10)), in.UserId)
+	cmd := l.svcCtx.Rdb.SRem(l.ctx, fmt.Sprintf("cache:gopherTok:follow:id:%d", in.ToUserId), in.UserId)
 	if cmd.Err() != nil {
 		return &pb.DeleteFollowResp{StatusCode: "-1",
 				StatusMsg: cmd.Err().Error()},

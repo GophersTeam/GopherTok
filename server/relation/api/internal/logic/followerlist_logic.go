@@ -2,6 +2,7 @@ package logic
 
 import (
 	con "GopherTok/common/consts"
+	"GopherTok/common/errorx"
 	"GopherTok/server/relation/api/internal/svc"
 	"GopherTok/server/relation/api/internal/types"
 	"GopherTok/server/relation/rpc/pb"
@@ -33,9 +34,9 @@ func (l *FollowerListLogic) FollowerList(req *types.FollowerListReq) (resp *type
 		return nil, errors.Wrapf(err, "req: %+v", req)
 	}
 	if exists.Exists == false {
-		return nil, errors.New("user doesn't exist")
+		return nil, errors.Wrapf(errorx.NewDefaultError("user doesn't exist"), "user doesn't exist%v", nil)
 	}
-
+	//var userid int64 = 1
 	rep, err := l.svcCtx.RelationRpc.GetFollowerList(l.ctx, &pb.GetFollowerReq{Userid: userid})
 	userlist := []types.User{}
 

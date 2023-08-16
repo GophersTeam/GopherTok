@@ -31,9 +31,7 @@ func (l *GetFollowCountLogic) GetFollowCount(in *pb.GetFollowCountReq) (*pb.GetF
 	countCmd := l.svcCtx.Rdb.HGet(l.ctx, "cache:gopherTok:follow:followCount", fmt.Sprintf("%d:followCount", in.Userid))
 	if countCmd.Err() != nil {
 		if countCmd.Err().Error() != "redis: nil" {
-			return &pb.GetFollowCountResp{StatusCode: "-1",
-					StatusMsg: countCmd.Err().Error(),
-					Count:     0},
+			return nil,
 				errors.Wrapf(errorx.NewDefaultError("redis get err:"+countCmd.Err().Error()), "redis get err ：%v", countCmd.Err())
 		}
 
@@ -45,9 +43,7 @@ func (l *GetFollowCountLogic) GetFollowCount(in *pb.GetFollowCountReq) (*pb.GetF
 			countMysql := db.RowsAffected
 
 			if err != nil {
-				return &pb.GetFollowCountResp{StatusCode: "-1",
-						StatusMsg: err.Error(),
-						Count:     0},
+				return nil,
 					errors.Wrapf(errorx.NewDefaultError("mysql get err:"+err.Error()), "mysql get err ：%v", err)
 			}
 

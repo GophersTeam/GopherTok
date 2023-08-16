@@ -2,13 +2,11 @@ package logic
 
 import (
 	"GopherTok/common/errorx"
+	"GopherTok/server/relation/rpc/internal/svc"
+	"GopherTok/server/relation/rpc/pb"
 	"context"
 	"fmt"
 	"github.com/pkg/errors"
-	"strconv"
-
-	"GopherTok/server/relation/rpc/internal/svc"
-	"GopherTok/server/relation/rpc/pb"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -28,7 +26,7 @@ func NewCheckIsFollowLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Che
 }
 
 func (l *CheckIsFollowLogic) CheckIsFollow(in *pb.CheckIsFollowReq) (*pb.CheckIsFollowResp, error) {
-	boolCmd := l.svcCtx.Rdb.SIsMember(l.ctx, fmt.Sprintf("cache:gopherTok:follow:id:%s", strconv.FormatInt(in.ToUserId, 10)), in.UserId)
+	boolCmd := l.svcCtx.Rdb.SIsMember(l.ctx, fmt.Sprintf("cache:gopherTok:follow:id:%d", in.ToUserId), in.UserId)
 	if boolCmd.Err() != nil {
 		return &pb.CheckIsFollowResp{StatusCode: "-1",
 				StatusMsg: boolCmd.Err().Error(),
