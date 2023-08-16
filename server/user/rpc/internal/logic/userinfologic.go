@@ -12,6 +12,7 @@ import (
 	"context"
 	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logc"
+	"github.com/zeromicro/go-zero/core/mr"
 	"strconv"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -39,46 +40,39 @@ func (l *UserInfoLogic) UserInfo(in *user.UserInfoReq) (*user.UserInfoResp, erro
 	if err != nil {
 		return nil, errors.Wrapf(errorx.NewDefaultError(err.Error()), "mysql查询错误 err：%v", err)
 	}
+	// 并发调用rpc
 	var followCountResp, followerCountResp, userVideoListResp, isFollowResp, totalFavoritedResp, favoriteCountResp interface{}
-	errChan := make(chan error, 6) // Create a channel to collect potential errors
-
-	// Concurrently execute the RPC calls using goroutines
-	go func() {
+	err = mr.Finish(func() error {
 		followCountResp, err = l.svcCtx.RelationRpc.GetFollowCount(l.ctx, &pb.GetFollowCountReq{Userid: in.Id})
-		errChan <- err
-	}()
-	go func() {
+		return err
+	}, func() error {
 		followerCountResp, err = l.svcCtx.RelationRpc.GetFollowerCount(l.ctx, &pb.GetFollowerCountReq{Userid: in.Id})
-		errChan <- err
-	}()
-	go func() {
+		return err
+
+	}, func() error {
 		userVideoListResp, err = l.svcCtx.VideoRpc.UserVideoList(l.ctx, &video.UserVideoListReq{UserId: in.Id})
-		errChan <- err
-	}()
-	go func() {
+		return err
+
+	}, func() error {
 		isFollowResp, err = l.svcCtx.RelationRpc.CheckIsFollow(l.ctx, &relationrpc.CheckIsFollowReq{UserId: in.CurrentId, ToUserId: in.Id})
-		errChan <- err
-	}()
-	go func() {
+		return err
+
+	}, func() error {
 		totalFavoritedResp, err = l.svcCtx.FavorRpc.FavoredNumOfUser(l.ctx, &favorrpc.FavoredNumOfUserReq{UserId: in.Id})
-		errChan <- err
-	}()
-	go func() {
+		return err
+
+	}, func() error {
 		favoriteCountResp, err = l.svcCtx.FavorRpc.FavorNumOfUser(l.ctx, &favorrpc.FavorNumOfUserReq{UserId: in.Id})
-		errChan <- err
-	}()
+		return err
 
-	// Wait for all RPC calls to complete
-	for i := 0; i < 6; i++ {
-		err := <-errChan // Retrieve errors from the channel
-		if err != nil {
-			// Handle the error, log, and return if needed
-			logc.Error(l.ctx, err, "RPC call error")
-			return nil, errors.Wrapf(err, "req: %+v", in)
+	})
 
-		}
+	if err != nil {
+		// Handle the error, log, and return if needed
+		logc.Error(l.ctx, err, "RPC call error")
+		return nil, errors.Wrapf(err, "req: %+v", in)
+
 	}
-
 	return &user.UserInfoResp{
 		Id:              u.ID,
 		Name:            u.Username,
