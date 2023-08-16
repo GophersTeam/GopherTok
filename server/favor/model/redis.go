@@ -79,7 +79,7 @@ func (m *defaultModel) Delete(ctx context.Context, UserId int64, VideoId int64) 
 }
 
 func (m *defaultModel) SearchByUid(ctx context.Context, UserId int64) ([]int64, error) {
-	result, err := m.HVals(ctx, fmt.Sprintf("%s%d", "favor_UserId", UserId)).Result()
+	result, err := m.HVals(ctx, fmt.Sprintf("%s%d", consts.VideoFavorPrefix, UserId)).Result()
 	if err != nil {
 		return nil, err
 	}
