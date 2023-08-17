@@ -37,7 +37,6 @@ func (l *DeleteFollowLogic) DeleteFollow(in *pb.DeleteFollowReq) (*pb.DeleteFoll
 		return &pb.DeleteFollowResp{StatusCode: -1,
 				StatusMsg: cmd.Err().Error()},
 			errors.Wrapf(errorx.NewDefaultError("redis srem err:"+cmd.Err().Error()), "redis srem err ：%v", cmd.Err())
-
 	}
 
 	kdMysql, err := jsonx.MarshalToString(&dao.FollowData{
