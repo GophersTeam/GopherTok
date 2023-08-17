@@ -3,6 +3,7 @@ package service
 import (
 	"GopherTok/common/consts"
 	"GopherTok/common/init_db"
+	"GopherTok/common/utils"
 	"GopherTok/server/video/kmq/internal/config"
 	"GopherTok/server/video/model"
 	"context"
@@ -22,12 +23,13 @@ const (
 )
 
 type Service struct {
-	c        config.Config // 配置信息
-	MysqlDb  *gorm.DB      // MySQL 数据库连接对象
-	Rdb      *redis.ClusterClient
-	Log      logx.LogConf
-	waiter   sync.WaitGroup      // 用于等待所有消费者 goroutine 完成的等待组
-	msgsChan []chan *model.Video // 消息通道切片，每个元素是一个通道，用于存放消息
+	c             config.Config // 配置信息
+	MysqlDb       *gorm.DB      // MySQL 数据库连接对象
+	Rdb           *redis.ClusterClient
+	Log           logx.LogConf
+	waiter        sync.WaitGroup      // 用于等待所有消费者 goroutine 完成的等待组
+	msgsChan      []chan *model.Video // 消息通道切片，每个元素是一个通道，用于存放消息
+	SensitiveTrie *utils.SensitiveTrie
 }
 
 // NewService 创建一个新的 Service 实例
@@ -44,10 +46,11 @@ func NewService(c config.Config) *Service {
 
 	// 创建 Service 实例
 	s := &Service{
-		c:        c,
-		msgsChan: make([]chan *model.Video, chanCount),
-		MysqlDb:  mysqlDb,
-		Rdb:      redisDb,
+		c:             c,
+		msgsChan:      make([]chan *model.Video, chanCount),
+		MysqlDb:       mysqlDb,
+		Rdb:           redisDb,
+		SensitiveTrie: utils.NewSensitiveTrie(),
 	}
 
 	// 创建 chanCount 个消费者 goroutine
@@ -84,6 +87,9 @@ func (s *Service) consume(ch chan *model.Video) {
 			UpdateTime:  time.Now(),
 			VideoSha256: m.VideoSha256,
 		}
+		// 敏感词过滤
+		s.SensitiveTrie.AddWords([]string{"傻逼", "死", "你妈", "滚"})
+		v.Title = s.SensitiveTrie.Filter(v.Title)
 		fmt.Println(v)
 		// 将url写入redis
 		s.Rdb.Set(context.Background(), consts.VideoPrefix+m.VideoSha256, m.PlayURL, 0)
