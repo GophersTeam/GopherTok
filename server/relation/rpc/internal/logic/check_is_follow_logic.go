@@ -28,13 +28,13 @@ func NewCheckIsFollowLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Che
 func (l *CheckIsFollowLogic) CheckIsFollow(in *pb.CheckIsFollowReq) (*pb.CheckIsFollowResp, error) {
 	boolCmd := l.svcCtx.Rdb.SIsMember(l.ctx, fmt.Sprintf("cache:gopherTok:follow:id:%d", in.ToUserId), in.UserId)
 	if boolCmd.Err() != nil {
-		return &pb.CheckIsFollowResp{StatusCode: "-1",
+		return &pb.CheckIsFollowResp{StatusCode: -1,
 				StatusMsg: boolCmd.Err().Error(),
 				IsFollow:  false},
 			errors.Wrapf(errorx.NewDefaultError("redis sismember err:"+boolCmd.Err().Error()), "redis sismember err ：%v", boolCmd.Err())
 	}
 
-	return &pb.CheckIsFollowResp{StatusCode: "0",
+	return &pb.CheckIsFollowResp{StatusCode: 0,
 		StatusMsg: "check isFollow successfully",
 		IsFollow:  boolCmd.Val()}, nil
 }

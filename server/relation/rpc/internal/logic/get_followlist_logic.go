@@ -37,7 +37,7 @@ func (l *GetFollowListLogic) GetFollowList(in *pb.GetFollowListReq) (*pb.GetFoll
 				errors.Wrapf(errorx.NewDefaultError("mysql add err:"+err.Error()), "mysql add err ：%v", err)
 		} else {
 			return &pb.GetFollowListResp{
-				StatusCode: "0",
+				StatusCode: 0,
 				StatusMsg:  "get followList successfully",
 				UserList:   nil,
 			}, nil
@@ -76,7 +76,7 @@ func (l *GetFollowListLogic) GetFollowList(in *pb.GetFollowListReq) (*pb.GetFoll
 	}
 
 	return &pb.GetFollowListResp{
-		StatusCode: "0",
+		StatusCode: 0,
 		StatusMsg:  "get followList successfully",
 		UserList:   followList,
 	}, nil

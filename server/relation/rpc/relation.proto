@@ -44,7 +44,7 @@ message AddFollowReq {
 }
 
 message AddFollowResp {
-  string StatusCode = 1;
+  int64 StatusCode = 1;
   string StatusMsg = 2;
 }
 message DeleteFollowReq {
@@ -53,7 +53,7 @@ message DeleteFollowReq {
 }
 
 message DeleteFollowResp {
-  string StatusCode = 1;
+  int64 StatusCode = 1;
   string StatusMsg = 2;
 }
 
@@ -63,7 +63,7 @@ message CheckIsFollowReq{
 }
 
 message CheckIsFollowResp{
-  string StatusCode = 1;
+  int64 StatusCode = 1;
   string StatusMsg = 2;
   bool IsFollow = 3;
 }
@@ -72,7 +72,7 @@ message GetFollowListReq {
 }
 
 message GetFollowListResp {
-  string StatusCode = 1;
+  int64 StatusCode = 1;
   string StatusMsg = 2;
   repeated User UserList = 3;
 }
@@ -81,7 +81,7 @@ message GetFollowerReq {
 }
 
 message GetFollowerResp {
-  string StatusCode = 1;
+  int64 StatusCode = 1;
   string StatusMsg = 2;
   repeated User UserList = 3;
 }
@@ -90,7 +90,7 @@ message GetFollowerCountReq{
 }
 
 message GetFollowerCountResp{
-  string StatusCode = 1;
+  int64 StatusCode = 1;
   string StatusMsg = 2;
   int64 Count = 3;
 }
@@ -100,7 +100,7 @@ message GetFriendListReq {
 }
 
 message GetFriendListResp {
-  string StatusCode = 1;
+  int64 StatusCode = 1;
   string StatusMsg = 2;
   repeated FriendUser UserList = 3;
 }
@@ -110,7 +110,7 @@ message GetFollowCountReq{
 }
 
 message GetFollowCountResp{
-  string StatusCode = 1;
+  int64 StatusCode = 1;
   string StatusMsg = 2;
   int64 Count = 3;
 }
@@ -120,7 +120,7 @@ message GetFriendCountReq{
 }
 
 message GetFriendCountResp{
-  string StatusCode = 1;
+  int64 StatusCode = 1;
   string StatusMsg = 2;
   int64 Count = 3;
 }

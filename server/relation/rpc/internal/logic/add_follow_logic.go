@@ -112,6 +112,6 @@ func (l *AddFollowLogic) AddFollow(in *pb.AddFollowReq) (*pb.AddFollowResp, erro
 		logx.Errorf("KafkaPusherRedis.Push kdRedis: %s error: %v", kdMysql, err)
 	}
 
-	return &pb.AddFollowResp{StatusCode: "0",
+	return &pb.AddFollowResp{StatusCode: 0,
 		StatusMsg: "add follow successfully"}, nil
 }

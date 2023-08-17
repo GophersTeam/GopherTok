@@ -47,7 +47,7 @@ func (l *GetFriendListLogic) GetFriendList(in *pb.GetFriendListReq) (*pb.GetFrie
 				return nil,
 					errors.Wrapf(errorx.NewDefaultError("mysql get err:"+err.Error()), "mysql get err ：%v", err)
 			} else {
-				return &pb.GetFriendListResp{StatusCode: "0",
+				return &pb.GetFriendListResp{StatusCode: 0,
 					StatusMsg: "get friendList successfully",
 					UserList:  nil}, nil
 			}
@@ -89,7 +89,7 @@ func (l *GetFriendListLogic) GetFriendList(in *pb.GetFriendListReq) (*pb.GetFrie
 		friendList[i].MsgType = v.MsgType
 	}
 
-	return &pb.GetFriendListResp{StatusCode: "0",
+	return &pb.GetFriendListResp{StatusCode: 0,
 		StatusMsg: "get friendList successfully",
 		UserList:  friendList}, nil
 }

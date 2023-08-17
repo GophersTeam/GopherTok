@@ -60,7 +60,7 @@ func (l *GetFriendCountLogic) GetFriendCount(in *pb.GetFriendCountReq) (*pb.GetF
 			}
 			l.svcCtx.Rdb.HSet(l.ctx, "friendCount", fmt.Sprintf("%d:friendCount", in.Userid), strconv.Itoa(countMysql))
 
-			return &pb.GetFriendCountResp{StatusCode: "0",
+			return &pb.GetFriendCountResp{StatusCode: 0,
 				StatusMsg: "get friendCount successfully",
 				Count:     int64(countMysql)}, nil
 		}
@@ -68,7 +68,7 @@ func (l *GetFriendCountLogic) GetFriendCount(in *pb.GetFriendCountReq) (*pb.GetF
 	}
 	countInt, _ := strconv.ParseInt(count.Val(), 10, 64)
 
-	return &pb.GetFriendCountResp{StatusCode: "0",
+	return &pb.GetFriendCountResp{StatusCode: 0,
 		StatusMsg: "get friendCount successfully",
 		Count:     countInt}, nil
 }

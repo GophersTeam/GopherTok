@@ -54,7 +54,7 @@ func (l *FollowListLogic) FollowList(req *types.FollowListReq) (resp *types.Foll
 		userList = append(userList, usr)
 	}
 	return &types.FollowListRes{
-		StatusCode: "0",
+		StatusCode: 0,
 		StatusMsg:  "get followList successfully",
 		UserList:   userList,
 	}, nil

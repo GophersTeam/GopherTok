@@ -49,7 +49,7 @@ func (l *GetFollowCountLogic) GetFollowCount(in *pb.GetFollowCountReq) (*pb.GetF
 
 			l.svcCtx.Rdb.HSet(l.ctx, "followCount", fmt.Sprintf("%d:followCount", in.Userid), strconv.FormatInt(countMysql, 10))
 
-			return &pb.GetFollowCountResp{StatusCode: "0",
+			return &pb.GetFollowCountResp{StatusCode: 0,
 				StatusMsg: "get followCount successfully",
 				Count:     countMysql}, nil
 		}
@@ -57,7 +57,7 @@ func (l *GetFollowCountLogic) GetFollowCount(in *pb.GetFollowCountReq) (*pb.GetF
 	countInt, _ := strconv.ParseInt(countCmd.Val(), 10, 64)
 
 	return &pb.GetFollowCountResp{
-		StatusCode: "0",
+		StatusCode: 0,
 		StatusMsg:  "get followCount successfully",
 		Count:      countInt,
 	}, nil
