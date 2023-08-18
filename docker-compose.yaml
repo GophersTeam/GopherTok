@@ -30,13 +30,13 @@ services:
     privileged: true
     stdin_open: true                     # 打开标准输入，可以接受外部输入
     tty: true
-    ports:
-      - "5002:5002"
+#    ports:
+#      - "5002:5002"
     networks:
       - gophertok
     restart: always                      # 指定容器退出后的重启策略为始终重启
     deploy:
-      replicas: 1 # 启动三个实例
+      replicas: 2 # 启动三个实例
 
   user-api: # 自定义容器名称
     image: ${DOCKERHUB_IMAGE}user-api:latest
@@ -60,7 +60,7 @@ services:
       - "traefik.http.services.gophertok-user-api.loadbalancer.server.scheme=http"
       - "traefik.http.services.gophertok-user-api.loadbalancer.passhostheader=true"
     deploy:
-      replicas: 1 # 启动三个实例
+      replicas: 2 # 启动三个实例
 
   user-mq: # 自定义容器名称
     image: ${DOCKERHUB_IMAGE}user-mq:latest
@@ -81,13 +81,13 @@ services:
     privileged: true
     stdin_open: true                     # 打开标准输入，可以接受外部输入
     tty: true
-    ports:
-      - "5004:5004"
+#    ports:
+#      - "5004:5004"
     networks:
       - gophertok
     restart: always                      # 指定容器退出后的重启策略为始终重启
     deploy:
-      replicas: 1 # 启动三个实例
+      replicas: 2 # 启动三个实例
 
   video-api: # 自定义容器名称
     #image: video-api-0:latest
@@ -113,7 +113,7 @@ services:
       - "traefik.http.services.gophertok-video-api.loadbalancer.server.scheme=http"
       - "traefik.http.services.gophertok-video-api.loadbalancer.passhostheader=true"
     deploy:
-      replicas: 1 # 启动三个实例
+      replicas: 2 # 启动三个实例
 
   video-mq: # 自定义容器名称
     image: ${DOCKERHUB_IMAGE}video-mq:latest
@@ -139,7 +139,7 @@ services:
       - gophertok
     restart: always                      # 指定容器退出后的重启策略为始终重启
     deploy:
-      replicas: 1 # 启动三个实例
+      replicas: 2 # 启动三个实例
 
   chat-api: # 自定义容器名称
     image: ${DOCKERHUB_IMAGE}chat-api:latest
@@ -161,7 +161,7 @@ services:
       - "traefik.http.services.gophertok-chat-api.loadbalancer.server.scheme=http"
       - "traefik.http.services.gophertok-chat-api.loadbalancer.passhostheader=true"
     deploy:
-      replicas: 1 # 启动三个实例
+      replicas: 2 # 启动三个实例
 
   chat-mq: # 自定义容器名称
     image: ${DOCKERHUB_IMAGE}chat-mq:latest
@@ -182,13 +182,13 @@ services:
     privileged: true
     stdin_open: true                     # 打开标准输入，可以接受外部输入
     tty: true
-    ports:
-      - "2003:20003"
+#    ports:
+#      - "2003:20003"
     networks:
       - gophertok
     restart: always                      # 指定容器退出后的重启策略为始终重启
     deploy:
-      replicas: 1 # 启动三个实例
+      replicas: 2 # 启动三个实例
 
   comment-api: # 自定义容器名称
     image: ${DOCKERHUB_IMAGE}comment-api:latest
@@ -211,7 +211,7 @@ services:
       - "traefik.http.services.gophertok-comment-api.loadbalancer.server.scheme=http"
       - "traefik.http.services.gophertok-comment-api.loadbalancer.passhostheader=true"
     deploy:
-      replicas: 1 # 启动三个实例
+      replicas: 2 # 启动三个实例
 
   comment-mq: # 自定义容器名称
     image: ${DOCKERHUB_IMAGE}comment-mq:latest
@@ -232,13 +232,13 @@ services:
     privileged: true
     stdin_open: true                     # 打开标准输入，可以接受外部输入
     tty: true
-    ports:
-      - "7080:7080"
+#    ports:
+#      - "7080:7080"
     networks:
       - gophertok
     restart: always                      # 指定容器退出后的重启策略为始终重启
     deploy:
-      replicas: 1 # 启动三个实例
+      replicas: 2 # 启动三个实例
 
   relation-api: # 自定义容器名称
     image: ${DOCKERHUB_IMAGE}relation-api:latest
@@ -261,7 +261,7 @@ services:
       - "traefik.http.services.gophertok-relation-api.loadbalancer.server.scheme=http"
       - "traefik.http.services.gophertok-relation-api.loadbalancer.passhostheader=true"
     deploy:
-      replicas: 1 # 启动三个实例
+      replicas: 2 # 启动三个实例
 
   relation-mq: # 自定义容器名称
     image: ${DOCKERHUB_IMAGE}relation-mq:latest
@@ -283,13 +283,13 @@ services:
     privileged: true
     stdin_open: true                     # 打开标准输入，可以接受外部输入
     tty: true
-    ports:
-      - "6080:8080"
+#    ports:
+#      - "6080:8080"
     networks:
       - gophertok
     restart: always                      # 指定容器退出后的重启策略为始终重启
     deploy:
-      replicas: 1 # 启动三个实例
+      replicas: 2 # 启动三个实例
 
   favor-api: # 自定义容器名称
     image: ${DOCKERHUB_IMAGE}favor-api:latest
@@ -311,4 +311,4 @@ services:
       - "traefik.http.services.gophertok-favor-api.loadbalancer.server.scheme=http"
       - "traefik.http.services.gophertok-favor-api.loadbalancer.passhostheader=true"
     deploy:
-      replicas: 1 # 启动三个实例
+      replicas: 2 # 启动三个实例

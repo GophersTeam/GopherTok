@@ -78,10 +78,12 @@
 
 ![42ba4597865261dcddcd1545d78c3d4f](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/42ba4597865261dcddcd1545d78c3d4f.png)
 
+![image-20230818160820149](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/image-20230818160820149.png)
 
+## 网关
 
-![b9d314ac7e89bb9755ddc5f4bc34b73a](/Users/liuxian/Library/Containers/com.tencent.qq/Data/Library/Application Support/QQ/nt_qq_9ff912276d2108f36359610be6c59b83/nt_data/Pic/2023-08/Ori/b9d314ac7e89bb9755ddc5f4bc34b73a.png)
+![image-20230818163032128](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/image-20230818163032128.png)
 
-# CI/CD
+## CI/CD
 
-使用Github Action进行CI/CD，每次提交上去后进行自动化测试，然后可以手动构建各个服务的镜像，构建好后自动推送到dockerhub上面，之后再ssh登录远程服务器，利用新的镜像自动部署好新的容器
+使用Github Action进行CI/CD，每次提交上去后进行自动化测试，然后可以手动构建各个服务的镜像，构建好后自动推送到dockerhub上面，之后再ssh登录远程服务器，利用新的镜像和已经写好的docker-compose自动部署好新的容器
