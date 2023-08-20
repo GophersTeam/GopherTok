@@ -60,15 +60,27 @@
 
 多处采用redis作缓冲，减少了mysql压力，各个服务使用kafka异步写入mysql，减少了响应时间
 
+## 配置中心和服务发现、注册中心
+
+nacos作为配置中心
+
+![image-20230818163632603](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/image-20230818163632603.png)
+
+etcd作为服务发现和注册中心
+
+![e45ceb303cceb5ea188b8fa11f66c768](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/e45ceb303cceb5ea188b8fa11f66c768.png)
+
 ## 链路追踪
 
-
+使用jaeger作为链路追踪
 
 ![796364212238fb72b302c76a95f124b1](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/796364212238fb72b302c76a95f124b1.png)
 
 ## 日志搜集
 
+![image-20230818164131821](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/image-20230818164131821.png)
 
+filebeat业务日志，然后将日志输出到kafka中作为缓冲，go-stash获取kafka中日志根据配置过滤字段，然后将过滤后的字段输出到elasticsearch中，最后由kibana负责呈现日志
 
 ![39ca160fbd2b2b385622deef2e79ba03](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/39ca160fbd2b2b385622deef2e79ba03.png)
 
@@ -82,7 +94,13 @@
 
 ## 网关
 
+使用traefik作为网关，根据路由规则将请求转发到各个服务的api上面
+
 ![image-20230818163032128](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/image-20230818163032128.png)
+
+再通过负载均衡到各个服务api容器实例
+
+![image-20230818164454219](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/image-20230818164454219.png)
 
 ## CI/CD
 

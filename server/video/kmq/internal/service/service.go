@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"github.com/redis/go-redis/v9"
 	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/core/mr"
 	"gorm.io/gorm"
 	"log"
 	"sync"
@@ -91,14 +92,31 @@ func (s *Service) consume(ch chan *model.Video) {
 		s.SensitiveTrie.AddWords([]string{"傻逼", "死", "你妈", "滚"})
 		v.Title = s.SensitiveTrie.Filter(v.Title)
 		fmt.Println(v)
-		// 将url写入redis
-		s.Rdb.Set(context.Background(), consts.VideoPrefix+m.VideoSha256, m.PlayURL, 0)
-		s.Rdb.Set(context.Background(), consts.CoverPrefix+m.VideoSha256, m.CoverURL, 0)
-
-		// 写入 video 表
-		if err := s.MysqlDb.Create(&v).Error; err != nil {
-			logx.Error(err)
+		// 并发写入数据库
+		err := mr.Finish(func() error {
+			s.Rdb.Set(context.Background(), consts.VideoPrefix+m.VideoSha256, m.PlayURL, 0)
+			return nil
+		}, func() error {
+			s.Rdb.Set(context.Background(), consts.CoverPrefix+m.VideoSha256, m.CoverURL, 0)
+			return nil
+		}, func() error {
+			err := s.MysqlDb.Create(&v).Error
+			if err != nil {
+				logx.Error(err)
+			}
+			return err
+		})
+		if err != nil {
+			logx.Error("video mq并发写入mysql,redis错误，err:", err)
 		}
+		//// 将url写入redis
+		//s.Rdb.Set(context.Background(), consts.VideoPrefix+m.VideoSha256, m.PlayURL, 0)
+		//s.Rdb.Set(context.Background(), consts.CoverPrefix+m.VideoSha256, m.CoverURL, 0)
+		//
+		//// 写入 video 表
+		//if err := s.MysqlDb.Create(&v).Error; err != nil {
+		//	logx.Error(err)
+		//}
 
 	}
 }
