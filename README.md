@@ -1,5 +1,12 @@
 # GopherTok
 
+| <img src="https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/202308222108323.png" alt="{09951663-C990-6AA2-14C8-28D9C1DDBDCD}" style="zoom: 25%;" /> | 第六届字节跳动青训营大项目作品，使用go-zero搭建的微服务项目，由[gopher小队](https://github.com/GophersTeam/GopherTok)完成，一个简易版抖音项目 |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+
+
+
+
+
 ## 架构
 
 ...
@@ -54,11 +61,14 @@
 
 ## 高并发
 
-调用各个服务的rpc时采用并发调用，大大增加系统的吞吐量
+* 调用各个服务的rpc时采用并发调用，大大减少了响应时间
+* 讲高频率的数据采用redis作缓存，减少了mysql压力
+
+* 使用kafka异步写入mysql，增加系统吞吐量
 
 ## 高性能
 
-多处采用redis作缓冲，减少了mysql压力，各个服务使用kafka异步写入mysql，减少了响应时间
+* kafka采用聚集写入，大大减少磁盘io和网络io
 
 ## 配置中心和服务发现、注册中心
 
