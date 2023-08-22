@@ -9,7 +9,7 @@
 
 ## 架构
 
-...
+![eb4302aa8c255a470e8be4becfda63ad](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/202308230226461.png)
 
 ## 🚀技术栈
 
@@ -57,14 +57,14 @@
 
 ![image-20230816101331794](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/image-20230816101331794.png)
 
-* 服务的api和rpc启动多个docker实例，api使用traefik负载均衡，rpc通过etcd实现负载，保证服务的可靠性，高峰时期可以轻松扩容
+* 服务的`api`和`rpc`启动多个do`cker实例，api使用`traefik`负载均衡，`rpc`通过`etcd`实现负载，保证服务的可靠性，高峰时期可以轻松扩容
 
 ## 高并发
 
-* 调用各个服务的rpc时采用并发调用，大大减少了响应时间
-* 讲高频率的数据采用redis作缓存，减少了mysql压力
+* 调用各个服务的`rpc`时采用并发调用，大大减少了响应时间
+* 讲高频率的数据采用`redis`作缓存，减少了`mysql`压力
 
-* 使用kafka异步写入mysql，增加系统吞吐量
+* 使用`kafka`异步写入`mysql`，增加系统吞吐量
 
 ## 高性能
 
@@ -82,7 +82,7 @@ etcd作为服务发现和注册中心
 
 ## 链路追踪
 
-使用jaeger作为链路追踪
+使用`jaeger`作为链路追踪
 
 ![796364212238fb72b302c76a95f124b1](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/796364212238fb72b302c76a95f124b1.png)
 
@@ -90,28 +90,46 @@ etcd作为服务发现和注册中心
 
 ![image-20230818164131821](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/image-20230818164131821.png)
 
-filebeat业务日志，然后将日志输出到kafka中作为缓冲，go-stash获取kafka中日志根据配置过滤字段，然后将过滤后的字段输出到elasticsearch中，最后由kibana负责呈现日志
+`filebeat`收集业务日志，然后将日志输出到`kafka`中作为缓冲，`go-stash`获取`kafka`中日志根据配置过滤字段，然后将过滤后的字段输出到`elasticsearch`中，最后由`kibana`负责呈现日志
 
 ![39ca160fbd2b2b385622deef2e79ba03](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/39ca160fbd2b2b385622deef2e79ba03.png)
 
 ## 监控
 
-
+使用`prometheus`进行服务监控
 
 ![42ba4597865261dcddcd1545d78c3d4f](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/42ba4597865261dcddcd1545d78c3d4f.png)
 
+再由`grafana`进行可视化呈现
+
 ![image-20230818160820149](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/image-20230818160820149.png)
+
+
 
 ## 网关
 
-使用traefik作为网关，根据路由规则将请求转发到各个服务的api上面
+使用`traefik`作为网关，根据路由规则将请求负载均衡到各个服务的`api`上面
 
 ![image-20230818163032128](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/image-20230818163032128.png)
 
-再通过负载均衡到各个服务api容器实例
+再通过负载均衡到各个服务`api`容器实例
 
 ![image-20230818164454219](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/image-20230818164454219.png)
 
 ## CI/CD
 
-使用Github Action进行CI/CD，每次提交上去后进行自动化测试，然后可以手动构建各个服务的镜像，构建好后自动推送到dockerhub上面，之后再ssh登录远程服务器，利用新的镜像和已经写好的docker-compose自动部署好新的容器
+* 使用`Github Action`进行CI/CD，每次提交上去后进行自动化测试
+* 然后可以手动构建各个服务的镜像，构建好后自动推送到`dockerhub`上面
+* 再ssh登录远程服务器，利用新的镜像和已经写好的`docker-compose`自动部署好新的容器
+
+## 感谢
+
+|      [字节跳动青训营](https://youthcamp.bytedance.com/)      |
+| :----------------------------------------------------------: |
+| <img src="https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/202308230232085.webp" alt="青训营" style="zoom: 67%;" /> |
+
+
+
+## 许可证
+
+**GopherTok** 在 **MIT** 许可证下开源,请在遵循 [MIT 开源证书](https://github.com/MashiroC/begonia/blob/master/LICENSE) 规则的前提下使用
