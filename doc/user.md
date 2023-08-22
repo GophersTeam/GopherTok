@@ -2,7 +2,7 @@
 
 ## 用户注册
 
-![image-20230820011647589](/Users/liuxian/Library/Application Support/typora-user-images/image-20230820011647589.png)
+![image-20230822203820409](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/202308222038653.png)
 
 ### 流程
 
