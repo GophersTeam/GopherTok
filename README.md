@@ -7,9 +7,9 @@ English | [简体中文](README-cn.MD)
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
 
 
-## Program architecture
+## Architecture
 
-![eb4302aa8c255a470e8be4becfda63ad](*https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/202308230226461.png*)
+![eb4302aa8c255a470e8be4becfda63ad](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/202308230226461.png)
 
 ## 🚀Technology stack
 
@@ -33,7 +33,7 @@ English | [简体中文](README-cn.MD)
 
 *   `innodb-cluster`
 
-![image-20230814172330152](*https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/image-20230814172330152.png*)
+![image-20230814172330152](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/image-20230814172330152.png)
 
 *  `redis-cluster`
 
@@ -43,7 +43,7 @@ English | [简体中文](README-cn.MD)
 
 ![MinIO分布式集群架构](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/a36949e0b971475499fd9ec95ad3b32d~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0-20230718162200891-20230814172546027.awebp)
 
-foUr node
+4 nodes
 
 ![image-20230816101826428](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/image-20230816101826428.png)
 
@@ -51,9 +51,9 @@ foUr node
 
 ![image-20230816101130893](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/image-20230816101130893.png)
 
-3 node
+3rd node
 
-![image-20230816101331794](*https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/image-20230816101331794.png*)
+![image-20230816101331794](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/image-20230816101331794.png)
 
 * The APIs and RPCs of the services start multiple docker instances. Traefik is used to load balance the APIs, and the RPCs implement load balancing via etcd to ensure service reliability and easy scalability during peak periods.
 
@@ -107,7 +107,7 @@ Traefik is used as the gateway, load balancing requests to the API containers of
 
 load-balanced to various service 'api' container instances
 
-![image-20230818164454219](*https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/image-20230818164454219.png*)
+![image-20230818164454219](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/image-20230818164454219.png)
 
 ## CI/CD
 
@@ -120,7 +120,6 @@ Then ssh into the remote server, using the new image and already written 'docker
 |   [YOUTHCAMP.BYTEDANCE](https://youthcamp.bytedance.com/)    |
 | :----------------------------------------------------------: |
 | <img src="https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/202308230232085.webp" alt="青训营" style="zoom: 67%;" /> |
-
 
 
 ## Licence

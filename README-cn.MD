@@ -5,8 +5,6 @@
 
 
 
-
-
 ## 架构
 
 ![eb4302aa8c255a470e8be4becfda63ad](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/202308230226461.png)
@@ -34,7 +32,6 @@
 * mysql选择`innodb-cluster`
 
 ![image-20230814172330152](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/image-20230814172330152.png)
-
 
 
 * redis选择`redis-cluster`
