@@ -29,47 +29,53 @@ func NewGetFollowerListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *G
 }
 
 func (l *GetFollowerListLogic) GetFollowerList(in *pb.GetFollowerReq) (*pb.GetFollowerResp, error) {
-	follow := []pb.FollowSubject{}
-	followerList := []*pb.User{}
+	var follow []pb.FollowSubject
+
 	err := l.svcCtx.MysqlDb.WithContext(l.ctx).Table("follow_subject").Where("user_id = ?", in.Userid).Find(&follow).Error
 	if err != nil {
 		if err != gorm.ErrRecordNotFound {
-			return &pb.GetFollowerResp{
-					StatusCode: "-1",
-					StatusMsg:  err.Error(),
-					UserList:   nil,
-				},
+			return nil,
 				errors.Wrapf(errorx.NewDefaultError("mysql add err:"+err.Error()), "mysql add err ：%v", err)
 		} else {
 			return &pb.GetFollowerResp{
-				StatusCode: "0",
+				StatusCode: 0,
 				StatusMsg:  "get followerList successfully",
 				UserList:   nil,
 			}, nil
 		}
 	}
 
-	for _, v := range follow {
+	var (
+		followerList []*pb.User
+		followerChan = make(chan *pb.User, len(follow))
+		errChan      = make(chan error, len(follow))
+	)
+	for i := 0; i < len(follow); i++ {
+		go func(i int) {
 
-		use, err := l.svcCtx.UserRpc.UserInfo(l.ctx, &user.UserInfoReq{
-			Id:        v.FollowerId,
-			CurrentId: in.Userid,
-		})
-		if err != nil {
-			return &pb.GetFollowerResp{
-					StatusCode: "-1",
-					StatusMsg:  err.Error(),
-					UserList:   nil,
-				},
-				errors.Wrapf(errorx.NewDefaultError("userInfo get err:"+err.Error()), "userInfo get err ：%v", err)
+			use, err := l.svcCtx.UserRpc.UserInfo(l.ctx, &user.UserInfoReq{
+				Id:        follow[i].FollowerId,
+				CurrentId: in.Userid,
+			})
+			if err != nil {
+				errChan <- errors.Wrapf(errorx.NewDefaultError("userInfo get err:"+err.Error()), "userInfo get err ：%v", err)
+			}
+			follower := &pb.User{}
+			_ = copier.Copy(follower, &use)
+			followerChan <- follower
+		}(i)
+	}
+	for i := 0; i < len(follow); i++ {
+		select {
+		case follower := <-followerChan:
+			followerList = append(followerList, follower)
+		case err := <-errChan:
+			return nil, err
 		}
-		follower := pb.User{}
-		_ = copier.Copy(&follower, &use)
 
-		followerList = append(followerList, &follower)
 	}
 	return &pb.GetFollowerResp{
-		StatusCode: "0",
+		StatusCode: 0,
 		StatusMsg:  "get followerList successfully",
 		UserList:   followerList,
 	}, nil

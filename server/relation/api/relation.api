@@ -47,7 +47,7 @@ type FollowReq {
 }
 
 type FollowRes {
-	StatusCode string `json:"status_code"`
+	StatusCode int64  `json:"status_code"`
 	StatusMsg  string `json:"status_msg"`
 }
 
@@ -57,7 +57,7 @@ type FollowListReq {
 }
 
 type FollowListRes {
-	StatusCode string `json:"status_code"`
+	StatusCode int64  `json:"status_code"`
 	StatusMsg  string `json:"status_msg"`
 	UserList   []User `json:"user_list"`
 }
@@ -68,7 +68,7 @@ type FollowerListReq {
 }
 
 type FollowerListRes {
-	StatusCode string `json:"status_code"`
+	StatusCode int64  `json:"status_code"`
 	StatusMsg  string `json:"status_msg"`
 	UserList   []User `json:"user_list"`
 }
@@ -79,7 +79,7 @@ type FriendListReq {
 }
 
 type FriendListRes {
-	StatusCode string       `json:"status_code"`
+	StatusCode int64        `json:"status_code"`
 	StatusMsg  string       `json:"status_msg"`
 	UserList   []FriendUser `json:"user_list"`
 }

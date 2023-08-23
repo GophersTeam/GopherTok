@@ -2,6 +2,7 @@ package logic
 
 import (
 	con "GopherTok/common/consts"
+	"GopherTok/common/errorx"
 	"GopherTok/server/relation/rpc/pb"
 	"GopherTok/server/user/rpc/types/user"
 	"context"
@@ -35,9 +36,9 @@ func (l *FriendListLogic) FriendList(req *types.FriendListReq) (resp *types.Frie
 		return nil, errors.Wrapf(err, "req: %+v", req)
 	}
 	if exists.Exists == false {
-		return nil, errors.New("user doesn't exist")
+		return nil, errors.Wrapf(errorx.NewDefaultError("user doesn't exist"), "user doesn't exist%v", nil)
 	}
-
+	//var userid int64 = 1
 	rep, err := l.svcCtx.RelationRpc.GetFriendList(l.ctx, &pb.GetFriendListReq{Userid: userid})
 	userlist := []types.FriendUser{}
 
@@ -47,9 +48,9 @@ func (l *FriendListLogic) FriendList(req *types.FriendListReq) (resp *types.Frie
 		}
 	}
 	for _, val := range rep.UserList {
-		user := types.FriendUser{}
-		_ = copier.Copy(&user, &val)
-		userlist = append(userlist, user)
+		usr := types.FriendUser{}
+		_ = copier.Copy(&usr, &val)
+		userlist = append(userlist, usr)
 	}
 
 	return &types.FriendListRes{

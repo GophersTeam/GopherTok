@@ -23,7 +23,7 @@ type FavorlistReq struct {
 
 type FavorlistResp struct {
 	BaseResponse
-	Videos []Video `json:"videos"`
+	Videos []Video `json:"video_list"`
 }
 
 type Author struct {

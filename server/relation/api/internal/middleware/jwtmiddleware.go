@@ -52,8 +52,5 @@ func (m *JwtMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 		r = r.WithContext(context.WithValue(r.Context(), consts.UserId, parseToken.ID))
 		r = r.WithContext(context.WithValue(r.Context(), consts.Token, token))
 		next(w, r)
-
-		// Passthrough to next handler if need
-		next(w, r)
 	}
 }

@@ -3,6 +3,7 @@ package service
 import (
 	"GopherTok/common/consts"
 	"GopherTok/common/init_db"
+	"GopherTok/common/utils"
 	"GopherTok/server/video/kmq/internal/config"
 	"GopherTok/server/video/model"
 	"context"
@@ -10,6 +11,7 @@ import (
 	"fmt"
 	"github.com/redis/go-redis/v9"
 	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/core/mr"
 	"gorm.io/gorm"
 	"log"
 	"sync"
@@ -22,12 +24,13 @@ const (
 )
 
 type Service struct {
-	c        config.Config // 配置信息
-	MysqlDb  *gorm.DB      // MySQL 数据库连接对象
-	Rdb      *redis.ClusterClient
-	Log      logx.LogConf
-	waiter   sync.WaitGroup      // 用于等待所有消费者 goroutine 完成的等待组
-	msgsChan []chan *model.Video // 消息通道切片，每个元素是一个通道，用于存放消息
+	c             config.Config // 配置信息
+	MysqlDb       *gorm.DB      // MySQL 数据库连接对象
+	Rdb           *redis.ClusterClient
+	Log           logx.LogConf
+	waiter        sync.WaitGroup      // 用于等待所有消费者 goroutine 完成的等待组
+	msgsChan      []chan *model.Video // 消息通道切片，每个元素是一个通道，用于存放消息
+	SensitiveTrie *utils.SensitiveTrie
 }
 
 // NewService 创建一个新的 Service 实例
@@ -44,10 +47,11 @@ func NewService(c config.Config) *Service {
 
 	// 创建 Service 实例
 	s := &Service{
-		c:        c,
-		msgsChan: make([]chan *model.Video, chanCount),
-		MysqlDb:  mysqlDb,
-		Rdb:      redisDb,
+		c:             c,
+		msgsChan:      make([]chan *model.Video, chanCount),
+		MysqlDb:       mysqlDb,
+		Rdb:           redisDb,
+		SensitiveTrie: utils.NewSensitiveTrie(),
 	}
 
 	// 创建 chanCount 个消费者 goroutine
@@ -84,15 +88,35 @@ func (s *Service) consume(ch chan *model.Video) {
 			UpdateTime:  time.Now(),
 			VideoSha256: m.VideoSha256,
 		}
+		// 敏感词过滤
+		s.SensitiveTrie.AddWords([]string{"傻逼", "死", "你妈", "滚"})
+		v.Title = s.SensitiveTrie.Filter(v.Title)
 		fmt.Println(v)
-		// 将url写入redis
-		s.Rdb.Set(context.Background(), consts.VideoPrefix+m.VideoSha256, m.PlayURL, 0)
-		s.Rdb.Set(context.Background(), consts.CoverPrefix+m.VideoSha256, m.CoverURL, 0)
-
-		// 写入 video 表
-		if err := s.MysqlDb.Create(&v).Error; err != nil {
-			logx.Error(err)
+		// 并发写入数据库
+		err := mr.Finish(func() error {
+			s.Rdb.Set(context.Background(), consts.VideoPrefix+m.VideoSha256, m.PlayURL, 0)
+			return nil
+		}, func() error {
+			s.Rdb.Set(context.Background(), consts.CoverPrefix+m.VideoSha256, m.CoverURL, 0)
+			return nil
+		}, func() error {
+			err := s.MysqlDb.Create(&v).Error
+			if err != nil {
+				logx.Error(err)
+			}
+			return err
+		})
+		if err != nil {
+			logx.Error("video mq并发写入mysql,redis错误，err:", err)
 		}
+		//// 将url写入redis
+		//s.Rdb.Set(context.Background(), consts.VideoPrefix+m.VideoSha256, m.PlayURL, 0)
+		//s.Rdb.Set(context.Background(), consts.CoverPrefix+m.VideoSha256, m.CoverURL, 0)
+		//
+		//// 写入 video 表
+		//if err := s.MysqlDb.Create(&v).Error; err != nil {
+		//	logx.Error(err)
+		//}
 
 	}
 }

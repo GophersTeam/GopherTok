@@ -9,6 +9,7 @@ import (
 	"github.com/redis/go-redis/v9"
 	"github.com/zeromicro/go-zero/core/jsonx"
 	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/core/mr"
 	"gorm.io/gorm"
 )
 
@@ -45,14 +46,27 @@ func (s *Service) Consume(_ string, value string) error {
 		logx.Errorf("MessageAction jsonx.UnmarshalFromString error: %s", err.Error())
 		return err
 	}
+	var avatar, backGroundImage, signature string
+	// 并发请求网站
+	mr.Finish(func() error {
+		avatar = utils.GetRandomImageUrl()
+		return nil
+	}, func() error {
+		backGroundImage = utils.GetRandomImageUrl()
+		return nil
+	}, func() error {
+		signature = utils.GetRandomYiYan()
+		return nil
+	})
+
 	// 创建 user 对象，用于写入数据库
 	v := model.User{
 		ID:              m.ID,
 		Username:        m.Username,
 		Password:        m.Password,
-		Avatar:          utils.GetRandomImageUrl(),
-		BackgroundImage: utils.GetRandomImageUrl(),
-		Signature:       utils.GetRandomYiYan(),
+		Avatar:          avatar,
+		BackgroundImage: backGroundImage,
+		Signature:       signature,
 	}
 	fmt.Println(v)
 

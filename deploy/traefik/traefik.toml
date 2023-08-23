@@ -1,0 +1,5 @@
+[certificatesResolvers.le.acme]
+  email = "liu_xian.123@qq.com"
+  storage = "acme.json"
+
+  [certificatesResolvers.le.acme.tlsChallenge]

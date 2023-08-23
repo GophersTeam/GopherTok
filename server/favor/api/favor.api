@@ -31,7 +31,7 @@ type (
 	}
 	FavorlistResp {
 		BaseResponse
-		Videos []video `json:"videos"`
+		Videos []video `json:"video_list"`
 	}
 	author {
 		ID              int64  `json:"id"`

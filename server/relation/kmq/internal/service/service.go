@@ -92,7 +92,7 @@ func (s *Service) consumeMysql(ch chan *dao.FollowData) {
 			}
 		} else if m.Method == "delete" {
 			if err := s.MysqlDb.Table("follow_subject").
-				Where("user_id = ? AND follower_id = ?", m.UserId, m.UserId).Delete(&pb.FollowSubject{}).Error; err != nil {
+				Where("user_id = ? AND follower_id = ?", m.UserId, m.FollowerId).Delete(&pb.FollowSubject{}).Error; err != nil {
 				logx.Error(err)
 			}
 		}

@@ -2,6 +2,7 @@ package logic
 
 import (
 	con "GopherTok/common/consts"
+	"GopherTok/common/errorx"
 	"GopherTok/server/chat/rpc/chatrpc"
 	"GopherTok/server/relation/api/internal/svc"
 	"GopherTok/server/relation/api/internal/types"
@@ -34,7 +35,7 @@ func (l *FollowLogic) Follow(req *types.FollowReq) (resp *types.FollowRes, err e
 		return nil, errors.Wrapf(err, "req: %+v", req)
 	}
 	if exists.Exists == false {
-		return nil, errors.New("user doesn't exist")
+		return nil, errors.Wrapf(errorx.NewDefaultError("user doesn't exist"), "user doesn't exist%v", nil)
 	}
 
 	exists, err = l.svcCtx.UserRpc.UserIsExists(l.ctx, &user.UserIsExistsReq{Id: userid})
@@ -42,9 +43,9 @@ func (l *FollowLogic) Follow(req *types.FollowReq) (resp *types.FollowRes, err e
 		return nil, errors.Wrapf(err, "req: %+v", req)
 	}
 	if exists.Exists == false {
-		return nil, errors.New("user doesn't exist")
+		return nil, errors.Wrapf(errorx.NewDefaultError("user doesn't exist"), "user doesn't exist%v", nil)
 	}
-
+	//var userid int64 = 1
 	if req.ActionType == 1 {
 		isFollow, err := l.svcCtx.RelationRpc.CheckIsFollow(l.ctx, &pb.CheckIsFollowReq{
 			UserId:   userid,
@@ -55,7 +56,7 @@ func (l *FollowLogic) Follow(req *types.FollowReq) (resp *types.FollowRes, err e
 		}
 
 		if isFollow.IsFollow {
-			return nil, errors.New("follow has exist")
+			return nil, errors.Wrapf(errorx.NewDefaultError("follow has exist"), "follow has exist%v", nil)
 		}
 
 		follow, err := l.svcCtx.RelationRpc.AddFollow(l.ctx, &pb.AddFollowReq{
@@ -94,7 +95,7 @@ func (l *FollowLogic) Follow(req *types.FollowReq) (resp *types.FollowRes, err e
 		}
 
 		if !isFollow.IsFollow {
-			return nil, errors.New("follow doesn't exist")
+			return nil, errors.Wrapf(errorx.NewDefaultError("follow doesn't exist"), "follow doesn't exist%v", nil)
 		}
 
 		follow, err := l.svcCtx.RelationRpc.DeleteFollow(l.ctx, &pb.DeleteFollowReq{
@@ -110,7 +111,8 @@ func (l *FollowLogic) Follow(req *types.FollowReq) (resp *types.FollowRes, err e
 			StatusMsg:  follow.StatusMsg,
 		}, nil
 	} else {
-		return nil, errors.New("action_type err")
+		return nil, errors.Wrapf(errorx.NewDefaultError("action_type err"), "action_type err%v", nil)
+
 	}
 
 }

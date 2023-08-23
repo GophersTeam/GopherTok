@@ -3,7 +3,6 @@ package logic
 import (
 	"GopherTok/common/batcher"
 	"GopherTok/common/errorx"
-	"GopherTok/common/utils"
 	"GopherTok/server/video/model"
 	"context"
 	"encoding/json"
@@ -24,17 +23,15 @@ type PublishVideoLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
-	batcher             *batcher.Batcher
-	SensitiveWordFilter utils.SensitiveWordFilter
+	batcher *batcher.Batcher
 }
 
 func NewPublishVideoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PublishVideoLogic {
-	trie := utils.NewSensitiveTrie()
+
 	f := &PublishVideoLogic{
-		ctx:                 ctx,
-		svcCtx:              svcCtx,
-		Logger:              logx.WithContext(ctx),
-		SensitiveWordFilter: trie,
+		ctx:    ctx,
+		svcCtx: svcCtx,
+		Logger: logx.WithContext(ctx),
 	}
 	// batcher配置
 	options := batcher.Options{
@@ -84,8 +81,7 @@ func (l *PublishVideoLogic) PublishVideo(in *video.PublishVideoReq) (*video.Comm
 	fmt.Println(CreateTime)
 	fmt.Println("---")
 	fmt.Println(UpdateTime)
-	// 标题敏感过滤
-	in.Title = l.SensitiveWordFilter.Filter(in.Title)
+
 	v := model.Video{
 		ID:          in.Id,
 		UserID:      in.UserId,
@@ -97,7 +93,7 @@ func (l *PublishVideoLogic) PublishVideo(in *video.PublishVideoReq) (*video.Comm
 		DeleteTime:  gorm.DeletedAt{},
 		VideoSha256: in.VideoSha256,
 	}
-	fmt.Println(000000, v)
+
 	// kafka异步处理file元数据
 	err = l.batcher.Add(strconv.FormatInt(in.UserId, 10), &v)
 	if err != nil {

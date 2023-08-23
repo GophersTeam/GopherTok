@@ -32,12 +32,11 @@ func NewDeleteFollowLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Dele
 
 func (l *DeleteFollowLogic) DeleteFollow(in *pb.DeleteFollowReq) (*pb.DeleteFollowResp, error) {
 
-	cmd := l.svcCtx.Rdb.SRem(l.ctx, fmt.Sprintf("cache:gopherTok:follow:id:%s", strconv.FormatInt(in.ToUserId, 10)), in.UserId)
+	cmd := l.svcCtx.Rdb.SRem(l.ctx, fmt.Sprintf("cache:gopherTok:follow:id:%d", in.ToUserId), in.UserId)
 	if cmd.Err() != nil {
-		return &pb.DeleteFollowResp{StatusCode: "-1",
+		return &pb.DeleteFollowResp{StatusCode: -1,
 				StatusMsg: cmd.Err().Error()},
 			errors.Wrapf(errorx.NewDefaultError("redis srem err:"+cmd.Err().Error()), "redis srem err ：%v", cmd.Err())
-
 	}
 
 	kdMysql, err := jsonx.MarshalToString(&dao.FollowData{
@@ -62,7 +61,7 @@ func (l *DeleteFollowLogic) DeleteFollow(in *pb.DeleteFollowReq) (*pb.DeleteFoll
 	followCount := db.RowsAffected
 
 	if err != nil {
-		return &pb.DeleteFollowResp{StatusCode: "-1",
+		return &pb.DeleteFollowResp{StatusCode: -1,
 				StatusMsg: err.Error()},
 			errors.Wrapf(errorx.NewDefaultError("mysql get err:"+err.Error()), "mysql get err ：%v", err)
 	}
@@ -74,7 +73,7 @@ func (l *DeleteFollowLogic) DeleteFollow(in *pb.DeleteFollowReq) (*pb.DeleteFoll
 	followerCount := db.RowsAffected
 
 	if err != nil {
-		return &pb.DeleteFollowResp{StatusCode: "-1",
+		return &pb.DeleteFollowResp{StatusCode: -1,
 				StatusMsg: err.Error()},
 			errors.Wrapf(errorx.NewDefaultError("mysql get err:"+err.Error()), "mysql get err ：%v", err)
 	}
@@ -84,7 +83,7 @@ func (l *DeleteFollowLogic) DeleteFollow(in *pb.DeleteFollowReq) (*pb.DeleteFoll
 	err = l.svcCtx.MysqlDb.WithContext(l.ctx).Table("follow_subject").
 		Where("user_id = ?", in.UserId).Find(&friend).Error
 	if err != nil {
-		return &pb.DeleteFollowResp{StatusCode: "-1",
+		return &pb.DeleteFollowResp{StatusCode: -1,
 				StatusMsg: err.Error(),
 			},
 			errors.Wrapf(errorx.NewDefaultError("mysql get err:"+err.Error()), "mysql get err ：%v", err)
@@ -96,7 +95,7 @@ func (l *DeleteFollowLogic) DeleteFollow(in *pb.DeleteFollowReq) (*pb.DeleteFoll
 			Where("user_id = ? AND follower_id = ?", v.FollowerId, in.UserId).First(&pb.FollowSubject{}).Error
 		if err != nil {
 			if err != gorm.ErrRecordNotFound {
-				return &pb.DeleteFollowResp{StatusCode: "-1",
+				return &pb.DeleteFollowResp{StatusCode: -1,
 						StatusMsg: err.Error(),
 					},
 					errors.Wrapf(errorx.NewDefaultError("mysql get err:"+err.Error()), "mysql get err ：%v", err)
@@ -121,7 +120,7 @@ func (l *DeleteFollowLogic) DeleteFollow(in *pb.DeleteFollowReq) (*pb.DeleteFoll
 	}
 
 	return &pb.DeleteFollowResp{
-		StatusCode: "0",
+		StatusCode: 0,
 		StatusMsg:  "delete follow successfully",
 	}, nil
 }

@@ -31,10 +31,9 @@ func NewAddFollowLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AddFoll
 }
 
 func (l *AddFollowLogic) AddFollow(in *pb.AddFollowReq) (*pb.AddFollowResp, error) {
-	intcmd := l.svcCtx.Rdb.SAdd(l.ctx, fmt.Sprintf("cache:gopherTok:follow:id:%s", strconv.FormatInt(in.ToUserId, 10)), in.UserId)
+	intcmd := l.svcCtx.Rdb.SAdd(l.ctx, fmt.Sprintf("cache:gopherTok:follow:id:%d", in.ToUserId), in.UserId)
 	if intcmd.Err() != nil {
-		return &pb.AddFollowResp{StatusCode: "-1",
-				StatusMsg: intcmd.Err().Error()},
+		return nil,
 			errors.Wrapf(errorx.NewDefaultError("redis set err:"+intcmd.Err().Error()), "redis set err ：%v", intcmd.Err())
 
 	}
@@ -61,8 +60,7 @@ func (l *AddFollowLogic) AddFollow(in *pb.AddFollowReq) (*pb.AddFollowResp, erro
 	followCount := db.RowsAffected
 
 	if err != nil {
-		return &pb.AddFollowResp{StatusCode: "-1",
-				StatusMsg: err.Error()},
+		return nil,
 			errors.Wrapf(errorx.NewDefaultError("mysql get err:"+err.Error()), "mysql get err ：%v", err)
 	}
 
@@ -73,8 +71,7 @@ func (l *AddFollowLogic) AddFollow(in *pb.AddFollowReq) (*pb.AddFollowResp, erro
 	followerCount := db.RowsAffected
 
 	if err != nil {
-		return &pb.AddFollowResp{StatusCode: "-1",
-				StatusMsg: err.Error()},
+		return nil,
 			errors.Wrapf(errorx.NewDefaultError("mysql get err:"+err.Error()), "mysql get err ：%v", err)
 	}
 
@@ -83,9 +80,7 @@ func (l *AddFollowLogic) AddFollow(in *pb.AddFollowReq) (*pb.AddFollowResp, erro
 	err = l.svcCtx.MysqlDb.WithContext(l.ctx).Table("follow_subject").
 		Where("user_id = ?", in.UserId).Find(&friend).Error
 	if err != nil {
-		return &pb.AddFollowResp{StatusCode: "-1",
-				StatusMsg: err.Error(),
-			},
+		return nil,
 			errors.Wrapf(errorx.NewDefaultError("mysql get err:"+err.Error()), "mysql get err ：%v", err)
 	}
 	var friendCount int64 = 0
@@ -95,9 +90,7 @@ func (l *AddFollowLogic) AddFollow(in *pb.AddFollowReq) (*pb.AddFollowResp, erro
 			Where("user_id = ? AND follower_id = ?", v.FollowerId, in.UserId).First(&pb.FollowSubject{}).Error
 		if err != nil {
 			if err != gorm.ErrRecordNotFound {
-				return &pb.AddFollowResp{StatusCode: "-1",
-						StatusMsg: err.Error(),
-					},
+				return nil,
 					errors.Wrapf(errorx.NewDefaultError("mysql get err:"+err.Error()), "mysql get err ：%v", err)
 			}
 		}
@@ -119,6 +112,6 @@ func (l *AddFollowLogic) AddFollow(in *pb.AddFollowReq) (*pb.AddFollowResp, erro
 		logx.Errorf("KafkaPusherRedis.Push kdRedis: %s error: %v", kdMysql, err)
 	}
 
-	return &pb.AddFollowResp{StatusCode: "0",
+	return &pb.AddFollowResp{StatusCode: 0,
 		StatusMsg: "add follow successfully"}, nil
 }

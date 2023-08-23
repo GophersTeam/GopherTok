@@ -32,10 +32,10 @@ type FriendUser struct {
 }
 
 type Follow struct {
-	Id         int64 `json:"id"`
-	UserId     int64 `json:"user_id"`
-	FollowerId int64 `json:"follower_id"`
-	IsFollow   bool  `json:"is_follow"`
+	Id         int64 `gorm:"id" json:"id"`
+	UserId     int64 `gorm:"user_id" json:"user_id"`
+	FollowerId int64 `gorm:"follower_id" json:"follower_id"`
+	IsFollow   bool  `gorm:"is_follow" json:"is_follow"`
 }
 
 type FollowReq struct {
@@ -45,7 +45,7 @@ type FollowReq struct {
 }
 
 type FollowRes struct {
-	StatusCode string `json:"status_code"`
+	StatusCode int64  `json:"status_code"`
 	StatusMsg  string `json:"status_msg"`
 }
 
@@ -55,7 +55,7 @@ type FollowListReq struct {
 }
 
 type FollowListRes struct {
-	StatusCode string `json:"status_code"`
+	StatusCode int64  `json:"status_code"`
 	StatusMsg  string `json:"status_msg"`
 	UserList   []User `json:"user_list"`
 }
@@ -66,7 +66,7 @@ type FollowerListReq struct {
 }
 
 type FollowerListRes struct {
-	StatusCode string `json:"status_code"`
+	StatusCode int64  `json:"status_code"`
 	StatusMsg  string `json:"status_msg"`
 	UserList   []User `json:"user_list"`
 }
@@ -77,7 +77,7 @@ type FriendListReq struct {
 }
 
 type FriendListRes struct {
-	StatusCode string       `json:"status_code"`
+	StatusCode int64        `json:"status_code"`
 	StatusMsg  string       `json:"status_msg"`
 	UserList   []FriendUser `json:"user_list"`
 }

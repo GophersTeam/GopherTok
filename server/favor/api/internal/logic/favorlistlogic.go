@@ -147,7 +147,7 @@ func (l *FavorListLogic) FavorList(req *types.FavorlistReq) (resp *types.Favorli
 			}
 
 			num, err := l.svcCtx.FavorRpc.FavorNum(l.ctx, &favor.FavorNumReq{
-				VideoId: req.UserId,
+				VideoId: video.Id,
 			})
 			if err != nil {
 				videoItem.FavoriteCount = 0

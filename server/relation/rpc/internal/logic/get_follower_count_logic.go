@@ -31,9 +31,7 @@ func (l *GetFollowerCountLogic) GetFollowerCount(in *pb.GetFollowerCountReq) (*p
 	count := l.svcCtx.Rdb.HGet(l.ctx, "cache:gopherTok:follow:followerCount", fmt.Sprintf("%d:followerCount", in.Userid))
 	if count.Err() != nil {
 		if count.Err().Error() != "redis: nil" {
-			return &pb.GetFollowerCountResp{StatusCode: "-1",
-					StatusMsg: count.Err().Error(),
-					Count:     0},
+			return nil,
 				errors.Wrapf(errorx.NewDefaultError("redis get err:"+count.Err().Error()), "redis get err ：%v", count.Err())
 		}
 
@@ -45,22 +43,20 @@ func (l *GetFollowerCountLogic) GetFollowerCount(in *pb.GetFollowerCountReq) (*p
 			countMysql := db.RowsAffected
 
 			if err != nil {
-				return &pb.GetFollowerCountResp{StatusCode: "-1",
-						StatusMsg: err.Error(),
-						Count:     0},
+				return nil,
 					errors.Wrapf(errorx.NewDefaultError("mysql get err:"+err.Error()), "mysql get err ：%v", err)
 			}
 
 			l.svcCtx.Rdb.HSet(l.ctx, "followerCount", fmt.Sprintf("%d:followerCount", in.Userid), strconv.FormatInt(countMysql, 10))
 
-			return &pb.GetFollowerCountResp{StatusCode: "0",
+			return &pb.GetFollowerCountResp{StatusCode: 0,
 				StatusMsg: "get followerCount successfully",
 				Count:     countMysql}, nil
 		}
 	}
 	countInt, _ := strconv.ParseInt(count.Val(), 10, 64)
 
-	return &pb.GetFollowerCountResp{StatusCode: "0",
+	return &pb.GetFollowerCountResp{StatusCode: 0,
 		StatusMsg: "get followerCount successfully",
 		Count:     countInt}, nil
 }
