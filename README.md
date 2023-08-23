@@ -43,7 +43,7 @@ English | [简体中文](README-cn.MD)
 
 ![MinIO分布式集群架构](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/a36949e0b971475499fd9ec95ad3b32d~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0-20230718162200891-20230814172546027.awebp)
 
-4 nodes
+* 4 nodes
 
 ![image-20230816101826428](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/image-20230816101826428.png)
 
@@ -51,7 +51,7 @@ English | [简体中文](README-cn.MD)
 
 ![image-20230816101130893](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/image-20230816101130893.png)
 
-3rd node
+* 3rd node
 
 ![image-20230816101331794](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/image-20230816101331794.png)
 
@@ -117,8 +117,8 @@ Then ssh into the remote server, using the new image and already written 'docker
 
 ## Thanks
 
-|   [YOUTHCAMP.BYTEDANCE](https://youthcamp.bytedance.com/)    |
-| :----------------------------------------------------------: |
+|                                                 [字节跳动青训营](https://youthcamp.bytedance.com/)                                                 |
+|:-------------------------------------------------------------------------------------------------------------------------------------------:|
 | <img src="https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/202308230232085.webp" alt="青训营" style="zoom: 67%;" /> |
 
 
