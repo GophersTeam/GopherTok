@@ -1,11 +1,14 @@
 # GopherTok
 
+> 项目介绍：http://gophertok.kuaji.club/
+>
+
 | <img src="https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/202308222108323.png" alt="{09951663-C990-6AA2-14C8-28D9C1DDBDCD}" style="zoom: 25%;" /> | 第六届字节跳动青训营大项目作品，使用go-zero搭建的微服务项目，由[gopher小队](https://github.com/GophersTeam/GopherTok)完成，一个简易版抖音项目 |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
 
 
 
-## 架构
+## 🪵架构
 
 ![eb4302aa8c255a470e8be4becfda63ad](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/202308230226461.png)
 
@@ -58,8 +61,8 @@
 
 ## 高并发
 
-* 调用各个服务的`rpc`时采用并发调用，大大减少了响应时间
-* 讲高频率的数据采用`redis`作缓存，减少了`mysql`压力
+* 调用各个服务的`rpc`时采用并发调用，显著减少了响应时间
+* 将高频率的数据采用`redis`作缓存，减少了`mysql`压力
 
 * 使用`kafka`异步写入`mysql`，增加系统吞吐量
 
@@ -119,7 +122,7 @@ etcd作为服务发现和注册中心
 * 然后可以手动构建各个服务的镜像，构建好后自动推送到`dockerhub`上面
 * 再ssh登录远程服务器，利用新的镜像和已经写好的`docker-compose`自动部署好新的容器
 
-## 感谢
+## 🎉感谢
 
 |      [字节跳动青训营](https://youthcamp.bytedance.com/)      |
 | :----------------------------------------------------------: |
@@ -127,6 +130,6 @@ etcd作为服务发现和注册中心
 
 
 
-## 许可证
+## 📣许可证
 
 **GopherTok** 在 **MIT** 许可证下开源,请在遵循 [MIT 开源证书](https://github.com/MashiroC/begonia/blob/master/LICENSE) 规则的前提下使用

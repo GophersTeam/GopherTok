@@ -1,13 +1,13 @@
 # GopherTok
 
-
 English | [简体中文](README-cn.MD)
+
+> Project introduction：http://gophertok.kuaji.club/
 
 | <img src="https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/202308222108323.png" alt="{09951663-C990-6AA2-14C8-28D9C1DDBDCD}" style="zoom: 25%;" /> | The sixth Bytedance Youth training camp big project works, a simple version of Tiktok project ，built with  go-zero  microservice . Completed by the [gopher team](https://github.com/GophersTeam/GopherTok) |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
 
-
-## Architecture
+## 🪵Architecture
 
 ![eb4302aa8c255a470e8be4becfda63ad](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/202308230226461.png)
 
@@ -59,25 +59,25 @@ English | [简体中文](README-cn.MD)
 
 ## High concurrency
 
-The RPC calls of each service are executed concurrently, significantly reducing response time. Redis is used as a cache for high-frequency data, reducing the pressure on MySQL. Kafka is used to asynchronously write to MySQL, increasing system throughput.
+The RPC calls of each service are executed concurrently, significantly reducing response time. `Redis` is used as a cache for high-frequency data, reducing the pressure on `MySQL`. `Kafka` is used to asynchronously write to `MySQL`, increasing system throughput.·
 
 ## High performance
 
-kafka uses clustered writes to greatly reduce disk io and network io
+`kafka` uses clustered writes to greatly `reduce` disk io and network io
 
 ### Configuration center and service discovery/registry center
 
-Nacos is used as the configuration center
+`Nacos` is used as the configuration center
 
 ![image-20230818163632603](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/image-20230818163632603.png)
 
-Etcd is used for service discovery and registry
+`Etcd` is used for service discovery and registry
 
 ![e45ceb303cceb5ea188b8fa11f66c768](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/e45ceb303cceb5ea188b8fa11f66c768.png)
 
 ### Tracing
 
-Jaeger is used for link tracing across services.
+`Jaeger` is used for link tracing across services.
 
 ![796364212238fb72b302c76a95f124b1](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/796364212238fb72b302c76a95f124b1.png)
 
@@ -85,23 +85,23 @@ Jaeger is used for link tracing across services.
 
 ![image-20230818164131821](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/image-20230818164131821.png)
 
-Filebeat collects logs and sends them to Kafka for buffering. Go-stash filters the logs based on configuration and outputs the filtered logs to Elasticsearch. Kibana is responsible for visualizing the logs.
+`Filebeat` collects logs and sends them to `Kafka` for buffering. `Go-stash` filters the logs based on configuration and outputs the filtered logs to `Elasticsearch`. `Kibana` is responsible for visualizing the logs.
 
 ![39ca160fbd2b2b385622deef2e79ba03](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/39ca160fbd2b2b385622deef2e79ba03.png)
 
 ### Supervisory control
 
-Prometheus is used for service monitoring, with Grafana providing a visualization interface.
+`Prometheus` is used for service monitoring, with `Grafana` providing a visualization interface.
 
 ![42ba4597865261dcddcd1545d78c3d4f](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/42ba4597865261dcddcd1545d78c3d4f.png)
 
-visualized by grafana
+visualized by `grafana`
 
 ![image-20230818160820149](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/image-20230818160820149.png)
 
 ### Gateway
 
-Traefik is used as the gateway, load balancing requests to the API containers of each service based on routing rules.
+`Traefik` is used as the gateway, load balancing requests to the API containers of each service based on routing rules.
 
 ![image-20230818163032128](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/image-20230818163032128.png)
 
@@ -111,20 +111,19 @@ load-balanced to various service 'api' container instances
 
 ## CI/CD
 
-* Use GitHub Action for CI/CD and automate testing after each commit
-Then you can manually build the image of each service, and automatically push it to the dockerhub after it is built
+* Use `GitHub Action` for `CI/CD` and automate testing after each commit
+Then you can manually build the image of each service, and automatically push it to the `dockerhub` after it is built
 Then ssh into the remote server, using the new image and already written 'docker-compose' automatically deploy the new container
 
-## Thanks
+## 🎉Thanks
 
-|                                                 [字节跳动青训营](https://youthcamp.bytedance.com/)                                                 |
-|:-------------------------------------------------------------------------------------------------------------------------------------------:|
+|   [Bytedance youth Camp](https://youthcamp.bytedance.com/)   |
+| :----------------------------------------------------------: |
 | <img src="https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/202308230232085.webp" alt="青训营" style="zoom: 67%;" /> |
 
+## 📣Licence
 
-## Licence
-
-GopherTok is open-source under the MIT license. Please follow the project for updates.
+**GopherTok** is open-source under the **MIT** license. Please follow the [MIT open source certificate](https://github.com/MashiroC/begonia/blob/master/LICENSE) rules under the premise of use
 
 
 
