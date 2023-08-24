@@ -2,7 +2,7 @@
 
 ## 用户注册
 
-![image-20230822203820409](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/202308222038653.png)
+![image-20230825005454333](https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/202308250054399.png)
 
 ### 流程
 
