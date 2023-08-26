@@ -30,7 +30,7 @@ func NewFriendListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Friend
 }
 
 func (l *FriendListLogic) FriendList(req *types.FriendListReq) (resp *types.FriendListRes, err error) {
-	userid := l.ctx.Value(con.UserId).(int64)
+	currentId := l.ctx.Value(con.UserId).(int64)
 	exists, err := l.svcCtx.UserRpc.UserIsExists(l.ctx, &user.UserIsExistsReq{Id: req.UserId})
 	if err != nil {
 		return nil, errors.Wrapf(err, "req: %+v", req)
@@ -38,8 +38,16 @@ func (l *FriendListLogic) FriendList(req *types.FriendListReq) (resp *types.Frie
 	if exists.Exists == false {
 		return nil, errors.Wrapf(errorx.NewDefaultError("user doesn't exist"), "user doesn't exist%v", nil)
 	}
-	//var userid int64 = 1
-	rep, err := l.svcCtx.RelationRpc.GetFriendList(l.ctx, &pb.GetFriendListReq{Userid: userid})
+	exists, err = l.svcCtx.UserRpc.UserIsExists(l.ctx, &user.UserIsExistsReq{Id: currentId})
+	if err != nil {
+		return nil, errors.Wrapf(err, "req: %+v", req)
+	}
+	if exists.Exists == false {
+		return nil, errors.Wrapf(errorx.NewDefaultError("user doesn't exist"), "user doesn't exist%v", nil)
+	}
+	//var currentId int64 = 1
+	rep, err := l.svcCtx.RelationRpc.GetFriendList(l.ctx, &pb.GetFriendListReq{Userid: req.UserId,
+		CurrentId: currentId})
 	userlist := []types.FriendUser{}
 
 	if err != nil {

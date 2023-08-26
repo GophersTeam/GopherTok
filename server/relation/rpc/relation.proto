@@ -69,6 +69,7 @@ message CheckIsFollowResp{
 }
 message GetFollowListReq {
   int64 Userid = 1;
+  int64 CurrentId = 2;
 }
 
 message GetFollowListResp {
@@ -78,6 +79,7 @@ message GetFollowListResp {
 }
 message GetFollowerReq {
   int64 Userid = 1;
+  int64 CurrentId = 2;
 }
 
 message GetFollowerResp {
@@ -97,6 +99,7 @@ message GetFollowerCountResp{
 
 message GetFriendListReq {
   int64 Userid = 1;
+  int64 CurrentId = 2;
 }
 
 message GetFriendListResp {

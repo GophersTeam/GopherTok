@@ -56,7 +56,7 @@ func (l *GetFriendListLogic) GetFriendList(in *pb.GetFriendListReq) (*pb.GetFrie
 
 		use, err := l.svcCtx.UserRpc.UserInfo(l.ctx, &user.UserInfoReq{
 			Id:        v.FollowerId,
-			CurrentId: in.Userid,
+			CurrentId: in.CurrentId,
 		})
 		if err != nil {
 			return nil,
@@ -87,6 +87,7 @@ func (l *GetFriendListLogic) GetFriendList(in *pb.GetFriendListReq) (*pb.GetFrie
 	for _, v := range message.LastMessageList {
 		friendList[i].Message = v.Content
 		friendList[i].MsgType = v.MsgType
+		i++
 	}
 
 	return &pb.GetFriendListResp{StatusCode: 0,

@@ -53,7 +53,7 @@ func (l *GetFollowListLogic) GetFollowList(in *pb.GetFollowListReq) (*pb.GetFoll
 
 			use, err := l.svcCtx.UserRpc.UserInfo(l.ctx, &user.UserInfoReq{
 				Id:        follow[i].UserId,
-				CurrentId: in.Userid,
+				CurrentId: in.CurrentId,
 			})
 			if err != nil {
 

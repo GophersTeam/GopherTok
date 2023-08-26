@@ -31,7 +31,8 @@ func NewFollowListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Follow
 }
 
 func (l *FollowListLogic) FollowList(req *types.FollowListReq) (resp *types.FollowListRes, err error) {
-	userid := l.ctx.Value(con.UserId).(int64)
+	currentId := l.ctx.Value(con.UserId).(int64)
+
 	exists, err := l.svcCtx.UserRpc.UserIsExists(l.ctx, &user.UserIsExistsReq{Id: req.UserId})
 	if err != nil {
 		return nil, errors.Wrapf(err, "req: %+v", req)
@@ -39,9 +40,19 @@ func (l *FollowListLogic) FollowList(req *types.FollowListReq) (resp *types.Foll
 	if exists.Exists == false {
 		return nil, errors.Wrapf(errorx.NewDefaultError("user doesn't exist"), "user doesn't exist%v", nil)
 	}
-	//var userid int64 = 1
+
+	exists, err = l.svcCtx.UserRpc.UserIsExists(l.ctx, &user.UserIsExistsReq{Id: currentId})
+	if err != nil {
+		return nil, errors.Wrapf(err, "req: %+v", req)
+	}
+	if exists.Exists == false {
+		return nil, errors.Wrapf(errorx.NewDefaultError("user doesn't exist"), "user doesn't exist%v", nil)
+	}
+
+	//var currentId int64 = 1
 	followList, err := l.svcCtx.RelationRpc.GetFollowList(l.ctx, &pb.GetFollowListReq{
-		Userid: userid,
+		Userid:    req.UserId,
+		CurrentId: currentId,
 	})
 	if err != nil {
 		fmt.Print(err)

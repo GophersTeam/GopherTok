@@ -55,7 +55,7 @@ func (l *GetFollowerListLogic) GetFollowerList(in *pb.GetFollowerReq) (*pb.GetFo
 
 			use, err := l.svcCtx.UserRpc.UserInfo(l.ctx, &user.UserInfoReq{
 				Id:        follow[i].FollowerId,
-				CurrentId: in.Userid,
+				CurrentId: in.CurrentId,
 			})
 			if err != nil {
 				errChan <- errors.Wrapf(errorx.NewDefaultError("userInfo get err:"+err.Error()), "userInfo get err ：%v", err)
