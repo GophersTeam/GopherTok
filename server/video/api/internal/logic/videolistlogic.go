@@ -47,8 +47,11 @@ func (l *VideoListLogic) VideoList(req *types.VideoListReq) (resp *types.VideoLi
 	var (
 		videoList    []*types.VideoInfo
 		nextTime     int64 = math.MaxInt64
-		videoResults       = make(chan *types.VideoInfo, len(list))
-		errorChannel       = make(chan error, len(list))
+		videoResults       = make(chan struct {
+			Index int
+			Info  *types.VideoInfo
+		}, len(list))
+		errorChannel = make(chan error, len(list))
 	)
 
 	for i := 0; i < len(list); i++ {
@@ -119,14 +122,22 @@ func (l *VideoListLogic) VideoList(req *types.VideoListReq) (resp *types.VideoLi
 				IsFavorite:    isFavorite,
 			}
 
-			videoResults <- videoItem
+			videoResults <- struct {
+				Index int
+				Info  *types.VideoInfo
+			}{
+				Index: i,
+				Info:  videoItem,
+			}
 		}(i)
 	}
 
 	for i := 0; i < len(list); i++ {
 		select {
-		case videoItem := <-videoResults:
-			videoList = append(videoList, videoItem)
+		case result := <-videoResults:
+			if result.Info != nil {
+				videoList[result.Index] = result.Info
+			}
 		case err := <-errorChannel:
 			return nil, err
 		}
