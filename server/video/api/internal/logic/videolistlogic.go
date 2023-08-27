@@ -43,9 +43,8 @@ func (l *VideoListLogic) VideoList(req *types.VideoListReq) (resp *types.VideoLi
 		return nil, errors.Wrapf(err, "req: %+v", req)
 	}
 	list := UserVideoListCnt.VideoList
-
+	videoList := make([]*types.VideoInfo, len(list))
 	var (
-		videoList    []*types.VideoInfo
 		nextTime     int64 = math.MaxInt64
 		videoResults       = make(chan struct {
 			Index int
