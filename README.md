@@ -3,8 +3,10 @@
 English | [简体中文](README-cn.MD)
 
 > **Project introduction**：http://gophertok.kuaji.club/
+>
+> **Project presentation**：https://www.bilibili.com/video/BV1sh4y1N7bq/?spm_id_from=333.999.0.0
 
-| <img src="https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/202308250103375.jpeg" alt="{09951663-C990-6AA2-14C8-28D9C1DDBDCD}" style="zoom: 25%;" /> | The sixth Bytedance Youth training camp big project works, a simple version of Tiktok project ，built with  go-zero  microservice . Completed by the [gopher team](https://github.com/GophersTeam/GopherTok) |
+| <img src="https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/202308222108323.png" alt="{09951663-C990-6AA2-14C8-28D9C1DDBDCD}" style="zoom: 25%;" /> | The sixth Bytedance Youth training camp big project works, a simple version of Tiktok project ，built with  go-zero  microservice . Completed by the [gopher team](https://github.com/GophersTeam/GopherTok) |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
 
 ## 🪵Architecture
