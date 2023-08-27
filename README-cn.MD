@@ -1,7 +1,6 @@
 # GopherTok
 
 > **项目介绍**：http://gophertok.kuaji.club/
->
 
 | <img src="https://raw.githubusercontent.com/liuxianloveqiqi/Xian-imagehost/main/image/202308222108323.png" alt="{09951663-C990-6AA2-14C8-28D9C1DDBDCD}" style="zoom: 25%;" /> | 第六届字节跳动青训营大项目作品，使用go-zero搭建的微服务项目，由[gopher小队](https://github.com/GophersTeam/GopherTok)完成，一个简易版抖音项目 |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |

@@ -1,4 +1,4 @@
-Host: 106.15.58.0
+Host: ${{ secrets.NACOS_HOST }}
 Port: 8848
 NamespaceId: ade928cf-29a0-485e-8691-994130fd7740
 Group: dev
