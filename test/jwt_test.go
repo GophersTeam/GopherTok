@@ -25,9 +25,10 @@ func TestJWT(t *testing.T) {
 
 func TestTokenValidationHandler(t *testing.T) {
 	// Your token here for testing
-	mockToken :=
-		"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6OSwic3RhdGUiOiIwMGM5ZGVjMy1hNDcwLTQ3MzQtODU4NC1iYzIxNmE0MjEyYTEiLCJleHAiOjE2OTA3MzUyNDgsImlhdCI6MTY5MDczNTA2OCwiaXNzIjoiQVIifQ.jINaRT7uHejHONkj3EethqZqrmWlzI_fqAYOc69MX0o eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6OSwic3RhdGUiOiIwMGM5ZGVjMy1hNDcwLTQ3MzQtODU4NC1iYzIxNmE0MjEyYTEiLCJleHAiOjE2OTMzMjcwNjgsImlhdCI6MTY5MDczNTA2OCwiaXNzIjoiUlQifQ.FYHex1C9DVoa3QMPoPLfuAhDhlBpjt5SWDWFVqPQwE8"
+	AccessToken, RefreshToken := utils.GetToken(int64(9), uuid.New().String(), "xxx", "zzz")
 
+	token := AccessToken + " " + RefreshToken
+	mockToken := token
 	// Create a new HTTP request with the token
 	req, err := http.NewRequest("GET", "http://example.com/some/path", nil)
 	if err != nil {
