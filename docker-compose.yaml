@@ -7,7 +7,7 @@ networks:
 services:
   # Traefik网关
   traefik:
-    image: traefik:v2.4
+    image: traefik:latest
     command:
       - "--providers.docker=true"
       - "--entrypoints.http.address=:80"
@@ -22,8 +22,10 @@ services:
       - "8000:8000"  # gophertok 服务端口
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
+ #     - "./deploy/traefik/traefik.toml:/etc/traefik/traefik.toml"
     networks:
       - gophertok
+
   # user服务
   user-rpc: # 自定义容器名称
     image: ${DOCKERHUB_IMAGE}user-rpc:latest
@@ -38,7 +40,7 @@ services:
       - gophertok
     restart: always                      # 指定容器退出后的重启策略为始终重启
     deploy:
-      replicas: 2 # 启动三个实例
+      replicas: 1 # 启动三个实例
 
   user-api: # 自定义容器名称
     image: ${DOCKERHUB_IMAGE}user-api:latest
@@ -61,8 +63,17 @@ services:
       - "traefik.docker.network=gophertok"
       - "traefik.http.services.gophertok-user-api.loadbalancer.server.scheme=http"
       - "traefik.http.services.gophertok-user-api.loadbalancer.passhostheader=true"
+      - "traefik.http.routers.gophertok-user-api.middlewares=my-fail2ban"
+      - "traefik.http.middlewares.my-fail2ban.plugin.fail2ban.rules.enabled=true"
+      - "traefik.http.middlewares.my-fail2ban.plugin.fail2ban.rules.bantime=3h"
+      - "traefik.http.middlewares.my-fail2ban.plugin.fail2ban.rules.findtime=10m"
+      - "traefik.http.middlewares.my-fail2ban.plugin.fail2ban.rules.ignorecommand="
+      - "traefik.http.middlewares.my-fail2ban.plugin.fail2ban.rules.logencoding=UTF-8"
+      - "traefik.http.middlewares.my-fail2ban.plugin.fail2ban.rules.maxretry=10"
+      - "traefik.http.middlewares.my-fail2ban.plugin.fail2ban.rules.ports=0:8000"
+      - "traefik.http.middlewares.my-fail2ban.plugin.fail2ban.whitelist.ip=::1,127.0.0.1"
     deploy:
-      replicas: 2 # 启动三个实例
+      replicas: 1 # 启动三个实例
 
   user-mq: # 自定义容器名称
     image: ${DOCKERHUB_IMAGE}user-mq:latest
@@ -89,7 +100,7 @@ services:
       - gophertok
     restart: always                      # 指定容器退出后的重启策略为始终重启
     deploy:
-      replicas: 2 # 启动三个实例
+      replicas: 1 # 启动三个实例
 
   video-api: # 自定义容器名称
     #image: video-api-0:latest
@@ -114,8 +125,10 @@ services:
       - "traefik.docker.network=gophertok"
       - "traefik.http.services.gophertok-video-api.loadbalancer.server.scheme=http"
       - "traefik.http.services.gophertok-video-api.loadbalancer.passhostheader=true"
+      - "traefik.http.routers.gophertok-video-api.middlewares=my-fail2ban"
+      
     deploy:
-      replicas: 2 # 启动三个实例
+      replicas: 1 # 启动三个实例
 
   video-mq: # 自定义容器名称
     image: ${DOCKERHUB_IMAGE}video-mq:latest
@@ -141,7 +154,7 @@ services:
       - gophertok
     restart: always                      # 指定容器退出后的重启策略为始终重启
     deploy:
-      replicas: 2 # 启动三个实例
+      replicas: 1 # 启动三个实例
 
   chat-api: # 自定义容器名称
     image: ${DOCKERHUB_IMAGE}chat-api:latest
@@ -162,8 +175,10 @@ services:
       - "traefik.docker.network=gophertok"
       - "traefik.http.services.gophertok-chat-api.loadbalancer.server.scheme=http"
       - "traefik.http.services.gophertok-chat-api.loadbalancer.passhostheader=true"
+      - "traefik.http.routers.gophertok-chat-api.middlewares=my-fail2ban"
+
     deploy:
-      replicas: 2 # 启动三个实例
+      replicas: 1 # 启动三个实例
 
   chat-mq: # 自定义容器名称
     image: ${DOCKERHUB_IMAGE}chat-mq:latest
@@ -190,7 +205,7 @@ services:
       - gophertok
     restart: always                      # 指定容器退出后的重启策略为始终重启
     deploy:
-      replicas: 2 # 启动三个实例
+      replicas: 1 # 启动三个实例
 
   comment-api: # 自定义容器名称
     image: ${DOCKERHUB_IMAGE}comment-api:latest
@@ -212,8 +227,10 @@ services:
       - "traefik.docker.network=gophertok"
       - "traefik.http.services.gophertok-comment-api.loadbalancer.server.scheme=http"
       - "traefik.http.services.gophertok-comment-api.loadbalancer.passhostheader=true"
+      - "traefik.http.routers.gophertok-comment-api.middlewares=my-fail2ban"
+
     deploy:
-      replicas: 2 # 启动三个实例
+      replicas: 1 # 启动三个实例
 
   comment-mq: # 自定义容器名称
     image: ${DOCKERHUB_IMAGE}comment-mq:latest
@@ -240,7 +257,7 @@ services:
       - gophertok
     restart: always                      # 指定容器退出后的重启策略为始终重启
     deploy:
-      replicas: 2 # 启动三个实例
+      replicas: 1 # 启动三个实例
 
   relation-api: # 自定义容器名称
     image: ${DOCKERHUB_IMAGE}relation-api:latest
@@ -262,8 +279,10 @@ services:
       - "traefik.docker.network=gophertok"
       - "traefik.http.services.gophertok-relation-api.loadbalancer.server.scheme=http"
       - "traefik.http.services.gophertok-relation-api.loadbalancer.passhostheader=true"
+      - "traefik.http.routers.gophertok-comment-api.middlewares=my-fail2ban"
+
     deploy:
-      replicas: 2 # 启动三个实例
+      replicas: 1 # 启动三个实例
 
   relation-mq: # 自定义容器名称
     image: ${DOCKERHUB_IMAGE}relation-mq:latest
@@ -291,7 +310,7 @@ services:
       - gophertok
     restart: always                      # 指定容器退出后的重启策略为始终重启
     deploy:
-      replicas: 2 # 启动三个实例
+      replicas: 1 # 启动三个实例
 
   favor-api: # 自定义容器名称
     image: ${DOCKERHUB_IMAGE}favor-api:latest
@@ -312,5 +331,7 @@ services:
       - "traefik.docker.network=gophertok"
       - "traefik.http.services.gophertok-favor-api.loadbalancer.server.scheme=http"
       - "traefik.http.services.gophertok-favor-api.loadbalancer.passhostheader=true"
+      - "traefik.http.routers.gophertok-favor-api.middlewares=my-fail2ban"
+
     deploy:
-      replicas: 2 # 启动三个实例
+      replicas: 1 # 启动三个实例

@@ -126,3 +126,4 @@ load-balanced to various service 'api' container instances
 ## 📣Licence
 
 **GopherTok** is open-source under the **MIT** license. Please follow the [MIT open source certificate](https://github.com/MashiroC/begonia/blob/master/LICENSE) rules under the premise of use
+

@@ -1,5 +1,5 @@
-[certificatesResolvers.le.acme]
-  email = "liu_xian.123@qq.com"
-  storage = "acme.json"
-
-  [certificatesResolvers.le.acme.tlsChallenge]
+# Let's Encrypt
+[certificatesResolvers.myresolver.acme]
+  email = "example.com"
+  storage="/letsencrypt/acme.json"
+  [certificatesResolvers.myresolver.acme.tlsChallenge]
