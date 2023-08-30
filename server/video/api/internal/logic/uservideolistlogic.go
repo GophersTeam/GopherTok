@@ -3,6 +3,7 @@ package logic
 import (
 	"GopherTok/common/consts"
 	"GopherTok/common/errorx"
+	"GopherTok/server/comment/rpc/commentrpc"
 	"GopherTok/server/comment/rpc/pb"
 	"GopherTok/server/favor/rpc/favorrpc"
 	"GopherTok/server/user/rpc/types/user"
@@ -11,6 +12,7 @@ import (
 	"GopherTok/server/video/rpc/types/video"
 	"context"
 	"github.com/pkg/errors"
+	"github.com/zeromicro/go-zero/core/mr"
 	"strconv"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -62,29 +64,27 @@ func (l *UserVideoListLogic) UserVideoList(req *types.UserVideoListReq) (resp *t
 
 	for i := 0; i < len(list); i++ {
 		go func(i int) {
-			commentCount, cErr := l.svcCtx.CommentRpc.GetCommentCount(l.ctx, &pb.GetCommentCountRequest{
-				VideoId: list[i].Id,
+			var commentCount, favoriteCount, isFavorite interface{}
+			err := mr.Finish(func() error {
+				commentCount, err = l.svcCtx.CommentRpc.GetCommentCount(l.ctx, &pb.GetCommentCountRequest{
+					VideoId: list[i].Id,
+				})
+				return err
+			}, func() error {
+				favoriteCount, err = l.svcCtx.FavorRpc.FavorNum(l.ctx, &favorrpc.FavorNumReq{
+					VideoId: list[i].Id,
+				})
+				return err
+			}, func() error {
+				isFavorite, err = l.svcCtx.FavorRpc.IsFavor(l.ctx, &favorrpc.IsFavorReq{
+					UserId:  userinfo.Id,
+					VideoId: list[i].Id,
+				})
+				return err
 			})
-			if cErr != nil {
-				errorChannel <- cErr
-				return
-			}
 
-			favoriteCount, fErr := l.svcCtx.FavorRpc.FavorNum(l.ctx, &favorrpc.FavorNumReq{
-				VideoId: list[i].Id,
-			})
-			if fErr != nil {
-				errorChannel <- fErr
-				return
-			}
-
-			isFavorite, favErr := l.svcCtx.FavorRpc.IsFavor(l.ctx, &favorrpc.IsFavorReq{
-				UserId:  userinfo.Id,
-				VideoId: list[i].Id,
-			})
-			if favErr != nil {
-				errorChannel <- favErr
-				return
+			if err != nil {
+				errorChannel <- err
 			}
 
 			videoItem := &types.VideoInfo{
@@ -105,9 +105,9 @@ func (l *UserVideoListLogic) UserVideoList(req *types.UserVideoListReq) (resp *t
 				Title:         list[i].Title,
 				PlayURL:       list[i].PlayUrl,
 				CoverURL:      list[i].CoverUrl,
-				FavoriteCount: favoriteCount.Num,
-				CommentCount:  commentCount.Count,
-				IsFavorite:    isFavorite.IsFavor,
+				FavoriteCount: favoriteCount.(*favorrpc.FavorNumResp).Num,
+				CommentCount:  commentCount.(*commentrpc.GetCommentCountResponse).Count,
+				IsFavorite:    isFavorite.(*favorrpc.IsFavorResp).IsFavor,
 			}
 
 			videoResults <- videoItem
@@ -119,7 +119,8 @@ func (l *UserVideoListLogic) UserVideoList(req *types.UserVideoListReq) (resp *t
 		case videoItem := <-videoResults:
 			videoList = append(videoList, videoItem)
 		case err := <-errorChannel:
-			return nil, err
+			return nil, errors.Wrapf(err, "req: %+v", req)
+
 		}
 	}
 

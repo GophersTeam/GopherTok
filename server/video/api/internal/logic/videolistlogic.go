@@ -2,9 +2,11 @@ package logic
 
 import (
 	"GopherTok/common/consts"
+	"GopherTok/server/comment/rpc/commentrpc"
 	"GopherTok/server/comment/rpc/pb"
 	"GopherTok/server/favor/rpc/favorrpc"
 	"GopherTok/server/user/rpc/types/user"
+	"GopherTok/server/user/rpc/userclient"
 	"GopherTok/server/video/api/internal/svc"
 	"GopherTok/server/video/api/internal/types"
 	"GopherTok/server/video/rpc/types/video"
@@ -12,6 +14,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logc"
 	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/core/mr"
 	"math"
 )
 
@@ -56,29 +59,28 @@ func (l *VideoListLogic) VideoList(req *types.VideoListReq) (resp *types.VideoLi
 	for i := 0; i < len(list); i++ {
 		go func(i int) {
 			// Perform RPC calls concurrently
-			userinfo, uErr := l.svcCtx.UserRpc.UserInfo(l.ctx, &user.UserInfoReq{
-				Id:        list[i].UserId,
-				CurrentId: uid,
-			})
-			if uErr != nil {
-				errorChannel <- uErr
-				return
-			}
 
-			commentCount, cErr := l.svcCtx.CommentRpc.GetCommentCount(l.ctx, &pb.GetCommentCountRequest{
-				VideoId: list[i].Id,
+			var userinfo *userclient.UserInfoResp
+			var commentCount, favoriteCount interface{}
+			err := mr.Finish(func() error {
+				userinfo, err = l.svcCtx.UserRpc.UserInfo(l.ctx, &user.UserInfoReq{
+					Id:        list[i].UserId,
+					CurrentId: uid,
+				})
+				return err
+			}, func() error {
+				commentCount, err = l.svcCtx.CommentRpc.GetCommentCount(l.ctx, &pb.GetCommentCountRequest{
+					VideoId: list[i].Id,
+				})
+				return err
+			}, func() error {
+				favoriteCount, err = l.svcCtx.FavorRpc.FavorNum(l.ctx, &favorrpc.FavorNumReq{
+					VideoId: list[i].Id,
+				})
+				return err
 			})
-			if cErr != nil {
-				errorChannel <- cErr
-				return
-			}
-
-			favoriteCount, fErr := l.svcCtx.FavorRpc.FavorNum(l.ctx, &favorrpc.FavorNumReq{
-				VideoId: list[i].Id,
-			})
-			if fErr != nil {
-				errorChannel <- fErr
-				return
+			if err != nil {
+				errorChannel <- err
 			}
 
 			isFavorite := false
@@ -116,8 +118,8 @@ func (l *VideoListLogic) VideoList(req *types.VideoListReq) (resp *types.VideoLi
 				Title:         list[i].Title,
 				PlayURL:       list[i].PlayUrl,
 				CoverURL:      list[i].CoverUrl,
-				FavoriteCount: favoriteCount.Num,
-				CommentCount:  commentCount.Count,
+				FavoriteCount: favoriteCount.(*favorrpc.FavorNumResp).Num,
+				CommentCount:  commentCount.(*commentrpc.GetCommentCountResponse).Count,
 				IsFavorite:    isFavorite,
 			}
 
@@ -138,7 +140,8 @@ func (l *VideoListLogic) VideoList(req *types.VideoListReq) (resp *types.VideoLi
 				videoList[result.Index] = result.Info
 			}
 		case err := <-errorChannel:
-			return nil, err
+			return nil, errors.Wrapf(err, "req: %+v", req)
+
 		}
 	}
 
