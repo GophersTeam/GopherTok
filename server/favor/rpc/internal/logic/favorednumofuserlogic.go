@@ -5,6 +5,7 @@ import (
 	"GopherTok/server/video/rpc/types/video"
 	"context"
 	"github.com/pkg/errors"
+	"sync"
 
 	"GopherTok/server/favor/rpc/internal/svc"
 	"GopherTok/server/favor/rpc/types/favor"
@@ -35,13 +36,32 @@ func (l *FavoredNumOfUserLogic) FavoredNumOfUser(in *favor.FavoredNumOfUserReq) 
 	if err != nil {
 		return nil, errors.Wrapf(errorx.NewDefaultError(err.Error()), "err:%v", err)
 	}
-	var sum int = 0
+	var wg sync.WaitGroup
+	var sum int64
+
+	resultChan := make(chan int64, len(list.VideoIdList))
+
 	for _, id := range list.VideoIdList {
-		num, _ := l.svcCtx.FavorModel.NumOfFavor(l.ctx, id)
+		wg.Add(1)
+		id := id
+		go func(videoID int) {
+			defer wg.Done()
+
+			num, _ := l.svcCtx.FavorModel.NumOfFavor(l.ctx, id)
+			resultChan <- int64(num)
+		}(int(id))
+	}
+
+	go func() {
+		wg.Wait()
+		close(resultChan)
+	}()
+
+	for num := range resultChan {
 		sum += num
 	}
 
 	return &favor.FavoredNumOfUserResp{
-		FavoredNumOfUser: int64(sum),
+		FavoredNumOfUser: sum,
 	}, nil
 }
