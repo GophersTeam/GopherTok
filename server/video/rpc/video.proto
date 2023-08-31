@@ -55,10 +55,18 @@ message FindVideoReq{
 message FindVideoResp{
    VideoList video = 1;
 }
+
+message GetUserVideoIdListReq{
+  int64 UserId =1;
+}
+message GetUserVideoIdListResp{
+  repeated int64 VideoIdList =1;
+}
 service video{
   rpc PublishVideo(PublishVideoReq)returns(CommonResp);
   rpc UserVideoList(UserVideoListReq) returns(UserVideoListResp);
   rpc VideoList(VideoListReq)returns(VideoListResp);
   rpc IsExistsVideo(IsExistsVideoReq)returns(IsExistsVideoResp);
   rpc FindVideo(FindVideoReq)returns(FindVideoResp);
+  rpc GetUserVideoIdList(GetUserVideoIdListReq)returns (GetUserVideoIdListResp);
 }

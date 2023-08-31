@@ -19,11 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Video_PublishVideo_FullMethodName  = "/video.video/PublishVideo"
-	Video_UserVideoList_FullMethodName = "/video.video/UserVideoList"
-	Video_VideoList_FullMethodName     = "/video.video/VideoList"
-	Video_IsExistsVideo_FullMethodName = "/video.video/IsExistsVideo"
-	Video_FindVideo_FullMethodName     = "/video.video/FindVideo"
+	Video_PublishVideo_FullMethodName       = "/video.video/PublishVideo"
+	Video_UserVideoList_FullMethodName      = "/video.video/UserVideoList"
+	Video_VideoList_FullMethodName          = "/video.video/VideoList"
+	Video_IsExistsVideo_FullMethodName      = "/video.video/IsExistsVideo"
+	Video_FindVideo_FullMethodName          = "/video.video/FindVideo"
+	Video_GetUserVideoIdList_FullMethodName = "/video.video/GetUserVideoIdList"
 )
 
 // VideoClient is the client API for Video service.
@@ -35,6 +36,7 @@ type VideoClient interface {
 	VideoList(ctx context.Context, in *VideoListReq, opts ...grpc.CallOption) (*VideoListResp, error)
 	IsExistsVideo(ctx context.Context, in *IsExistsVideoReq, opts ...grpc.CallOption) (*IsExistsVideoResp, error)
 	FindVideo(ctx context.Context, in *FindVideoReq, opts ...grpc.CallOption) (*FindVideoResp, error)
+	GetUserVideoIdList(ctx context.Context, in *GetUserVideoIdListReq, opts ...grpc.CallOption) (*GetUserVideoIdListResp, error)
 }
 
 type videoClient struct {
@@ -90,6 +92,15 @@ func (c *videoClient) FindVideo(ctx context.Context, in *FindVideoReq, opts ...g
 	return out, nil
 }
 
+func (c *videoClient) GetUserVideoIdList(ctx context.Context, in *GetUserVideoIdListReq, opts ...grpc.CallOption) (*GetUserVideoIdListResp, error) {
+	out := new(GetUserVideoIdListResp)
+	err := c.cc.Invoke(ctx, Video_GetUserVideoIdList_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // VideoServer is the server API for Video service.
 // All implementations must embed UnimplementedVideoServer
 // for forward compatibility
@@ -99,6 +110,7 @@ type VideoServer interface {
 	VideoList(context.Context, *VideoListReq) (*VideoListResp, error)
 	IsExistsVideo(context.Context, *IsExistsVideoReq) (*IsExistsVideoResp, error)
 	FindVideo(context.Context, *FindVideoReq) (*FindVideoResp, error)
+	GetUserVideoIdList(context.Context, *GetUserVideoIdListReq) (*GetUserVideoIdListResp, error)
 	mustEmbedUnimplementedVideoServer()
 }
 
@@ -120,6 +132,9 @@ func (UnimplementedVideoServer) IsExistsVideo(context.Context, *IsExistsVideoReq
 }
 func (UnimplementedVideoServer) FindVideo(context.Context, *FindVideoReq) (*FindVideoResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindVideo not implemented")
+}
+func (UnimplementedVideoServer) GetUserVideoIdList(context.Context, *GetUserVideoIdListReq) (*GetUserVideoIdListResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserVideoIdList not implemented")
 }
 func (UnimplementedVideoServer) mustEmbedUnimplementedVideoServer() {}
 
@@ -224,6 +239,24 @@ func _Video_FindVideo_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Video_GetUserVideoIdList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserVideoIdListReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VideoServer).GetUserVideoIdList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Video_GetUserVideoIdList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VideoServer).GetUserVideoIdList(ctx, req.(*GetUserVideoIdListReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Video_ServiceDesc is the grpc.ServiceDesc for Video service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -250,6 +283,10 @@ var Video_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "FindVideo",
 			Handler:    _Video_FindVideo_Handler,
+		},
+		{
+			MethodName: "GetUserVideoIdList",
+			Handler:    _Video_GetUserVideoIdList_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

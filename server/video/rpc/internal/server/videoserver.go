@@ -46,3 +46,8 @@ func (s *VideoServer) FindVideo(ctx context.Context, in *video.FindVideoReq) (*v
 	l := logic.NewFindVideoLogic(ctx, s.svcCtx)
 	return l.FindVideo(in)
 }
+
+func (s *VideoServer) GetUserVideoIdList(ctx context.Context, in *video.GetUserVideoIdListReq) (*video.GetUserVideoIdListResp, error) {
+	l := logic.NewGetUserVideoIdListLogic(ctx, s.svcCtx)
+	return l.GetUserVideoIdList(in)
+}

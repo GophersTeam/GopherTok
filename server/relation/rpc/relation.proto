@@ -9,12 +9,12 @@ message User{
   int64 FollowCount = 3;
   int64 FollowerCount = 4;
   bool IsFollow = 5;
-  string Avatar =6;
-  string BackgroundImage =7;
+  string Avatar = 6;
+  string BackgroundImage = 7;
   string Signature = 8;
-  string TotalFavourited =9;
-  int64 WorkCount =10 ;
-  int64 FavouriteCount =11;
+  string TotalFavourited = 9;
+  int64 WorkCount = 10 ;
+  int64 FavouriteCount = 11;
 }
 message FriendUser{
   int64 Id = 1;
@@ -22,20 +22,20 @@ message FriendUser{
   int64 FollowCount = 3;
   int64 FollowerCount = 4;
   bool IsFollow = 5;
-  string Avatar =6;
-  string BackgroundImage =7;
+  string Avatar = 6;
+  string BackgroundImage = 7;
   string Signature = 8;
-  string TotalFavourited =9;
-  int64 WorkCount =10 ;
-  int64 FavouriteCount =11;
+  string TotalFavourited = 9;
+  int64 WorkCount = 10 ;
+  int64 FavouriteCount = 11;
   string message = 12;
   int64 msgType = 13;
 }
 message FollowSubject{
-int64 Id  =1;
-int64 UserId = 2;
-int64 FollowerId = 3;
-bool IsFollow = 4;
+  int64 Id = 1;
+  int64 UserId = 2;
+  int64 FollowerId = 3;
+  bool IsFollow = 4;
 
 }
 message AddFollowReq {

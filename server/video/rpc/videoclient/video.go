@@ -13,17 +13,19 @@ import (
 )
 
 type (
-	CommonResp        = video.CommonResp
-	FindVideoReq      = video.FindVideoReq
-	FindVideoResp     = video.FindVideoResp
-	IsExistsVideoReq  = video.IsExistsVideoReq
-	IsExistsVideoResp = video.IsExistsVideoResp
-	PublishVideoReq   = video.PublishVideoReq
-	UserVideoListReq  = video.UserVideoListReq
-	UserVideoListResp = video.UserVideoListResp
-	VideoList         = video.VideoList
-	VideoListReq      = video.VideoListReq
-	VideoListResp     = video.VideoListResp
+	CommonResp             = video.CommonResp
+	FindVideoReq           = video.FindVideoReq
+	FindVideoResp          = video.FindVideoResp
+	GetUserVideoIdListReq  = video.GetUserVideoIdListReq
+	GetUserVideoIdListResp = video.GetUserVideoIdListResp
+	IsExistsVideoReq       = video.IsExistsVideoReq
+	IsExistsVideoResp      = video.IsExistsVideoResp
+	PublishVideoReq        = video.PublishVideoReq
+	UserVideoListReq       = video.UserVideoListReq
+	UserVideoListResp      = video.UserVideoListResp
+	VideoList              = video.VideoList
+	VideoListReq           = video.VideoListReq
+	VideoListResp          = video.VideoListResp
 
 	Video interface {
 		PublishVideo(ctx context.Context, in *PublishVideoReq, opts ...grpc.CallOption) (*CommonResp, error)
@@ -31,6 +33,7 @@ type (
 		VideoList(ctx context.Context, in *VideoListReq, opts ...grpc.CallOption) (*VideoListResp, error)
 		IsExistsVideo(ctx context.Context, in *IsExistsVideoReq, opts ...grpc.CallOption) (*IsExistsVideoResp, error)
 		FindVideo(ctx context.Context, in *FindVideoReq, opts ...grpc.CallOption) (*FindVideoResp, error)
+		GetUserVideoIdList(ctx context.Context, in *GetUserVideoIdListReq, opts ...grpc.CallOption) (*GetUserVideoIdListResp, error)
 	}
 
 	defaultVideo struct {
@@ -67,4 +70,9 @@ func (m *defaultVideo) IsExistsVideo(ctx context.Context, in *IsExistsVideoReq, 
 func (m *defaultVideo) FindVideo(ctx context.Context, in *FindVideoReq, opts ...grpc.CallOption) (*FindVideoResp, error) {
 	client := video.NewVideoClient(m.cli.Conn())
 	return client.FindVideo(ctx, in, opts...)
+}
+
+func (m *defaultVideo) GetUserVideoIdList(ctx context.Context, in *GetUserVideoIdListReq, opts ...grpc.CallOption) (*GetUserVideoIdListResp, error) {
+	client := video.NewVideoClient(m.cli.Conn())
+	return client.GetUserVideoIdList(ctx, in, opts...)
 }
