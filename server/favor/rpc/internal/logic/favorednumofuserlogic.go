@@ -2,7 +2,7 @@ package logic
 
 import (
 	"GopherTok/common/errorx"
-	"GopherTok/server/video/rpc/videoclient"
+	"GopherTok/server/video/rpc/types/video"
 	"context"
 	"github.com/pkg/errors"
 
@@ -28,16 +28,16 @@ func NewFavoredNumOfUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 
 func (l *FavoredNumOfUserLogic) FavoredNumOfUser(in *favor.FavoredNumOfUserReq) (*favor.FavoredNumOfUserResp, error) {
 
-	list, err := l.svcCtx.VideoRpc.UserVideoList(l.ctx, &videoclient.UserVideoListReq{
+	list, err := l.svcCtx.VideoRpc.GetUserVideoIdList(l.ctx, &video.GetUserVideoIdListReq{
 		UserId: in.UserId,
 	})
+
 	if err != nil {
 		return nil, errors.Wrapf(errorx.NewDefaultError(err.Error()), "err:%v", err)
-
 	}
 	var sum int = 0
-	for _, j := range list.VideoList {
-		num, _ := l.svcCtx.FavorModel.NumOfFavor(l.ctx, j.Id)
+	for _, id := range list.VideoIdList {
+		num, _ := l.svcCtx.FavorModel.NumOfFavor(l.ctx, id)
 		sum += num
 	}
 
