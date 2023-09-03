@@ -14,10 +14,13 @@ import (
 )
 
 // gorm初始化
+var DB *gorm.DB
+
 func InitGorm(MysqlDataSourece string) *gorm.DB {
 	// 将日志写进kafka
 	//logx.SetWriter(*LogxKafka())
-	db, err := gorm.Open(mysql.Open(MysqlDataSourece),
+	var err error
+	DB, err = gorm.Open(mysql.Open(MysqlDataSourece),
 		&gorm.Config{
 			NamingStrategy: schema.NamingStrategy{
 				//TablePrefix:   "tech_", // 表名前缀，`User` 的表名应该是 `t_users`
@@ -29,7 +32,11 @@ func InitGorm(MysqlDataSourece string) *gorm.DB {
 	} else {
 		fmt.Println("连接mysql数据库成功")
 	}
-	return db
+	db, _ := DB.DB()
+	db.SetMaxIdleConns(100)
+	db.SetMaxOpenConns(100)
+	db.SetConnMaxLifetime(time.Minute)
+	return DB
 }
 
 // redis初始化
