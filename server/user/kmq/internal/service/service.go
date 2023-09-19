@@ -1,37 +1,34 @@
 package service
 
 import (
-	"GopherTok/common/init_db"
 	"GopherTok/common/utils"
 	"GopherTok/server/user/kmq/internal/config"
 	"GopherTok/server/user/model"
+	"context"
 	"fmt"
 	"github.com/redis/go-redis/v9"
 	"github.com/zeromicro/go-zero/core/jsonx"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/mr"
-	"gorm.io/gorm"
+	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
 
 type Service struct {
-	c       config.Config // 配置信息
-	MysqlDb *gorm.DB      // MySQL 数据库连接对象
-	Rdb     *redis.ClusterClient
-	Log     logx.LogConf
+	c         config.Config // 配置信息
+	Rdb       *redis.ClusterClient
+	Log       logx.LogConf
+	SqlConn   sqlx.SqlConn
+	UserModel model.UserModel
 }
 
 // NewService 创建一个新的 Service 实例
 func NewService(c config.Config) *Service {
-	// 初始化 MySQL 数据库连接
-	mysqlDb := init_db.InitGorm(c.MysqlCluster.DataSource)
-
-	// 创建 video 表
-	mysqlDb.AutoMigrate(&model.User{})
-
+	mysqlConn := sqlx.NewMysql(c.MysqlCluster.DataSource)
 	// 创建 Service 实例
 	s := &Service{
-		c:       c,
-		MysqlDb: mysqlDb,
+		c:         c,
+		SqlConn:   mysqlConn,
+		UserModel: model.NewUserModel(mysqlConn, c.CacheRedis),
 	}
 
 	return s
@@ -60,19 +57,18 @@ func (s *Service) Consume(_ string, value string) error {
 	})
 
 	// 创建 user 对象，用于写入数据库
-	v := model.User{
-		ID:              m.ID,
+	u := model.User{
+		Id:              m.Id,
 		Username:        m.Username,
 		Password:        m.Password,
 		Avatar:          avatar,
 		BackgroundImage: backGroundImage,
 		Signature:       signature,
 	}
-	fmt.Println(v)
-
-	// 写入 user 表
-	if err := s.MysqlDb.Create(&v).Error; err != nil {
-		logx.Error(err)
+	fmt.Println(u)
+	_, err = s.UserModel.Insert(context.Background(), &u)
+	if err != nil {
+		logx.Errorf(" user服务写入信息时候错误,err: ", err)
 		return err
 	}
 	return nil

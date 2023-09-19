@@ -10,9 +10,12 @@ import (
 	"github.com/redis/go-redis/v9"
 	"github.com/zeromicro/go-zero/core/jsonx"
 	"github.com/zeromicro/go-zero/core/logx"
+	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/schema"
 	"log"
 	"sync"
+	"time"
 )
 
 const (
@@ -33,7 +36,7 @@ type Service struct {
 // NewService 创建一个新的 Service 实例
 func NewService(c config.Config) *Service {
 	// 初始化 MySQL 数据库连接
-	mysqlDb := init_db.InitGorm(c.Mysql.DataSource)
+	mysqlDb := InitGorm(c.Mysql.DataSource)
 
 	// 初始化redis
 	rc := make([]string, 1)
@@ -151,4 +154,25 @@ func (s *Service) ConsumeRedis(_ string, value string) error {
 	s.msgsCountChan[len(data.FollowerCount)%(chanCount/2)] <- data
 
 	return nil
+}
+func InitGorm(MysqlDataSourece string) *gorm.DB {
+	// 将日志写进kafka
+	//logx.SetWriter(*LogxKafka())
+	DB, err := gorm.Open(mysql.Open(MysqlDataSourece),
+		&gorm.Config{
+			NamingStrategy: schema.NamingStrategy{
+				//TablePrefix:   "tech_", // 表名前缀，`User` 的表名应该是 `t_users`
+				SingularTable: true, // 使用单数表名，启用该选项，此时，`User` 的表名应该是 `t_user`
+			},
+		})
+	if err != nil {
+		panic("连接mysql数据库失败, error=" + err.Error())
+	} else {
+		fmt.Println("连接mysql数据库成功")
+	}
+	db, _ := DB.DB()
+	db.SetMaxIdleConns(10)
+	db.SetMaxOpenConns(100)
+	db.SetConnMaxLifetime(time.Minute)
+	return DB
 }

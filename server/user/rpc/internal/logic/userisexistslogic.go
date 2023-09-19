@@ -2,15 +2,13 @@ package logic
 
 import (
 	"GopherTok/common/errorx"
-	"GopherTok/server/user/model"
-
-	"context"
-	"github.com/pkg/errors"
-	"github.com/zeromicro/go-zero/core/logc"
-	"gorm.io/gorm"
+	"github.com/zeromicro/go-zero/core/stores/sqlx"
 
 	"GopherTok/server/user/rpc/internal/svc"
 	"GopherTok/server/user/rpc/types/user"
+	"context"
+	"github.com/pkg/errors"
+	"github.com/zeromicro/go-zero/core/logc"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -31,14 +29,12 @@ func NewUserIsExistsLogic(ctx context.Context, svcCtx *svc.ServiceContext) *User
 
 func (l *UserIsExistsLogic) UserIsExists(in *user.UserIsExistsReq) (*user.UserIsExistsResp, error) {
 	// todo: add your logic here and delete this line
-	u := model.User{}
 	isExists := false
-	result := l.svcCtx.MysqlDb.Where("id = ?", in.Id).First(&u)
-	// 判断记录是否存在
-	if result.Error == gorm.ErrRecordNotFound {
+	_, err := l.svcCtx.UserModel.FindOne(l.ctx, in.Id)
+	if err == sqlx.ErrNotFound {
 		logc.Info(l.ctx, "ID %d 的记录不存在\n", in.Id)
-	} else if result.Error != nil {
-		return nil, errors.Wrapf(errorx.NewDefaultError("mysql查询出错，err:"+result.Error.Error()), "mysql查询出错，err:%v", result.Error)
+	} else if err != nil {
+		return nil, errors.Wrapf(errorx.NewDefaultError("mysql查询出错，err:"+err.Error()), "mysql查询出错，err:%v", err)
 	} else {
 		logc.Info(l.ctx, "user_id %d 的记录存在\n", in.Id)
 		isExists = true

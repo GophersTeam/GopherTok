@@ -1,6 +1,7 @@
 package logic
 
 import (
+	"GopherTok/common/consts"
 	"GopherTok/common/errorx"
 	"GopherTok/server/video/model"
 	"context"
@@ -45,23 +46,33 @@ func (l *VideoListLogic) VideoList(in *video.VideoListReq) (*video.VideoListResp
 
 		// 使用Unix秒数创建time.Time类型
 		timestampTime = time.Unix(0, timestampInt*int64(time.Millisecond))
-		fmt.Println("11111111", timestampTime)
+
 	}
-	var list []model.Video
-	err := l.svcCtx.MysqlDb.Where("create_time <= ?", timestampTime).Order("create_time DESC").Limit(30).Find(&list).Error
+	// 在redis中查询出时间戳最大的30个视频id
+	VideoIds, err := l.svcCtx.Rdb.ZRevRangeWithScores(context.Background(), consts.AllVideoId, 0, 29).Result()
 	if err != nil {
-		return nil, errors.Wrapf(errorx.NewDefaultError("mysql find 错误"+err.Error()), "mysql find err:%v", err)
+		// 处理错误
+		return nil, errors.Wrapf(errorx.NewDefaultError("redis 查询错误"+err.Error()), "redis 查询错误%v", err)
+
+	}
+	list := make([]*model.Video, 0)
+	for _, v := range VideoIds {
+		oneVideo, err := l.svcCtx.VideoModel.FindOne(l.ctx, v.Member.(int64))
+		if err != nil {
+			return nil, errors.Wrapf(errorx.NewDefaultError("mysql find 错误"+err.Error()), "mysql find err:%v", err)
+		}
+		list = append(list, oneVideo)
 	}
 
 	videoList := make([]*video.VideoList, 0) // Assuming VideoList is a struct that matches your needs
 
 	for i := 0; i < len(list); i++ {
 		videoItem := &video.VideoList{
-			Id:          list[i].ID,
-			UserId:      list[i].UserID,
+			Id:          list[i].Id,
+			UserId:      list[i].UserId,
 			Title:       list[i].Title,
-			PlayUrl:     list[i].PlayURL,
-			CoverUrl:    list[i].CoverURL,
+			PlayUrl:     list[i].PlayUrl,
+			CoverUrl:    list[i].CoverUrl,
 			CreateTime:  list[i].CreateTime.Unix(),
 			UpdateTime:  list[i].UpdateTime.Unix(),
 			VideoSha256: list[i].VideoSha256,

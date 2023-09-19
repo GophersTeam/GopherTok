@@ -42,8 +42,8 @@ func (v VideoRpc) FindVideo(ctx context.Context, in *videoclient.FindVideoReq, o
 			Title:       "今天吃饭了吗",
 			PlayUrl:     "http://xxxx.com",
 			CoverUrl:    "http://zzzz.com",
-			CreateTime:  time.Now().Format("2006-01-02 15:04:05"),
-			UpdateTime:  time.Now().Format("2006-01-02 15:04:05"),
+			CreateTime:  time.Now().Unix(),
+			UpdateTime:  time.Now().Unix(),
 			VideoSha256: "ghiuerhguwhgpfjpsefjepruhg",
 		},
 	}, nil

@@ -9,6 +9,7 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
 	"time"
 )
@@ -26,6 +27,7 @@ func InitGorm(MysqlDataSourece string) *gorm.DB {
 				//TablePrefix:   "tech_", // 表名前缀，`User` 的表名应该是 `t_users`
 				SingularTable: true, // 使用单数表名，启用该选项，此时，`User` 的表名应该是 `t_user`
 			},
+			Logger: logger.Default.LogMode(logger.Silent),
 		})
 	if err != nil {
 		panic("连接mysql数据库失败, error=" + err.Error())
@@ -33,8 +35,8 @@ func InitGorm(MysqlDataSourece string) *gorm.DB {
 		fmt.Println("连接mysql数据库成功")
 	}
 	db, _ := DB.DB()
-	db.SetMaxIdleConns(100)
-	db.SetMaxOpenConns(100)
+	db.SetMaxIdleConns(50)
+	db.SetMaxOpenConns(500)
 	db.SetConnMaxLifetime(time.Minute)
 	return DB
 }

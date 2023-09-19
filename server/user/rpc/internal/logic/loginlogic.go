@@ -39,19 +39,19 @@ func (l *LoginLogic) Login(in *user.LoginReq) (*user.LoginResp, error) {
 	if !exists {
 		return nil, errors.Wrapf(errorx.NewDefaultError("用户名不存在，请先注册"), "用户名不存在，请先注册 LoginReq：%v", in)
 	}
-	var u model.User
+
+	u, err := l.svcCtx.UserModel.FindOneByUsername(l.ctx, in.Username)
 	if err = l.svcCtx.MysqlDb.Where("username = ?", in.Username).Find(&u).Error; err != nil {
 		return nil, errors.Wrapf(errorx.NewDefaultError(err.Error()), "mysql查询错误 err：%v", err)
-
 	}
 	if u.Password != utils.Md5Password(in.Password, l.svcCtx.Config.Salt) {
 		return nil, errors.Wrapf(errorx.NewDefaultError("密码错误"), "login密码错误错误 LoginReq：%v", in)
 
 	}
-	AccessToken, RefreshToken := utils.GetToken(u.ID, uuid.New().String(), l.svcCtx.Config.Token.AccessToken, l.svcCtx.Config.Token.RefreshToken)
+	AccessToken, RefreshToken := utils.GetToken(u.Id, uuid.New().String(), l.svcCtx.Config.Token.AccessToken, l.svcCtx.Config.Token.RefreshToken)
 	token := AccessToken + " " + RefreshToken
 	return &user.LoginResp{
-		UserId: u.ID,
+		UserId: u.Id,
 		Token:  token,
 	}, nil
 }

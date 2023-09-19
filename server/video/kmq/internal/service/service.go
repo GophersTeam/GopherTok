@@ -12,6 +12,7 @@ import (
 	"github.com/redis/go-redis/v9"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/mr"
+	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"gorm.io/gorm"
 	"log"
 	"sync"
@@ -31,25 +32,25 @@ type Service struct {
 	waiter        sync.WaitGroup      // 用于等待所有消费者 goroutine 完成的等待组
 	msgsChan      []chan *model.Video // 消息通道切片，每个元素是一个通道，用于存放消息
 	SensitiveTrie *utils.SensitiveTrie
+	SqlConn       sqlx.SqlConn
+	VideoModel    model.VideoModel
 }
 
 // NewService 创建一个新的 Service 实例
 func NewService(c config.Config) *Service {
-	// 初始化 MySQL 数据库连接
-	mysqlDb := init_db.InitGorm(c.MysqlCluster.DataSource)
+	mysqlConn := sqlx.NewMysql(c.MysqlCluster.DataSource)
 
 	// 初始化redis
 	rc := make([]string, 1)
 	rc = append(rc, c.RedisCluster.Cluster1, c.RedisCluster.Cluster2, c.RedisCluster.Cluster3, c.RedisCluster.Cluster4, c.RedisCluster.Cluster5, c.RedisCluster.Cluster6)
 	redisDb := init_db.InitRedis(rc)
-	// 创建 video 表
-	mysqlDb.AutoMigrate(&model.Video{})
 
 	// 创建 Service 实例
 	s := &Service{
 		c:             c,
 		msgsChan:      make([]chan *model.Video, chanCount),
-		MysqlDb:       mysqlDb,
+		SqlConn:       mysqlConn,
+		VideoModel:    model.NewVideoModel(mysqlConn, c.CacheRedis),
 		Rdb:           redisDb,
 		SensitiveTrie: utils.NewSensitiveTrie(),
 	}
@@ -79,11 +80,11 @@ func (s *Service) consume(ch chan *model.Video) {
 
 		// 创建 video 对象，用于写入数据库
 		v := model.Video{
-			ID:          m.ID,
-			UserID:      m.UserID,
+			Id:          m.Id,
+			UserId:      m.UserId,
 			Title:       m.Title,
-			PlayURL:     m.PlayURL,
-			CoverURL:    m.CoverURL,
+			PlayUrl:     m.PlayUrl,
+			CoverUrl:    m.CoverUrl,
 			CreateTime:  time.Now(),
 			UpdateTime:  time.Now(),
 			VideoSha256: m.VideoSha256,
@@ -92,31 +93,31 @@ func (s *Service) consume(ch chan *model.Video) {
 		s.SensitiveTrie.AddWords([]string{"傻逼", "死", "你妈", "滚"})
 		v.Title = s.SensitiveTrie.Filter(v.Title)
 		fmt.Println(v)
-		// 并发写入数据库
+		// 并发写入redis
 		err := mr.Finish(func() error {
-			s.Rdb.Set(context.Background(), consts.VideoPrefix+m.VideoSha256, m.PlayURL, 0)
-			return nil
+			err := s.Rdb.Set(context.Background(), consts.VideoPrefix+m.VideoSha256, m.PlayUrl, 0)
+			return err.Err()
 		}, func() error {
-			s.Rdb.Set(context.Background(), consts.CoverPrefix+m.VideoSha256, m.CoverURL, 0)
-			return nil
+			err := s.Rdb.Set(context.Background(), consts.CoverPrefix+m.VideoSha256, m.CoverUrl, 0)
+			return err.Err()
+
 		}, func() error {
-			err := s.MysqlDb.Create(&v).Error
+			_, err := s.UserModel.Insert(context.Background(), &v)
 			if err != nil {
 				logx.Error(err)
 			}
 			return err
+		}, func() error {
+			err := s.Rdb.ZAdd(context.Background(), consts.AllVideoId, redis.Z{
+				Score:  float64(v.CreateTime.Unix() * 1000),
+				Member: v.Id,
+			})
+			return err.Err()
+
 		})
 		if err != nil {
 			logx.Error("video mq并发写入mysql,redis错误，err:", err)
 		}
-		//// 将url写入redis
-		//s.Rdb.Set(context.Background(), consts.VideoPrefix+m.VideoSha256, m.PlayURL, 0)
-		//s.Rdb.Set(context.Background(), consts.CoverPrefix+m.VideoSha256, m.CoverURL, 0)
-		//
-		//// 写入 video 表
-		//if err := s.MysqlDb.Create(&v).Error; err != nil {
-		//	logx.Error(err)
-		//}
 
 	}
 }
@@ -133,7 +134,7 @@ func (s *Service) Consume(_ string, value string) error {
 
 	// 将解析后的消息根据 UserId 分发到不同的通道
 	for _, d := range data {
-		s.msgsChan[d.ID%chanCount] <- d
+		s.msgsChan[d.Id%chanCount] <- d
 	}
 
 	return nil

@@ -1,13 +1,12 @@
 package main
 
 import (
-	"flag"
-	"fmt"
-
 	"GopherTok/server/video/rpc/internal/config"
 	"GopherTok/server/video/rpc/internal/server"
 	"GopherTok/server/video/rpc/internal/svc"
 	"GopherTok/server/video/rpc/types/video"
+	"flag"
+	"fmt"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"
@@ -20,7 +19,6 @@ var configFile = flag.String("f", "etc/video.yaml", "the config file")
 
 func main() {
 	flag.Parse()
-
 	var nacosConf config.NacosConf
 	conf.MustLoad(*configFile, &nacosConf)
 	var c config.Config

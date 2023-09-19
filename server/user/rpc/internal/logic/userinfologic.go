@@ -1,11 +1,9 @@
 package logic
 
 import (
-	"GopherTok/common/errorx"
 	"GopherTok/server/favor/rpc/favorrpc"
 	"GopherTok/server/relation/rpc/pb"
 	"GopherTok/server/relation/rpc/relationrpc"
-	"GopherTok/server/user/model"
 	"GopherTok/server/user/rpc/internal/svc"
 	"GopherTok/server/user/rpc/types/user"
 	"GopherTok/server/video/rpc/types/video"
@@ -35,11 +33,12 @@ func NewUserInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UserInfo
 func (l *UserInfoLogic) UserInfo(in *user.UserInfoReq) (*user.UserInfoResp, error) {
 	// todo: add your logic here and delete this line
 
-	u := model.User{}
-	err := l.svcCtx.MysqlDb.Where("id = ?", in.Id).First(&u).Error
-	if err != nil {
-		return nil, errors.Wrapf(errorx.NewDefaultError(err.Error()), "mysql查询错误 err：%v", err)
-	}
+	//u := model.User{}
+	//err := l.svcCtx.MysqlDb.Where("id = ?", in.Id).First(&u).Error
+	//if err != nil {
+	//	return nil, errors.Wrapf(errorx.NewDefaultError(err.Error()), "mysql查询错误 err：%v", err)
+	//}
+	u, err := l.svcCtx.UserModel.FindOne(l.ctx, in.Id)
 	// 并发调用rpc
 	var followCountResp, followerCountResp, userVideoListResp, isFollowResp, totalFavoritedResp, favoriteCountResp interface{}
 	err = mr.Finish(func() error {
@@ -74,7 +73,7 @@ func (l *UserInfoLogic) UserInfo(in *user.UserInfoReq) (*user.UserInfoResp, erro
 
 	}
 	return &user.UserInfoResp{
-		Id:              u.ID,
+		Id:              u.Id,
 		Name:            u.Username,
 		Avatar:          u.Avatar,
 		BackgroundImage: u.BackgroundImage,

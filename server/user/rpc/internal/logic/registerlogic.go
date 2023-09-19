@@ -49,7 +49,7 @@ func (l *RegisterLogic) Register(in *user.RegisterReq) (*user.RegisterResp, erro
 	}
 
 	u := model.User{
-		ID:       l.svcCtx.Snowflake.Generate().Int64(),
+		Id:       l.svcCtx.Snowflake.Generate().Int64(),
 		Username: in.Username,
 		// 加盐加密
 		Password: utils.Md5Password(in.Password, l.svcCtx.Config.Salt),
@@ -71,10 +71,10 @@ func (l *RegisterLogic) Register(in *user.RegisterReq) (*user.RegisterResp, erro
 	//	return nil, errors.Wrapf(errorx.NewDefaultError(err.Error()), "gorm creat user 错误 err：%v", err)
 	//}
 	// 生成token
-	AccessToken, RefreshToken := utils.GetToken(u.ID, uuid.New().String(), l.svcCtx.Config.Token.AccessToken, l.svcCtx.Config.Token.RefreshToken)
+	AccessToken, RefreshToken := utils.GetToken(u.Id, uuid.New().String(), l.svcCtx.Config.Token.AccessToken, l.svcCtx.Config.Token.RefreshToken)
 	token := AccessToken + " " + RefreshToken
 	return &user.RegisterResp{
-		UserId: u.ID,
+		UserId: u.Id,
 		Token:  token,
 	}, nil
 }

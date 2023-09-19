@@ -10,4 +10,5 @@ const (
 const (
 	VideoPrefix = "gophertok-video_"
 	CoverPrefix = "gophertok-cover_"
+	AllVideoId  = ProjectNamePrefix + "allVideoId:"
 )
