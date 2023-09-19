@@ -1,12 +1,13 @@
 package main
 
 import (
+	"flag"
+	"fmt"
+
 	"GopherTok/server/video/rpc/internal/config"
 	"GopherTok/server/video/rpc/internal/server"
 	"GopherTok/server/video/rpc/internal/svc"
 	"GopherTok/server/video/rpc/types/video"
-	"flag"
-	"fmt"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"

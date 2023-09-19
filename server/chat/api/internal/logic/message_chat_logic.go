@@ -1,9 +1,11 @@
 package logic
 
 import (
-	"GopherTok/server/chat/rpc/pb"
 	"context"
 	"errors"
+
+	"GopherTok/server/chat/rpc/pb"
+
 	"github.com/jinzhu/copier"
 
 	"GopherTok/server/chat/api/internal/svc"
@@ -38,7 +40,6 @@ func (l *MessageChatLogic) MessageChat(req *types.MessageChatRequest) (resp *typ
 		ToUserId:   req.ToUserId,
 		PreMsgTime: req.PreMsgTime,
 	})
-
 	if err != nil {
 		l.Errorf("MessageChat error: %s", err.Error())
 		return nil, err

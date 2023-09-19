@@ -1,10 +1,12 @@
 package main
 
 import (
-	"GopherTok/server/comment/mq/internal/config"
-	"GopherTok/server/comment/mq/internal/service"
 	"flag"
 	"fmt"
+
+	"GopherTok/server/comment/mq/internal/config"
+	"GopherTok/server/comment/mq/internal/service"
+
 	"github.com/zeromicro/go-queue/kq"
 	"github.com/zeromicro/go-zero/core/conf"
 )

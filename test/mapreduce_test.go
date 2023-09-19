@@ -2,8 +2,9 @@ package test
 
 import (
 	"fmt"
-	"github.com/zeromicro/go-zero/core/mr"
 	"testing"
+
+	"github.com/zeromicro/go-zero/core/mr"
 )
 
 func TestMapReduce(t *testing.T) {
@@ -13,7 +14,7 @@ func TestMapReduce(t *testing.T) {
 			source <- i
 		}
 		// 数据出错时，可以调用cancel，这样会中断整个流程
-		//close(source)
+		// close(source)
 	}
 
 	// 数据处理，将每个整数转换为字符串
@@ -39,7 +40,6 @@ func TestMapReduce(t *testing.T) {
 	}
 
 	result, err := mr.MapReduce(genF, mapF, reducerF)
-
 	if err != nil {
 		fmt.Println(err)
 		return

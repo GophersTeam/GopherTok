@@ -1,14 +1,16 @@
 package logic
 
 import (
-	"GopherTok/common/errorx"
-	"GopherTok/server/relation/dao"
 	"context"
 	"fmt"
+	"strconv"
+
+	"GopherTok/common/errorx"
+	"GopherTok/server/relation/dao"
+
 	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/jsonx"
 	"gorm.io/gorm"
-	"strconv"
 
 	"GopherTok/server/relation/rpc/internal/svc"
 	"GopherTok/server/relation/rpc/pb"
@@ -35,7 +37,6 @@ func (l *AddFollowLogic) AddFollow(in *pb.AddFollowReq) (*pb.AddFollowResp, erro
 	if intcmd.Err() != nil {
 		return nil,
 			errors.Wrapf(errorx.NewDefaultError("redis set err:"+intcmd.Err().Error()), "redis set err ：%v", intcmd.Err())
-
 	}
 
 	kdMysql, err := jsonx.MarshalToString(&dao.FollowData{
@@ -51,8 +52,8 @@ func (l *AddFollowLogic) AddFollow(in *pb.AddFollowReq) (*pb.AddFollowResp, erro
 		logx.Errorf("KafkaPusherMysql.Push kdMysql: %s error: %v", kdMysql, err)
 	}
 
-	//更新redis数据
-	//获取followCount
+	// 更新redis数据
+	// 获取followCount
 
 	db := l.svcCtx.MysqlDb.WithContext(l.ctx).Table("follow_subject").
 		Where("follower_id = ?", in.UserId).Find(&[]pb.FollowSubject{})
@@ -64,7 +65,7 @@ func (l *AddFollowLogic) AddFollow(in *pb.AddFollowReq) (*pb.AddFollowResp, erro
 			errors.Wrapf(errorx.NewDefaultError("mysql get err:"+err.Error()), "mysql get err ：%v", err)
 	}
 
-	//获取followerCount
+	// 获取followerCount
 	db = l.svcCtx.MysqlDb.WithContext(l.ctx).Table("follow_subject").
 		Where("user_id = ?", in.UserId).Find(&[]pb.FollowSubject{})
 	err = db.Error
@@ -75,7 +76,7 @@ func (l *AddFollowLogic) AddFollow(in *pb.AddFollowReq) (*pb.AddFollowResp, erro
 			errors.Wrapf(errorx.NewDefaultError("mysql get err:"+err.Error()), "mysql get err ：%v", err)
 	}
 
-	//获取friendCount
+	// 获取friendCount
 	friend := []pb.FollowSubject{}
 	err = l.svcCtx.MysqlDb.WithContext(l.ctx).Table("follow_subject").
 		Where("user_id = ?", in.UserId).Find(&friend).Error
@@ -112,6 +113,8 @@ func (l *AddFollowLogic) AddFollow(in *pb.AddFollowReq) (*pb.AddFollowResp, erro
 		logx.Errorf("KafkaPusherRedis.Push kdRedis: %s error: %v", kdMysql, err)
 	}
 
-	return &pb.AddFollowResp{StatusCode: 0,
-		StatusMsg: "add follow successfully"}, nil
+	return &pb.AddFollowResp{
+		StatusCode: 0,
+		StatusMsg:  "add follow successfully",
+	}, nil
 }

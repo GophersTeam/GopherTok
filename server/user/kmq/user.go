@@ -1,18 +1,20 @@
 package main
 
 import (
+	"context"
+	"flag"
+	"fmt"
+	"net/http"
+
 	"GopherTok/common/errorx"
 	"GopherTok/common/logs/zapx"
 	"GopherTok/server/user/kmq/internal/config"
 	"GopherTok/server/user/kmq/internal/service"
-	"context"
-	"flag"
-	"fmt"
+
 	"github.com/zeromicro/go-queue/kq"
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest/httpx"
-	"net/http"
 )
 
 var configFile = flag.String("f", "etc/user.yaml", "the config file")

@@ -1,9 +1,11 @@
 package logic
 
 import (
+	"context"
+
 	"GopherTok/common/errorx"
 	"GopherTok/server/user/model"
-	"context"
+
 	"github.com/pkg/errors"
 
 	"GopherTok/server/user/rpc/internal/svc"
@@ -35,7 +37,6 @@ func (l *AddCountLogic) AddCount(in *user.AddCountReq) (*user.AddCountResp, erro
 	})
 	if result.Error != nil {
 		return nil, errors.Wrapf(errorx.NewDefaultError("mysql update err:"+result.Error.Error()), "mysql update err ：%v", result.Error)
-
 	}
 	return &user.AddCountResp{}, nil
 }

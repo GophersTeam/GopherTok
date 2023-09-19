@@ -1,26 +1,27 @@
 package mock
 
 import (
-	"GopherTok/server/comment/rpc/commentrpc"
 	"context"
+
+	"GopherTok/server/comment/rpc/commentrpc"
+
 	"google.golang.org/grpc"
 )
 
-type CommentRpc struct {
-}
+type CommentRpc struct{}
 
 func (c CommentRpc) AddComment(ctx context.Context, in *commentrpc.AddCommentRequest, opts ...grpc.CallOption) (*commentrpc.AddCommentResponse, error) {
-	//TODO implement me
+	// TODO implement me
 	panic("implement me")
 }
 
 func (c CommentRpc) DelComment(ctx context.Context, in *commentrpc.DelCommentRequest, opts ...grpc.CallOption) (*commentrpc.DelCommentResponse, error) {
-	//TODO implement me
+	// TODO implement me
 	panic("implement me")
 }
 
 func (c CommentRpc) GetCommentList(ctx context.Context, in *commentrpc.GetCommentListRequest, opts ...grpc.CallOption) (*commentrpc.GetCommentListResponse, error) {
-	//TODO implement me
+	// TODO implement me
 	panic("implement me")
 }
 

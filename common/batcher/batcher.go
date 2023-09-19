@@ -4,10 +4,11 @@ package batcher
 import (
 	"context"
 	"fmt"
-	"github.com/pkg/errors"
 	"log"
 	"sync"
 	"time"
+
+	"github.com/pkg/errors"
 )
 
 // msg 是用于传递 key-value 数据的结构体

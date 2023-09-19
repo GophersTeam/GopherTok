@@ -15,7 +15,7 @@ type ServiceContext struct {
 	Config      config.Config
 	RelationRpc pb.RelationRpcClient
 	UserRpc     userclient.User
-	//UserRpc mock.UserRpc
+	// UserRpc mock.UserRpc
 	ChatRpc chatrpc.ChatRpc
 	Jwt     rest.Middleware
 }
@@ -26,7 +26,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Jwt:         middleware.NewJwtMiddleware(c).Handle,
 		RelationRpc: relationrpc.NewRelationRpc(zrpc.MustNewClient(c.RelationRpc)),
 		UserRpc:     userclient.NewUser(zrpc.MustNewClient(c.UserRpc)),
-		//UserRpc: mock.UserRpc{},
+		// UserRpc: mock.UserRpc{},
 		ChatRpc: chatrpc.NewChatRpc(zrpc.MustNewClient(c.ChatRpc)),
 	}
 }

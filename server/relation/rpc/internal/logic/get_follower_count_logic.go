@@ -1,11 +1,13 @@
 package logic
 
 import (
-	"GopherTok/common/errorx"
 	"context"
 	"fmt"
-	"github.com/pkg/errors"
 	"strconv"
+
+	"GopherTok/common/errorx"
+
+	"github.com/pkg/errors"
 
 	"GopherTok/server/relation/rpc/internal/svc"
 	"GopherTok/server/relation/rpc/pb"
@@ -36,7 +38,7 @@ func (l *GetFollowerCountLogic) GetFollowerCount(in *pb.GetFollowerCountReq) (*p
 		}
 
 		if count.Err().Error() == "redis: nil" {
-			//如果redis中没有则从mysql中拉取并更新至redis中
+			// 如果redis中没有则从mysql中拉取并更新至redis中
 			db := l.svcCtx.MysqlDb.WithContext(l.ctx).Table("follow_subject").
 				Where("user_id = ?", in.Userid).Find(&[]pb.FollowSubject{})
 			err := db.Error
@@ -49,14 +51,18 @@ func (l *GetFollowerCountLogic) GetFollowerCount(in *pb.GetFollowerCountReq) (*p
 
 			l.svcCtx.Rdb.HSet(l.ctx, "followerCount", fmt.Sprintf("%d:followerCount", in.Userid), strconv.FormatInt(countMysql, 10))
 
-			return &pb.GetFollowerCountResp{StatusCode: 0,
-				StatusMsg: "get followerCount successfully",
-				Count:     countMysql}, nil
+			return &pb.GetFollowerCountResp{
+				StatusCode: 0,
+				StatusMsg:  "get followerCount successfully",
+				Count:      countMysql,
+			}, nil
 		}
 	}
 	countInt, _ := strconv.ParseInt(count.Val(), 10, 64)
 
-	return &pb.GetFollowerCountResp{StatusCode: 0,
-		StatusMsg: "get followerCount successfully",
-		Count:     countInt}, nil
+	return &pb.GetFollowerCountResp{
+		StatusCode: 0,
+		StatusMsg:  "get followerCount successfully",
+		Count:      countInt,
+	}, nil
 }

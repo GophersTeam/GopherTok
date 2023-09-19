@@ -1,11 +1,13 @@
 package logic
 
 import (
+	"context"
+
 	con "GopherTok/common/consts"
 	"GopherTok/common/errorx"
 	"GopherTok/server/relation/rpc/pb"
 	"GopherTok/server/user/rpc/types/user"
-	"context"
+
 	"github.com/jinzhu/copier"
 	"github.com/pkg/errors"
 
@@ -45,9 +47,11 @@ func (l *FriendListLogic) FriendList(req *types.FriendListReq) (resp *types.Frie
 	if exists.Exists == false {
 		return nil, errors.Wrapf(errorx.NewDefaultError("user doesn't exist"), "user doesn't exist%v", nil)
 	}
-	//var currentId int64 = 1
-	rep, err := l.svcCtx.RelationRpc.GetFriendList(l.ctx, &pb.GetFriendListReq{Userid: req.UserId,
-		CurrentId: currentId})
+	// var currentId int64 = 1
+	rep, err := l.svcCtx.RelationRpc.GetFriendList(l.ctx, &pb.GetFriendListReq{
+		Userid:    req.UserId,
+		CurrentId: currentId,
+	})
 	userlist := []types.FriendUser{}
 
 	if err != nil {

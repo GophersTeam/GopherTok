@@ -1,8 +1,10 @@
 package logic
 
 import (
-	"GopherTok/common/errorx"
 	"context"
+
+	"GopherTok/common/errorx"
+
 	"github.com/jinzhu/copier"
 	"github.com/pkg/errors"
 	"gorm.io/gorm"
@@ -52,7 +54,6 @@ func (l *GetFollowerListLogic) GetFollowerList(in *pb.GetFollowerReq) (*pb.GetFo
 	)
 	for i := 0; i < len(follow); i++ {
 		go func(i int) {
-
 			use, err := l.svcCtx.UserRpc.UserInfo(l.ctx, &user.UserInfoReq{
 				Id:        follow[i].FollowerId,
 				CurrentId: in.CurrentId,
@@ -72,7 +73,6 @@ func (l *GetFollowerListLogic) GetFollowerList(in *pb.GetFollowerReq) (*pb.GetFo
 		case err := <-errChan:
 			return nil, err
 		}
-
 	}
 	return &pb.GetFollowerResp{
 		StatusCode: 0,

@@ -1,17 +1,19 @@
 package logic
 
 import (
+	"context"
+	"strconv"
+
 	"GopherTok/server/favor/rpc/favorrpc"
 	"GopherTok/server/relation/rpc/pb"
 	"GopherTok/server/relation/rpc/relationrpc"
 	"GopherTok/server/user/rpc/internal/svc"
 	"GopherTok/server/user/rpc/types/user"
 	"GopherTok/server/video/rpc/types/video"
-	"context"
+
 	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logc"
 	"github.com/zeromicro/go-zero/core/mr"
-	"strconv"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -47,23 +49,18 @@ func (l *UserInfoLogic) UserInfo(in *user.UserInfoReq) (*user.UserInfoResp, erro
 	}, func() error {
 		followerCountResp, err = l.svcCtx.RelationRpc.GetFollowerCount(l.ctx, &pb.GetFollowerCountReq{Userid: in.Id})
 		return err
-
 	}, func() error {
 		userVideoListResp, err = l.svcCtx.VideoRpc.UserVideoList(l.ctx, &video.UserVideoListReq{UserId: in.Id})
 		return err
-
 	}, func() error {
 		isFollowResp, err = l.svcCtx.RelationRpc.CheckIsFollow(l.ctx, &relationrpc.CheckIsFollowReq{UserId: in.CurrentId, ToUserId: in.Id})
 		return err
-
 	}, func() error {
 		totalFavoritedResp, err = l.svcCtx.FavorRpc.FavoredNumOfUser(l.ctx, &favorrpc.FavoredNumOfUserReq{UserId: in.Id})
 		return err
-
 	}, func() error {
 		favoriteCountResp, err = l.svcCtx.FavorRpc.FavorNumOfUser(l.ctx, &favorrpc.FavorNumOfUserReq{UserId: in.Id})
 		return err
-
 	})
 
 	if err != nil {

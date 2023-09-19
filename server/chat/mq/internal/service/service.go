@@ -1,17 +1,19 @@
 package service
 
 import (
+	"context"
+	"strconv"
+
 	"GopherTok/common/consts"
 	"GopherTok/server/chat/model"
 	"GopherTok/server/chat/mq/internal/config"
 	"GopherTok/server/chat/rpc/pb"
-	"context"
+
 	"github.com/zeromicro/go-zero/core/jsonx"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/redis"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"google.golang.org/protobuf/proto"
-	"strconv"
 )
 
 type Service struct {
@@ -31,7 +33,7 @@ func NewService(c config.Config) *Service {
 	}
 }
 
-func (s *Service) Consume(_ string, value string) error {
+func (s *Service) Consume(_, value string) error {
 	logx.Info("成功消费消息")
 	var message model.Message
 	err := jsonx.UnmarshalFromString(value, &message)
@@ -53,10 +55,10 @@ func (s *Service) Consume(_ string, value string) error {
 	lastMessage := &pb.LastMessage{Content: message.Content}
 	lastMessage.MsgType = consts.MsgTypeRecv
 	lastMessageRecvBytes, _ := proto.Marshal(lastMessage)
-	//lastMessageRecvStr, _ := jsonx.MarshalToString(lastMessage)
+	// lastMessageRecvStr, _ := jsonx.MarshalToString(lastMessage)
 	lastMessage.MsgType = consts.MsgTypeSend
 	lastMessageSendBytes, _ := proto.Marshal(lastMessage)
-	//lastMessageSendStr, err := jsonx.MarshalToString(lastMessage)
+	// lastMessageSendStr, err := jsonx.MarshalToString(lastMessage)
 
 	_ = s.RedisClient.Hset(consts.LastMessagePrefix+fromUserID, toUserID, string(lastMessageSendBytes))
 	_ = s.RedisClient.Hset(consts.LastMessagePrefix+toUserID, fromUserID, string(lastMessageRecvBytes))

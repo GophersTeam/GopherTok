@@ -1,11 +1,13 @@
 package logic
 
 import (
+	"context"
+	"sync"
+
 	"GopherTok/common/errorx"
 	"GopherTok/server/video/rpc/types/video"
-	"context"
+
 	"github.com/pkg/errors"
-	"sync"
 
 	"GopherTok/server/favor/rpc/internal/svc"
 	"GopherTok/server/favor/rpc/types/favor"
@@ -28,11 +30,9 @@ func NewFavoredNumOfUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 }
 
 func (l *FavoredNumOfUserLogic) FavoredNumOfUser(in *favor.FavoredNumOfUserReq) (*favor.FavoredNumOfUserResp, error) {
-
 	list, err := l.svcCtx.VideoRpc.GetUserVideoIdList(l.ctx, &video.GetUserVideoIdListReq{
 		UserId: in.UserId,
 	})
-
 	if err != nil {
 		return nil, errors.Wrapf(errorx.NewDefaultError(err.Error()), "err:%v", err)
 	}

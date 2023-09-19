@@ -3,6 +3,8 @@ package init_db
 import (
 	"context"
 	"fmt"
+	"time"
+
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
 	"github.com/redis/go-redis/v9"
@@ -11,7 +13,6 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
-	"time"
 )
 
 // gorm初始化
@@ -19,12 +20,12 @@ var DB *gorm.DB
 
 func InitGorm(MysqlDataSourece string) *gorm.DB {
 	// 将日志写进kafka
-	//logx.SetWriter(*LogxKafka())
+	// logx.SetWriter(*LogxKafka())
 	var err error
 	DB, err = gorm.Open(mysql.Open(MysqlDataSourece),
 		&gorm.Config{
 			NamingStrategy: schema.NamingStrategy{
-				//TablePrefix:   "tech_", // 表名前缀，`User` 的表名应该是 `t_users`
+				// TablePrefix:   "tech_", // 表名前缀，`User` 的表名应该是 `t_users`
 				SingularTable: true, // 使用单数表名，启用该选项，此时，`User` 的表名应该是 `t_user`
 			},
 			Logger: logger.Default.LogMode(logger.Silent),

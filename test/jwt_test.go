@@ -1,19 +1,21 @@
 package test
 
 import (
-	"GopherTok/common/consts"
-	"GopherTok/common/errorx"
-	"GopherTok/common/utils"
 	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/google/uuid"
 	"log"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
+
+	"GopherTok/common/consts"
+	"GopherTok/common/errorx"
+	"GopherTok/common/utils"
+
+	"github.com/google/uuid"
 )
 
 func TestJWT(t *testing.T) {
@@ -80,7 +82,7 @@ func TokenValidationHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(isExpire)
 	if isExpire {
 		parts[0], parts[1] = utils.GetToken(parseToken.ID, parseToken.State, "xxx", "zzz")
-		//w.Header().Set("Authorization", fmt.Sprintf("Bearer %s %s", parts[0], parts[1]))
+		// w.Header().Set("Authorization", fmt.Sprintf("Bearer %s %s", parts[0], parts[1]))
 
 	}
 	token = parts[0] + " " + parts[1]

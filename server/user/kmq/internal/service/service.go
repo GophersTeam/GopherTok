@@ -1,11 +1,13 @@
 package service
 
 import (
+	"context"
+	"fmt"
+
 	"GopherTok/common/utils"
 	"GopherTok/server/user/kmq/internal/config"
 	"GopherTok/server/user/model"
-	"context"
-	"fmt"
+
 	"github.com/redis/go-redis/v9"
 	"github.com/zeromicro/go-zero/core/jsonx"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -35,8 +37,7 @@ func NewService(c config.Config) *Service {
 }
 
 // consume 是消费者
-func (s *Service) Consume(_ string, value string) error {
-
+func (s *Service) Consume(_, value string) error {
 	var m model.User
 	err := jsonx.UnmarshalFromString(value, &m)
 	if err != nil {
@@ -72,5 +73,4 @@ func (s *Service) Consume(_ string, value string) error {
 		return err
 	}
 	return nil
-
 }

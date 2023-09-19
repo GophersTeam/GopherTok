@@ -1,8 +1,10 @@
 package logic
 
 import (
-	"GopherTok/common/errorx"
 	"context"
+
+	"GopherTok/common/errorx"
+
 	"github.com/pkg/errors"
 
 	"GopherTok/server/favor/rpc/internal/svc"
@@ -31,7 +33,6 @@ func (l *DisFavorLogic) DisFavor(in *favor.DisFavorReq) (*favor.DisFavorResp, er
 	err := l.svcCtx.FavorModel.Delete(l.ctx, in.UserId, in.VideoId)
 	if err != nil {
 		return nil, errors.Wrapf(errorx.NewDefaultError(err.Error()), "err:%v", err)
-
 	}
 
 	return &favor.DisFavorResp{}, nil

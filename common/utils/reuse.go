@@ -17,5 +17,4 @@ func ApiError(err error) (c int, m string) {
 	message := str[codeStart+codeEnd+1:]
 	intcode, _ := strconv.Atoi(code)
 	return intcode, message
-
 }

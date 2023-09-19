@@ -1,14 +1,16 @@
 package model
 
 import (
-	"GopherTok/common/consts"
 	"context"
 	"fmt"
+	"strconv"
+
+	"GopherTok/common/consts"
+
 	"github.com/redis/go-redis/v9"
 	"github.com/zeromicro/go-zero/core/logc"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
-	"strconv"
 )
 
 var _ VideoModel = (*customVideoModel)(nil)

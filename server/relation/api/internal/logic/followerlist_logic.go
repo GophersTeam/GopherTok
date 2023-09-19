@@ -1,13 +1,15 @@
 package logic
 
 import (
+	"context"
+
 	con "GopherTok/common/consts"
 	"GopherTok/common/errorx"
 	"GopherTok/server/relation/api/internal/svc"
 	"GopherTok/server/relation/api/internal/types"
 	"GopherTok/server/relation/rpc/pb"
 	"GopherTok/server/user/rpc/types/user"
-	"context"
+
 	"github.com/jinzhu/copier"
 	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -44,7 +46,7 @@ func (l *FollowerListLogic) FollowerList(req *types.FollowerListReq) (resp *type
 	if exists.Exists == false {
 		return nil, errors.Wrapf(errorx.NewDefaultError("user doesn't exist"), "user doesn't exist%v", nil)
 	}
-	//var currentId int64 = 1
+	// var currentId int64 = 1
 	rep, err := l.svcCtx.RelationRpc.GetFollowerList(l.ctx, &pb.GetFollowerReq{Userid: req.UserId, CurrentId: currentId})
 	userlist := []types.User{}
 

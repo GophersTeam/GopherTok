@@ -1,8 +1,9 @@
 package response
 
 import (
-	"GopherTok/common/errorx"
 	"net/http"
+
+	"GopherTok/common/errorx"
 
 	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -19,16 +20,16 @@ type Body struct {
 // http返回
 func Response(r *http.Request, w http.ResponseWriter, resp interface{}, err error) {
 	if err == nil {
-		//成功返回
+		// 成功返回
 		httpx.WriteJson(w, http.StatusOK, resp)
 	} else {
-		//错误返回
+		// 错误返回
 		errcode := uint32(500)
 		errmsg := "服务器错误"
 
 		causeErr := errors.Cause(err)                  // err类型
-		if e, ok := causeErr.(*errorx.CodeError); ok { //自定义错误类型
-			//自定义CodeError
+		if e, ok := causeErr.(*errorx.CodeError); ok { // 自定义错误类型
+			// 自定义CodeError
 			errcode = e.Code
 			errmsg = e.Msg
 		} else {

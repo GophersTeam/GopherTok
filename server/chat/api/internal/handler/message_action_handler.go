@@ -1,8 +1,9 @@
 package handler
 
 import (
-	"GopherTok/common/response"
 	"net/http"
+
+	"GopherTok/common/response"
 
 	"GopherTok/server/chat/api/internal/logic"
 	"GopherTok/server/chat/api/internal/svc"

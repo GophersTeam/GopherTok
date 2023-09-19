@@ -3,8 +3,9 @@ package utils
 import (
 	"errors"
 	"fmt"
-	"github.com/dgrijalva/jwt-go"
 	"time"
+
+	"github.com/dgrijalva/jwt-go"
 )
 
 type MyClaims struct {
@@ -13,11 +14,11 @@ type MyClaims struct {
 	jwt.StandardClaims
 }
 
-//var accessSecret = []byte("liuxian123")
-//var refreshSecret = []byte("123456789")
+// var accessSecret = []byte("liuxian123")
+// var refreshSecret = []byte("123456789")
 
 // GetToken 获取accessToken和refreshToken
-func GetToken(id int64, state string, a, r string) (string, string) {
+func GetToken(id int64, state, a, r string) (string, string) {
 	// accessToken 的数据
 	accessSecret := []byte(a)
 	refreshSecret := []byte(r)
@@ -55,8 +56,8 @@ func GetToken(id int64, state string, a, r string) (string, string) {
 	}
 	return accessTokenSigned, refreshTokenSigned
 }
-func ParseToken(accessTokenString, refreshTokenString string, a, r string) (*MyClaims, bool, error) {
 
+func ParseToken(accessTokenString, refreshTokenString, a, r string) (*MyClaims, bool, error) {
 	accessSecret := []byte(a)
 	refreshSecret := []byte(r)
 	accessToken, err := jwt.ParseWithClaims(accessTokenString, &MyClaims{}, func(token *jwt.Token) (interface{}, error) {
@@ -77,5 +78,4 @@ func ParseToken(accessTokenString, refreshTokenString string, a, r string) (*MyC
 	}
 
 	return nil, false, errors.New("invalid token")
-
 }

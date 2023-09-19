@@ -1,11 +1,12 @@
 package test
 
 import (
-	"GopherTok/common/utils"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"testing"
+
+	"GopherTok/common/utils"
 )
 
 func TestSignature(t *testing.T) {
@@ -30,6 +31,7 @@ func TestSignature(t *testing.T) {
 	signature := string(body)
 	fmt.Println("个性签名:", signature)
 }
+
 func TestNameRandom(t *testing.T) {
 	fmt.Println(utils.GetRandomYiYan())
 	fmt.Println(utils.GetRandomImageUrl())

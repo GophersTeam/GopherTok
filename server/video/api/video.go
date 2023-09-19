@@ -1,11 +1,12 @@
 package main
 
 import (
+	"flag"
+	"fmt"
+
 	"GopherTok/server/video/api/internal/config"
 	"GopherTok/server/video/api/internal/handler"
 	"GopherTok/server/video/api/internal/svc"
-	"flag"
-	"fmt"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/rest"

@@ -1,11 +1,13 @@
 package logic
 
 import (
+	"context"
+
 	"GopherTok/common/consts"
 	"GopherTok/server/comment/api/internal/svc"
 	"GopherTok/server/comment/api/internal/types"
 	"GopherTok/server/comment/rpc/commentrpc"
-	"context"
+
 	"github.com/jinzhu/copier"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -33,7 +35,6 @@ func (l *CommentListLogic) CommentList(req *types.CommentListRequest) (resp *typ
 		VideoId: req.VideoId,
 		UserId:  userId,
 	})
-
 	if err != nil {
 		l.Errorf("Get comment list error: %v", err)
 		return nil, err

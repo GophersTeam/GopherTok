@@ -1,13 +1,15 @@
 package main
 
 import (
+	"flag"
+	"fmt"
+
 	"GopherTok/common/response/rpcserver"
 	"GopherTok/server/chat/rpc/internal/config"
 	"GopherTok/server/chat/rpc/internal/server"
 	"GopherTok/server/chat/rpc/internal/svc"
 	"GopherTok/server/chat/rpc/pb"
-	"flag"
-	"fmt"
+
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/service"
@@ -41,5 +43,4 @@ func main() {
 
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
 	s.Start()
-
 }

@@ -1,10 +1,12 @@
 package main
 
 import (
-	"GopherTok/common/logs/zapx"
-	"GopherTok/common/response/rpcserver"
 	"flag"
 	"fmt"
+
+	"GopherTok/common/logs/zapx"
+	"GopherTok/common/response/rpcserver"
+
 	"github.com/zeromicro/go-zero/core/logx"
 
 	"GopherTok/server/relation/rpc/internal/config"

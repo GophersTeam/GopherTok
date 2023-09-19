@@ -1,9 +1,11 @@
 package main
 
 import (
-	"GopherTok/common/response/rpcserver"
 	"flag"
 	"fmt"
+
+	"GopherTok/common/response/rpcserver"
+
 	"github.com/zeromicro/go-zero/core/logx"
 
 	"GopherTok/server/comment/rpc/internal/config"

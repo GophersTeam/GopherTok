@@ -1,22 +1,20 @@
 package mock
 
 import (
-	"GopherTok/server/favor/rpc/favorrpc"
 	"context"
+
+	"GopherTok/server/favor/rpc/favorrpc"
+
 	"google.golang.org/grpc"
 )
 
-type FavorRpc struct {
-}
+type FavorRpc struct{}
 
 func (f FavorRpc) DisFavor(ctx context.Context, in *favorrpc.DisFavorReq, opts ...grpc.CallOption) (*favorrpc.DisFavorResp, error) {
-
 	return &favorrpc.DisFavorResp{}, nil
-
 }
 
 func (f FavorRpc) Favor(ctx context.Context, in *favorrpc.FavorReq, opts ...grpc.CallOption) (*favorrpc.FavorResp, error) {
-
 	return &favorrpc.FavorResp{}, nil
 }
 

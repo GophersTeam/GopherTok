@@ -121,7 +121,7 @@ func (st *SensitiveTrie) Match(text string) (sensitiveWords []string, replaceTex
 }
 
 // replaceRune 字符替换
-func (st *SensitiveTrie) replaceRune(chars []rune, begin int, end int) {
+func (st *SensitiveTrie) replaceRune(chars []rune, begin, end int) {
 	for i := begin; i < end; i++ {
 		chars[i] = st.replaceChar
 	}
@@ -136,7 +136,6 @@ type TrieNode struct {
 
 // AddChild 前缀树添加字节点
 func (tn *TrieNode) AddChild(c rune) *TrieNode {
-
 	if tn.childMap == nil {
 		tn.childMap = make(map[rune]*TrieNode)
 	}

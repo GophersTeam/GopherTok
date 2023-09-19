@@ -14,6 +14,7 @@ func FileSha256(file multipart.File) string {
 	io.Copy(_sha256, file)
 	return hex.EncodeToString(_sha256.Sum(nil))
 }
+
 func RemoveContents(dir string) error {
 	d, err := os.Open(dir)
 	if err != nil {

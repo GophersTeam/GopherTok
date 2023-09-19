@@ -1,9 +1,10 @@
 package init_db
 
 import (
+	"strings"
+
 	"github.com/zeromicro/go-queue/kq"
 	"github.com/zeromicro/go-zero/core/logx"
-	"strings"
 )
 
 type KafkaWriter struct {
@@ -24,6 +25,7 @@ func (w *KafkaWriter) Write(p []byte) (n int, err error) {
 
 	return len(p), nil
 }
+
 func LogxKafka() *logx.Writer {
 	pusher := kq.NewPusher([]string{"localhost:9092"}, "gopan-log")
 	defer pusher.Close()

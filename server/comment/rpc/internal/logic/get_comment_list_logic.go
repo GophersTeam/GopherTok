@@ -1,11 +1,13 @@
 package logic
 
 import (
+	"context"
+
 	"GopherTok/server/comment/rpc/commentrpc"
 	"GopherTok/server/comment/rpc/internal/svc"
 	"GopherTok/server/comment/rpc/pb"
 	"GopherTok/server/user/rpc/userclient"
-	"context"
+
 	"github.com/jinzhu/copier"
 	"github.com/zeromicro/go-zero/core/threading"
 
@@ -55,9 +57,9 @@ func (l *GetCommentListLogic) GetCommentList(in *pb.GetCommentListRequest) (resp
 			}
 
 			_ = copier.Copy(resp.CommentList[ii].User, userInfoResp)
-			//resp.CommentList[ii].User.Id = in.UserId
-			//resp.CommentList[ii].User.Name = "test"
-			//resp.CommentList[ii].User.Avatar = "https://avatars.githubusercontent.com/u/1967184?v=4"
+			// resp.CommentList[ii].User.Id = in.UserId
+			// resp.CommentList[ii].User.Name = "test"
+			// resp.CommentList[ii].User.Avatar = "https://avatars.githubusercontent.com/u/1967184?v=4"
 		})
 	}
 	group.Wait()

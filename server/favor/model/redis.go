@@ -1,12 +1,14 @@
 package model
 
 import (
-	"GopherTok/common/consts"
 	"context"
 	"fmt"
+	"strconv"
+
+	"GopherTok/common/consts"
+
 	"github.com/redis/go-redis/v9"
 	"github.com/zeromicro/go-zero/core/logx"
-	"strconv"
 )
 
 func NewFavorModel(c *redis.ClusterClient) FavorModel {
@@ -27,23 +29,23 @@ type (
 	}
 
 	defaultModel struct {
-		//redis.Client
+		// redis.Client
 		*redis.ClusterClient
 	}
 	FavorModel interface {
 		favorModel
 	}
 	favorModel interface {
-		Insert(ctx context.Context, UserId int64, VideoId int64) error
-		Delete(ctx context.Context, UserId int64, VideoId int64) error
+		Insert(ctx context.Context, UserId, VideoId int64) error
+		Delete(ctx context.Context, UserId, VideoId int64) error
 		SearchByUid(ctx context.Context, UserId int64) ([]int64, error)
 		NumOfFavor(ctx context.Context, VideoId int64) (int, error)
 		FavorNumOfUser(ctx context.Context, UserId int64) (int, error)
-		IsFavor(ctx context.Context, UserId int64, VideoId int64) (bool, error)
+		IsFavor(ctx context.Context, UserId, VideoId int64) (bool, error)
 	}
 )
 
-func (m *defaultModel) Insert(ctx context.Context, UserId int64, VideoId int64) error {
+func (m *defaultModel) Insert(ctx context.Context, UserId, VideoId int64) error {
 	var err error
 
 	tx := m.TxPipeline()
@@ -61,7 +63,7 @@ func (m *defaultModel) Insert(ctx context.Context, UserId int64, VideoId int64) 
 	return err
 }
 
-func (m *defaultModel) Delete(ctx context.Context, UserId int64, VideoId int64) error {
+func (m *defaultModel) Delete(ctx context.Context, UserId, VideoId int64) error {
 	var err error
 	tx := m.TxPipeline()
 
@@ -103,7 +105,7 @@ func (m *defaultModel) NumOfFavor(ctx context.Context, VideoId int64) (int, erro
 	return int(result), nil
 }
 
-func (m *defaultModel) IsFavor(ctx context.Context, UserId int64, VideoId int64) (bool, error) {
+func (m *defaultModel) IsFavor(ctx context.Context, UserId, VideoId int64) (bool, error) {
 	get := m.HGet(ctx, fmt.Sprintf("%s%d", consts.VideoFavorPrefix, UserId), fmt.Sprintf("%s%d", consts.VideoFavorPrefix, VideoId))
 	if get.Err() != nil {
 		if get.Err() == redis.Nil {

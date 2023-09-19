@@ -1,22 +1,24 @@
 package service
 
 import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"log"
+	"sync"
+	"time"
+
 	"GopherTok/common/consts"
 	"GopherTok/common/init_db"
 	"GopherTok/common/utils"
 	"GopherTok/server/video/kmq/internal/config"
 	"GopherTok/server/video/model"
-	"context"
-	"encoding/json"
-	"fmt"
+
 	"github.com/redis/go-redis/v9"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/mr"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"gorm.io/gorm"
-	"log"
-	"sync"
-	"time"
 )
 
 const (
@@ -100,7 +102,6 @@ func (s *Service) consume(ch chan *model.Video) {
 		}, func() error {
 			err := s.Rdb.Set(context.Background(), consts.CoverPrefix+m.VideoSha256, m.CoverUrl, 0)
 			return err.Err()
-
 		}, func() error {
 			_, err := s.VideoModel.Insert(context.Background(), &v)
 			if err != nil {
@@ -113,7 +114,6 @@ func (s *Service) consume(ch chan *model.Video) {
 				Member: v.Id,
 			})
 			return err.Err()
-
 		}, func() error {
 			err := s.Rdb.SAdd(context.Background(), fmt.Sprintf("%s%v", consts.UserVideoIdsPrefix, v.UserId), v.Id).Err()
 			return err
@@ -126,7 +126,7 @@ func (s *Service) consume(ch chan *model.Video) {
 }
 
 // Consume 是消费者的方法，用于处理消息
-func (s *Service) Consume(_ string, value string) error {
+func (s *Service) Consume(_, value string) error {
 	logx.Infof("消费消息: %s\n", value)
 
 	// 将 JSON 数据解析为 []*model.NewUserFile 对象

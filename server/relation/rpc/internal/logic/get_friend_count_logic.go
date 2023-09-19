@@ -1,12 +1,14 @@
 package logic
 
 import (
-	"GopherTok/common/errorx"
 	"context"
 	"fmt"
+	"strconv"
+
+	"GopherTok/common/errorx"
+
 	"github.com/pkg/errors"
 	"gorm.io/gorm"
-	"strconv"
 
 	"GopherTok/server/relation/rpc/internal/svc"
 	"GopherTok/server/relation/rpc/pb"
@@ -37,7 +39,7 @@ func (l *GetFriendCountLogic) GetFriendCount(in *pb.GetFriendCountReq) (*pb.GetF
 		}
 
 		if count.Err().Error() == "redis: nil" {
-			//如果redis中没有则从mysql中拉取并更新至redis中
+			// 如果redis中没有则从mysql中拉取并更新至redis中
 			friend := []pb.FollowSubject{}
 			err := l.svcCtx.MysqlDb.WithContext(l.ctx).Table("follow_subject").
 				Where("user_id = ?", in.Userid).Find(&friend).Error
@@ -60,15 +62,19 @@ func (l *GetFriendCountLogic) GetFriendCount(in *pb.GetFriendCountReq) (*pb.GetF
 			}
 			l.svcCtx.Rdb.HSet(l.ctx, "friendCount", fmt.Sprintf("%d:friendCount", in.Userid), strconv.Itoa(countMysql))
 
-			return &pb.GetFriendCountResp{StatusCode: 0,
-				StatusMsg: "get friendCount successfully",
-				Count:     int64(countMysql)}, nil
+			return &pb.GetFriendCountResp{
+				StatusCode: 0,
+				StatusMsg:  "get friendCount successfully",
+				Count:      int64(countMysql),
+			}, nil
 		}
 
 	}
 	countInt, _ := strconv.ParseInt(count.Val(), 10, 64)
 
-	return &pb.GetFriendCountResp{StatusCode: 0,
-		StatusMsg: "get friendCount successfully",
-		Count:     countInt}, nil
+	return &pb.GetFriendCountResp{
+		StatusCode: 0,
+		StatusMsg:  "get friendCount successfully",
+		Count:      countInt,
+	}, nil
 }

@@ -1,6 +1,9 @@
 package logic
 
 import (
+	"context"
+	"math"
+
 	"GopherTok/common/consts"
 	"GopherTok/server/comment/rpc/commentrpc"
 	"GopherTok/server/comment/rpc/pb"
@@ -10,12 +13,11 @@ import (
 	"GopherTok/server/video/api/internal/svc"
 	"GopherTok/server/video/api/internal/types"
 	"GopherTok/server/video/rpc/types/video"
-	"context"
+
 	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logc"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/mr"
-	"math"
 )
 
 type VideoListLogic struct {

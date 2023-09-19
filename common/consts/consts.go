@@ -35,6 +35,7 @@ const (
 const (
 	MinioBucket = "gophertok-video"
 )
+
 const (
 	CoverTemp = "/home/project/gophertok/temp/"
 )

@@ -1,14 +1,16 @@
 package middleware
 
 import (
+	"context"
+	"net/http"
+	"strings"
+
 	"GopherTok/common/consts"
 	"GopherTok/common/errorx"
 	"GopherTok/common/utils"
 	"GopherTok/server/video/api/internal/config"
-	"context"
+
 	"github.com/zeromicro/go-zero/rest/httpx"
-	"net/http"
-	"strings"
 )
 
 type VideoJWTMiddleware struct {
@@ -29,7 +31,6 @@ func (m *VideoJWTMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 		token := r.FormValue("token")
 		if token == "" {
 			next(w, r)
-
 		} else {
 
 			parts := strings.Split(token, " ")
@@ -44,7 +45,7 @@ func (m *VideoJWTMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 			}
 			if isExpire {
 				parts[0], parts[1] = utils.GetToken(parseToken.ID, parseToken.State, m.Config.Token.AccessToken, m.Config.Token.RefreshToken)
-				//w.Header().Set("Authorization", fmt.Sprintf("Bearer %s %s", parts[0], parts[1]))
+				// w.Header().Set("Authorization", fmt.Sprintf("Bearer %s %s", parts[0], parts[1]))
 
 			}
 			token = parts[0] + " " + parts[1]

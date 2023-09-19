@@ -1,22 +1,23 @@
 package mock
 
 import (
-	"GopherTok/server/chat/rpc/chatrpc"
 	"context"
-	"google.golang.org/grpc"
 	"strconv"
+
+	"GopherTok/server/chat/rpc/chatrpc"
+
+	"google.golang.org/grpc"
 )
 
-type ChatRpc struct {
-}
+type ChatRpc struct{}
 
 func (c ChatRpc) MessageAction(ctx context.Context, in *chatrpc.MessageActionRequest, opts ...grpc.CallOption) (*chatrpc.MessageActionResponse, error) {
-	//TODO implement me
+	// TODO implement me
 	panic("implement me")
 }
 
 func (c ChatRpc) MessageChat(ctx context.Context, in *chatrpc.MessageChatRequest, opts ...grpc.CallOption) (*chatrpc.MessageChatResponse, error) {
-	//TODO implement me
+	// TODO implement me
 	panic("implement me")
 }
 

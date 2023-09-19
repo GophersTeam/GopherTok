@@ -1,8 +1,9 @@
 package rpcserver
 
 import (
-	"GopherTok/common/errorx"
 	"context"
+
+	"GopherTok/common/errorx"
 
 	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -19,13 +20,12 @@ import (
 **/
 
 func LoggerInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
-
 	resp, err = handler(ctx, req)
 	if err != nil {
 		causeErr := errors.Cause(err)                  // err类型
-		if e, ok := causeErr.(*errorx.CodeError); ok { //自定义错误类型
+		if e, ok := causeErr.(*errorx.CodeError); ok { // 自定义错误类型
 			logx.WithContext(ctx).Errorf("【RPC-SRV-ERR】 %+v", err)
-			//转成grpc err
+			// 转成grpc err
 			err = status.Error(codes.Code(e.StatusCode()), e.Error())
 		} else {
 			logx.WithContext(ctx).Errorf("【RPC-SRV-ERR】 %+v", err)

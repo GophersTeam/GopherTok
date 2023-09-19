@@ -1,10 +1,11 @@
 package test
 
 import (
+	"testing"
+
 	"github.com/stretchr/testify/assert"
 	"gorm.io/driver/sqlite" // 使用SQLite作为测试数据库
 	"gorm.io/gorm"
-	"testing"
 )
 
 type User struct {
@@ -63,7 +64,8 @@ func TestMain(m *testing.M) {
 	// 运行测试前的初始化操作
 	m.Run()
 }
-func UpdateUserCounts(db *gorm.DB, userID int64, followCount, followerCount, friendCount int64) error {
+
+func UpdateUserCounts(db *gorm.DB, userID, followCount, followerCount, friendCount int64) error {
 	return db.Model(&User{}).Where("id = ?", userID).Updates(map[string]interface{}{
 		"follow_count":  followCount,
 		"FollowerCount": followerCount,

@@ -31,8 +31,6 @@ type ServiceContext struct {
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
-	//mysqlDb := init_db.InitGorm(c.MysqlCluster.DataSource)
-	//mysqlDb.AutoMigrate(&model.User{})
 	snowflakeNode, _ := snowflake.NewNode(consts.UserMachineId)
 
 	rc := make([]string, 1)
@@ -47,7 +45,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		VideoRpc:    videoclient.NewVideo(zrpc.MustNewClient(c.VideoRpcConf)),
 		FavorRpc:    favorrpc.NewFavorRpc(zrpc.MustNewClient(c.FavorRpcConf)),
 		Snowflake:   snowflakeNode,
-		//MysqlDb:        mysqlDb,
+
 		Rdb:            redisDb,
 		KqPusherClient: kq.NewPusher(c.KqPusherConf.Brokers, c.KqPusherConf.Topic),
 	}

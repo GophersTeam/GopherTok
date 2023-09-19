@@ -1,21 +1,23 @@
 package service
 
 import (
+	"context"
+	"fmt"
+	"log"
+	"sync"
+	"time"
+
 	"GopherTok/common/init_db"
 	"GopherTok/server/relation/dao"
 	"GopherTok/server/relation/kmq/internal/config"
 	"GopherTok/server/relation/rpc/pb"
-	"context"
-	"fmt"
+
 	"github.com/redis/go-redis/v9"
 	"github.com/zeromicro/go-zero/core/jsonx"
 	"github.com/zeromicro/go-zero/core/logx"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
-	"log"
-	"sync"
-	"time"
 )
 
 const (
@@ -113,7 +115,7 @@ func (s *Service) consumeRedis(ch chan *dao.CountData) {
 		m := *message
 		fmt.Printf("消费消息: %+v\n", m)
 
-		//更新redis
+		// 更新redis
 		if err := s.Rdb.HSet(context.Background(), "followCount", m.FollowCountKey, m.FollowCount).Err(); err != nil {
 			logx.Error(err)
 		}
@@ -128,7 +130,7 @@ func (s *Service) consumeRedis(ch chan *dao.CountData) {
 }
 
 // ConsumeRedis 是消费者的方法，用于处理消息
-func (s *Service) ConsumeMysql(_ string, value string) error {
+func (s *Service) ConsumeMysql(_, value string) error {
 	logx.Infof("消费消息: %s\n", value)
 
 	// 将 JSON 数据解析为 []*model.NewUserFile 对象
@@ -142,7 +144,7 @@ func (s *Service) ConsumeMysql(_ string, value string) error {
 	return nil
 }
 
-func (s *Service) ConsumeRedis(_ string, value string) error {
+func (s *Service) ConsumeRedis(_, value string) error {
 	logx.Infof("消费消息: %s\n", value)
 
 	// 将 JSON 数据解析为 []*model.NewUserFile 对象
@@ -155,13 +157,14 @@ func (s *Service) ConsumeRedis(_ string, value string) error {
 
 	return nil
 }
+
 func InitGorm(MysqlDataSourece string) *gorm.DB {
 	// 将日志写进kafka
-	//logx.SetWriter(*LogxKafka())
+	// logx.SetWriter(*LogxKafka())
 	DB, err := gorm.Open(mysql.Open(MysqlDataSourece),
 		&gorm.Config{
 			NamingStrategy: schema.NamingStrategy{
-				//TablePrefix:   "tech_", // 表名前缀，`User` 的表名应该是 `t_users`
+				// TablePrefix:   "tech_", // 表名前缀，`User` 的表名应该是 `t_users`
 				SingularTable: true, // 使用单数表名，启用该选项，此时，`User` 的表名应该是 `t_user`
 			},
 		})

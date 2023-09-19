@@ -1,6 +1,9 @@
 package logic
 
 import (
+	"context"
+	"strconv"
+
 	"GopherTok/common/consts"
 	"GopherTok/common/errorx"
 	"GopherTok/server/comment/rpc/commentrpc"
@@ -10,10 +13,9 @@ import (
 	"GopherTok/server/video/api/internal/svc"
 	"GopherTok/server/video/api/internal/types"
 	"GopherTok/server/video/rpc/types/video"
-	"context"
+
 	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/mr"
-	"strconv"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -82,7 +84,6 @@ func (l *UserVideoListLogic) UserVideoList(req *types.UserVideoListReq) (resp *t
 				})
 				return err
 			})
-
 			if err != nil {
 				errorChannel <- err
 			}

@@ -1,6 +1,8 @@
 package logic
 
 import (
+	"context"
+
 	con "GopherTok/common/consts"
 	"GopherTok/common/errorx"
 	"GopherTok/server/chat/rpc/chatrpc"
@@ -8,7 +10,7 @@ import (
 	"GopherTok/server/relation/api/internal/types"
 	"GopherTok/server/relation/rpc/pb"
 	"GopherTok/server/user/rpc/types/user"
-	"context"
+
 	"github.com/pkg/errors"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -45,7 +47,7 @@ func (l *FollowLogic) Follow(req *types.FollowReq) (resp *types.FollowRes, err e
 	if exists.Exists == false {
 		return nil, errors.Wrapf(errorx.NewDefaultError("user doesn't exist"), "user doesn't exist%v", nil)
 	}
-	//var userid int64 = 1
+	// var userid int64 = 1
 	if req.ActionType == 1 {
 		isFollow, err := l.svcCtx.RelationRpc.CheckIsFollow(l.ctx, &pb.CheckIsFollowReq{
 			UserId:   userid,
@@ -85,7 +87,7 @@ func (l *FollowLogic) Follow(req *types.FollowReq) (resp *types.FollowRes, err e
 			StatusMsg:  follow.StatusMsg,
 		}, nil
 	} else if req.ActionType == 2 {
-		//进行删除操作
+		// 进行删除操作
 		isFollow, err := l.svcCtx.RelationRpc.CheckIsFollow(l.ctx, &pb.CheckIsFollowReq{
 			UserId:   userid,
 			ToUserId: req.ToUserId,
@@ -112,7 +114,5 @@ func (l *FollowLogic) Follow(req *types.FollowReq) (resp *types.FollowRes, err e
 		}, nil
 	} else {
 		return nil, errors.Wrapf(errorx.NewDefaultError("action_type err"), "action_type err%v", nil)
-
 	}
-
 }

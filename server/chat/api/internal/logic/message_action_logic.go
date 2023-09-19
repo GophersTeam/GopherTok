@@ -1,10 +1,11 @@
 package logic
 
 import (
-	"GopherTok/common/consts"
-	"GopherTok/server/chat/rpc/pb"
 	"context"
 	"errors"
+
+	"GopherTok/common/consts"
+	"GopherTok/server/chat/rpc/pb"
 
 	"GopherTok/server/chat/api/internal/svc"
 	"GopherTok/server/chat/api/internal/types"

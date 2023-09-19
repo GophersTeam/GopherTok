@@ -3,6 +3,7 @@ package model
 import (
 	"context"
 	"fmt"
+
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
@@ -14,8 +15,8 @@ type (
 	// and implement the added methods in customMessageModel.
 	MessageModel interface {
 		messageModel
-		FindPage(ctx context.Context, pageNum int, pageSize int) ([]*Message, error)
-		GetMessages(ctx context.Context, fromUserId int64, toUserId int64, preMsgTime int64) ([]*Message, error)
+		FindPage(ctx context.Context, pageNum, pageSize int) ([]*Message, error)
+		GetMessages(ctx context.Context, fromUserId, toUserId, preMsgTime int64) ([]*Message, error)
 	}
 
 	customMessageModel struct {
@@ -23,7 +24,7 @@ type (
 	}
 )
 
-func (m *customMessageModel) FindPage(ctx context.Context, pageNum int, pageSize int) ([]*Message, error) {
+func (m *customMessageModel) FindPage(ctx context.Context, pageNum, pageSize int) ([]*Message, error) {
 	if pageSize < 1 || pageSize > 100 {
 		pageSize = 10
 	}
@@ -34,7 +35,7 @@ func (m *customMessageModel) FindPage(ctx context.Context, pageNum int, pageSize
 	return resp, err
 }
 
-func (m *customMessageModel) GetMessages(ctx context.Context, fromUserId int64, toUserId int64, preMsgTime int64) ([]*Message, error) {
+func (m *customMessageModel) GetMessages(ctx context.Context, fromUserId, toUserId, preMsgTime int64) ([]*Message, error) {
 	query := fmt.Sprintf(`select %s from %s where ((from_user_id = ? and to_user_id = ?) or (from_user_id = ? and to_user_id = ?)) and create_time > ? order by create_time`, messageRows, m.table)
 	var resp []*Message
 	err := m.QueryRowsNoCacheCtx(ctx, &resp, query, fromUserId, toUserId, toUserId, fromUserId, preMsgTime)

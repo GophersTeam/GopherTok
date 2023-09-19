@@ -1,11 +1,13 @@
 package logic
 
 import (
+	"context"
+	"encoding/json"
+
 	"GopherTok/common/errorx"
 	"GopherTok/common/utils"
 	"GopherTok/server/user/model"
-	"context"
-	"encoding/json"
+
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logc"
@@ -28,7 +30,6 @@ func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Register
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
-
 }
 
 func (l *RegisterLogic) Register(in *user.RegisterReq) (*user.RegisterResp, error) {
@@ -37,7 +38,6 @@ func (l *RegisterLogic) Register(in *user.RegisterReq) (*user.RegisterResp, erro
 	exists, err := model.CheckUsernameExists(l.ctx, l.svcCtx.Rdb, in.Username)
 	if err != nil {
 		return nil, errors.Wrapf(errorx.NewDefaultError(err.Error()), "redis查询错误 err：%v", err)
-
 	}
 	if exists {
 		logc.Info(l.ctx, "Username already exists.")

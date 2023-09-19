@@ -1,16 +1,18 @@
 package logic
 
 import (
-	"GopherTok/common/batcher"
-	"GopherTok/common/errorx"
-	"GopherTok/server/video/model"
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/pkg/errors"
-	"github.com/zeromicro/go-zero/core/logc"
 	"strconv"
 	"time"
+
+	"GopherTok/common/batcher"
+	"GopherTok/common/errorx"
+	"GopherTok/server/video/model"
+
+	"github.com/pkg/errors"
+	"github.com/zeromicro/go-zero/core/logc"
 
 	"GopherTok/server/video/rpc/internal/svc"
 	"GopherTok/server/video/rpc/types/video"
@@ -26,7 +28,6 @@ type PublishVideoLogic struct {
 }
 
 func NewPublishVideoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PublishVideoLogic {
-
 	f := &PublishVideoLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,

@@ -36,7 +36,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Config:       c,
 		CommentModel: model.NewCommentModel(c.MongoConf.Url, c.MongoConf.DB, c.MongoConf.Collection),
 		Snowflake:    snowflakeNode,
-		//UserRpc:      mock.UserRpc{},
+		// UserRpc:      mock.UserRpc{},
 		UserRpc:             userclient.NewUser(zrpc.MustNewClient(c.UserRpcConf)),
 		SensitiveWordFilter: trie,
 		KafkaPusher:         kq.NewPusher(c.KafkaConf.Addrs, c.KafkaConf.Topic),

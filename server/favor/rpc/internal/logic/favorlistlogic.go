@@ -1,14 +1,16 @@
 package logic
 
 import (
+	"context"
+	"sync"
+	"time"
+
 	"GopherTok/server/favor/rpc/internal/svc"
 	"GopherTok/server/favor/rpc/types/favor"
 	"GopherTok/server/user/rpc/userclient"
 	"GopherTok/server/video/rpc/videoclient"
-	"context"
+
 	"github.com/zeromicro/go-zero/core/logx"
-	"sync"
-	"time"
 )
 
 type FavorListLogic struct {

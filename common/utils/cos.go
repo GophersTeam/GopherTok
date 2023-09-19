@@ -3,22 +3,23 @@ package utils
 import (
 	"context"
 	"fmt"
-	"github.com/tencentyun/cos-go-sdk-v5"
 	"io"
 	"net/http"
 	"net/url"
 	"time"
+
+	"github.com/tencentyun/cos-go-sdk-v5"
 )
 
 func TencentCOSUpload(urlValue, id, key, filePath string, file io.Reader) (string, error) {
-	//COS客户端连接
+	// COS客户端连接
 	u, _ := url.Parse(urlValue)
 	b := &cos.BaseURL{BucketURL: u}
 	c := cos.NewClient(b, &http.Client{
-		//设置超时时间
+		// 设置超时时间
 		Timeout: 10000 * time.Second,
 		Transport: &cos.AuthorizationTransport{
-			//如实填写账号和密钥，也可以设置为环境变量
+			// 如实填写账号和密钥，也可以设置为环境变量
 			SecretID:  id,
 			SecretKey: key,
 		},
@@ -32,19 +33,19 @@ func TencentCOSUpload(urlValue, id, key, filePath string, file io.Reader) (strin
 	} else {
 		return "", saveErr
 	}
-
 }
+
 func TencentCOSDownload(urlValue, id, key, bucketKey, downloadPath string) {
-	//将<bucket>和<region>修改为真实的信息
-	//bucket的命名规则为{name}-{appid} ，此处填写的存储桶名称必须为此格式
-	//COS客户端连接
+	// 将<bucket>和<region>修改为真实的信息
+	// bucket的命名规则为{name}-{appid} ，此处填写的存储桶名称必须为此格式
+	// COS客户端连接
 	u, _ := url.Parse(urlValue)
 	b := &cos.BaseURL{BucketURL: u}
 	c := cos.NewClient(b, &http.Client{
-		//设置超时时间
+		// 设置超时时间
 		Timeout: 10000 * time.Second,
 		Transport: &cos.AuthorizationTransport{
-			//如实填写账号和密钥，也可以设置为环境变量
+			// 如实填写账号和密钥，也可以设置为环境变量
 			SecretID:  id,
 			SecretKey: key,
 		},
@@ -60,5 +61,4 @@ func TencentCOSDownload(urlValue, id, key, bucketKey, downloadPath string) {
 	if err != nil {
 		panic(err)
 	}
-
 }

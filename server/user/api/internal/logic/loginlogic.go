@@ -1,11 +1,13 @@
 package logic
 
 import (
+	"context"
+	"fmt"
+
 	"GopherTok/common/errorx"
 	"GopherTok/common/utils"
 	"GopherTok/server/user/rpc/types/user"
-	"context"
-	"fmt"
+
 	"github.com/pkg/errors"
 
 	"GopherTok/server/user/api/internal/svc"
@@ -49,5 +51,4 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 		UserId: cnt.UserId,
 		Token:  cnt.Token,
 	}, nil
-
 }

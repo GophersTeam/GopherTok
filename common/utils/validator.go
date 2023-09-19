@@ -3,15 +3,16 @@ package utils
 import (
 	"context"
 	"errors"
+	"reflect"
+	"regexp"
+	"strings"
+
 	"github.com/go-playground/locales/en"
 	"github.com/go-playground/locales/zh"
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
 	enTranslations "github.com/go-playground/validator/v10/translations/en"
 	zhTranslations "github.com/go-playground/validator/v10/translations/zh"
-	"reflect"
-	"regexp"
-	"strings"
 )
 
 const (
@@ -21,26 +22,26 @@ const (
 )
 
 func TransInit(ctx context.Context) context.Context {
-	//设置支持语言
+	// 设置支持语言
 	chinese := zh.New()
 	english := en.New()
-	//设置国际化翻译器
+	// 设置国际化翻译器
 	uni := ut.New(chinese, chinese, english)
-	//设置验证器
+	// 设置验证器
 	val := validator.New()
-	//根据参数取翻译器实例
+	// 根据参数取翻译器实例
 	trans, _ := uni.GetTranslator(locale)
-	//翻译器注册到validator
+	// 翻译器注册到validator
 	switch locale {
 	case "chinese":
 		zhTranslations.RegisterDefaultTranslations(val, trans)
-		//使用fld.Tag.Get("comment")注册一个获取tag的自定义方法
+		// 使用fld.Tag.Get("comment")注册一个获取tag的自定义方法
 		val.RegisterTagNameFunc(func(fld reflect.StructField) string {
 			return fld.Tag.Get("comment")
 		})
 		val.RegisterValidation("phone", func(fl validator.FieldLevel) bool {
 			phone := fl.Field().String()
-			//使用正则表达式验证手机号码
+			// 使用正则表达式验证手机号码
 			pattern := `^1[3456789]\d{9}$`
 			matched, _ := regexp.MatchString(pattern, phone)
 			return matched
@@ -60,7 +61,7 @@ func TransInit(ctx context.Context) context.Context {
 		})
 		val.RegisterValidation("phone", func(fl validator.FieldLevel) bool {
 			phone := fl.Field().String()
-			//使用正则表达式验证手机号码
+			// 使用正则表达式验证手机号码
 			pattern := `^1[3456789]\d{9}$`
 			matched, _ := regexp.MatchString(pattern, phone)
 			return matched
@@ -89,25 +90,25 @@ func DefaultGetValidParams(ctx context.Context, params interface{}) error {
 }
 
 func validate(ctx context.Context, params interface{}) error {
-	//获取验证器
+	// 获取验证器
 	val, ok := ctx.Value(ValidatorKey).(*validator.Validate)
 	if !ok {
 		return errors.New("Validator not found in context")
 	}
 
-	//获取翻译器
+	// 获取翻译器
 	tran, ok := ctx.Value(TranslatorKey).(ut.Translator)
 
 	if !ok {
 		return errors.New("Translator not found in context")
 	}
 	err := val.Struct(params)
-	//如果数据效验不通过，则将所有err以切片形式输出
+	// 如果数据效验不通过，则将所有err以切片形式输出
 	if err != nil {
 		errs := err.(validator.ValidationErrors)
 		sliceErrs := []string{}
 		for _, e := range errs {
-			//使用validator.ValidationErrors类型里的Translate方法进行翻译
+			// 使用validator.ValidationErrors类型里的Translate方法进行翻译
 			sliceErrs = append(sliceErrs, e.Translate(tran))
 		}
 		return errors.New(strings.Join(sliceErrs, ","))

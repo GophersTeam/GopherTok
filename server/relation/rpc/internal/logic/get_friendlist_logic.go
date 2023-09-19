@@ -1,10 +1,12 @@
 package logic
 
 import (
+	"context"
+
 	"GopherTok/common/errorx"
 	"GopherTok/server/chat/rpc/chatrpc"
 	"GopherTok/server/user/rpc/types/user"
-	"context"
+
 	"github.com/pkg/errors"
 	"gorm.io/gorm"
 
@@ -47,11 +49,12 @@ func (l *GetFriendListLogic) GetFriendList(in *pb.GetFriendListReq) (*pb.GetFrie
 				return nil,
 					errors.Wrapf(errorx.NewDefaultError("mysql get err:"+err.Error()), "mysql get err ：%v", err)
 			} else {
-				return &pb.GetFriendListResp{StatusCode: 0,
-					StatusMsg: "get friendList successfully",
-					UserList:  nil}, nil
+				return &pb.GetFriendListResp{
+					StatusCode: 0,
+					StatusMsg:  "get friendList successfully",
+					UserList:   nil,
+				}, nil
 			}
-
 		}
 
 		use, err := l.svcCtx.UserRpc.UserInfo(l.ctx, &user.UserInfoReq{
@@ -90,7 +93,9 @@ func (l *GetFriendListLogic) GetFriendList(in *pb.GetFriendListReq) (*pb.GetFrie
 		i++
 	}
 
-	return &pb.GetFriendListResp{StatusCode: 0,
-		StatusMsg: "get friendList successfully",
-		UserList:  friendList}, nil
+	return &pb.GetFriendListResp{
+		StatusCode: 0,
+		StatusMsg:  "get friendList successfully",
+		UserList:   friendList,
+	}, nil
 }

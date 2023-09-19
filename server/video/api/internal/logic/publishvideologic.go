@@ -1,18 +1,8 @@
 package logic
 
 import (
-	"GopherTok/common/consts"
-	"GopherTok/common/errorx"
-	"GopherTok/common/utils"
-	"GopherTok/server/video/api/internal/svc"
-	"GopherTok/server/video/api/internal/types"
-	"GopherTok/server/video/rpc/types/video"
 	"context"
 	"fmt"
-	"github.com/minio/minio-go/v7"
-	"github.com/pkg/errors"
-	"github.com/zeromicro/go-zero/core/logc"
-	"github.com/zeromicro/go-zero/core/logx"
 	"io"
 	"mime/multipart"
 	"net/http"
@@ -20,6 +10,18 @@ import (
 	"os/exec"
 	"strings"
 	"time"
+
+	"GopherTok/common/consts"
+	"GopherTok/common/errorx"
+	"GopherTok/common/utils"
+	"GopherTok/server/video/api/internal/svc"
+	"GopherTok/server/video/api/internal/types"
+	"GopherTok/server/video/rpc/types/video"
+
+	"github.com/minio/minio-go/v7"
+	"github.com/pkg/errors"
+	"github.com/zeromicro/go-zero/core/logc"
+	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type PublishVideoLogic struct {
@@ -79,7 +81,7 @@ func (l *PublishVideoLogic) PublishVideo(req *types.PublishVideoReq, r *http.Req
 	if !isFastPubulish {
 		filePath := "/" + fileSha256 + "/" + head.Filename
 		tempFilePath := consts.CoverTemp + fileSha256 + "/" + head.Filename
-		err = os.MkdirAll(consts.CoverTemp+fileSha256, 0755)
+		err = os.MkdirAll(consts.CoverTemp+fileSha256, 0o755)
 
 		newFile, err := os.Create(tempFilePath)
 		if err != nil {
@@ -99,7 +101,7 @@ func (l *PublishVideoLogic) PublishVideo(req *types.PublishVideoReq, r *http.Req
 		// Use ffmpeg to extract the first frame as cover
 		coverPath := "/" + fileSha256 + "/cover.jpg"
 		tempCoverPath := consts.CoverTemp + fileSha256 + "/cover.jpg"
-		err = os.MkdirAll(consts.CoverTemp+fileSha256, 0755)
+		err = os.MkdirAll(consts.CoverTemp+fileSha256, 0o755)
 		if err != nil {
 			fmt.Println("Error creating folder:", err)
 			return nil, errors.Wrapf(errorx.NewDefaultError(err.Error()), "创建路径 err:%v", err)
@@ -193,10 +195,9 @@ func isVideoFile(fileHeader *multipart.FileHeader) bool {
 	// 判断 Content-Type 是否为视频类型
 	return strings.HasPrefix(contentType, "video/")
 }
+
 func (l *PublishVideoLogic) uploadToMinIO(objectName string, file io.Reader) (string, error) {
-
 	_, err := l.svcCtx.MinioDb.PutObject(l.ctx, consts.MinioBucket, objectName, file, -1, minio.PutObjectOptions{})
-
 	if err != nil {
 		logc.Error(l.ctx, err)
 		return "", err
@@ -205,6 +206,7 @@ func (l *PublishVideoLogic) uploadToMinIO(objectName string, file io.Reader) (st
 	objectURL := l.svcCtx.MinioDb.EndpointURL().String() + "/" + consts.MinioBucket + "/" + objectName
 	return objectURL, nil
 }
+
 func (l *PublishVideoLogic) COSUpload(filePath string, file io.Reader) (string, error) {
 	Url := l.svcCtx.Config.TencentCOS.Url
 	SecretId := l.svcCtx.Config.TencentCOS.SecretId
