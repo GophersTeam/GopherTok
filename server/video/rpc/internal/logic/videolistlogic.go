@@ -7,6 +7,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/pkg/errors"
+	"github.com/redis/go-redis/v9"
 	"github.com/zeromicro/go-zero/core/logc"
 	"strconv"
 	"time"
@@ -48,15 +49,21 @@ func (l *VideoListLogic) VideoList(in *video.VideoListReq) (*video.VideoListResp
 		timestampTime = time.Unix(0, timestampInt*int64(time.Millisecond))
 
 	}
-	// 在redis中查询出时间戳最大的30个视频id
-	VideoIds, err := l.svcCtx.Rdb.ZRevRangeWithScores(context.Background(), consts.AllVideoId, 0, 29).Result()
-	if err != nil {
-		// 处理错误
-		return nil, errors.Wrapf(errorx.NewDefaultError("redis 查询错误"+err.Error()), "redis 查询错误%v", err)
 
+	// 使用ZREVRANGEBYSCORE命令查询score小于timestampTime的最大30个成员
+	vIds, err := l.svcCtx.Rdb.ZRevRangeByScoreWithScores(l.ctx, consts.AllVideoIdPrefix, &redis.ZRangeBy{
+		Min:    "0",
+		Max:    strconv.FormatInt(timestampTime.Unix(), 10),
+		Offset: 0,
+		Count:  30,
+	}).Result()
+	if err != nil {
+		return nil, errors.Wrapf(errorx.NewDefaultError("redis ZREVRANGEBYSCORE错误"+err.Error()), "redis ZREVRANGEBYSCORE错误%v", err)
 	}
+
 	list := make([]*model.Video, 0)
-	for _, v := range VideoIds {
+	// 根据id走缓存查询
+	for _, v := range vIds {
 		oneVideo, err := l.svcCtx.VideoModel.FindOne(l.ctx, v.Member.(int64))
 		if err != nil {
 			return nil, errors.Wrapf(errorx.NewDefaultError("mysql find 错误"+err.Error()), "mysql find err:%v", err)
@@ -64,7 +71,7 @@ func (l *VideoListLogic) VideoList(in *video.VideoListReq) (*video.VideoListResp
 		list = append(list, oneVideo)
 	}
 
-	videoList := make([]*video.VideoList, 0) // Assuming VideoList is a struct that matches your needs
+	videoList := make([]*video.VideoList, 0)
 
 	for i := 0; i < len(list); i++ {
 		videoItem := &video.VideoList{

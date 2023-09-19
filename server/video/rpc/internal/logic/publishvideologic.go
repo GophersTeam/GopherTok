@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logc"
-	"gorm.io/gorm"
 	"strconv"
 	"time"
 
@@ -83,14 +82,13 @@ func (l *PublishVideoLogic) PublishVideo(in *video.PublishVideoReq) (*video.Comm
 	fmt.Println(UpdateTime)
 
 	v := model.Video{
-		ID:          in.Id,
-		UserID:      in.UserId,
+		Id:          in.Id,
+		UserId:      in.UserId,
 		Title:       in.Title,
-		PlayURL:     in.PlayUrl,
-		CoverURL:    in.CoverUrl,
+		PlayUrl:     in.PlayUrl,
+		CoverUrl:    in.CoverUrl,
 		CreateTime:  CreateTime,
 		UpdateTime:  UpdateTime,
-		DeleteTime:  gorm.DeletedAt{},
 		VideoSha256: in.VideoSha256,
 	}
 

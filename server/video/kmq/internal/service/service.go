@@ -93,7 +93,7 @@ func (s *Service) consume(ch chan *model.Video) {
 		s.SensitiveTrie.AddWords([]string{"傻逼", "死", "你妈", "滚"})
 		v.Title = s.SensitiveTrie.Filter(v.Title)
 		fmt.Println(v)
-		// 并发写入redis
+		// 并发写入redis,mysql
 		err := mr.Finish(func() error {
 			err := s.Rdb.Set(context.Background(), consts.VideoPrefix+m.VideoSha256, m.PlayUrl, 0)
 			return err.Err()
@@ -102,18 +102,21 @@ func (s *Service) consume(ch chan *model.Video) {
 			return err.Err()
 
 		}, func() error {
-			_, err := s.UserModel.Insert(context.Background(), &v)
+			_, err := s.VideoModel.Insert(context.Background(), &v)
 			if err != nil {
 				logx.Error(err)
 			}
 			return err
 		}, func() error {
-			err := s.Rdb.ZAdd(context.Background(), consts.AllVideoId, redis.Z{
-				Score:  float64(v.CreateTime.Unix() * 1000),
+			err := s.Rdb.ZAdd(context.Background(), consts.AllVideoIdPrefix, redis.Z{
+				Score:  float64(v.CreateTime.Unix()),
 				Member: v.Id,
 			})
 			return err.Err()
 
+		}, func() error {
+			err := s.Rdb.SAdd(context.Background(), fmt.Sprintf("%s%v", consts.UserVideoIdsPrefix, v.UserId), v.Id).Err()
+			return err
 		})
 		if err != nil {
 			logx.Error("video mq并发写入mysql,redis错误，err:", err)

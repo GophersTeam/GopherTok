@@ -2,7 +2,6 @@ package logic
 
 import (
 	"GopherTok/common/errorx"
-	"GopherTok/server/video/model"
 	"context"
 	"github.com/pkg/errors"
 
@@ -28,14 +27,14 @@ func NewGetUserVideoIdListLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 
 func (l *GetUserVideoIdListLogic) GetUserVideoIdList(in *video.GetUserVideoIdListReq) (*video.GetUserVideoIdListResp, error) {
 	// todo: add your logic here and delete this line
-	var list []model.Video
-	err := l.svcCtx.MysqlDb.Select("id").Where("user_id = ?", in.UserId).Find(&list).Error
+
+	vIds, err := l.svcCtx.VideoModel.FindVideoIdsByUserId(l.ctx, l.svcCtx.Rdb, in.UserId)
 	if err != nil {
-		return nil, errors.Wrapf(errorx.NewDefaultError("mysql find 错误"+err.Error()), "mysql find err:%v", err)
+		return nil, errors.Wrapf(errorx.NewDefaultError("服务查询出错，err:"+err.Error()), "mysql查询出错，err:%v", err)
 	}
 	IdList := make([]int64, 0)
-	for _, v := range list {
-		IdList = append(IdList, v.ID)
+	for _, v := range vIds {
+		IdList = append(IdList, v)
 	}
 	return &video.GetUserVideoIdListResp{
 		VideoIdList: IdList,

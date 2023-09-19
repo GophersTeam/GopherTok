@@ -2,14 +2,12 @@ package logic
 
 import (
 	"GopherTok/common/errorx"
-	"GopherTok/server/video/model"
+	"GopherTok/server/video/rpc/internal/svc"
+	"GopherTok/server/video/rpc/types/video"
 	"context"
 	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logc"
-	"gorm.io/gorm"
-
-	"GopherTok/server/video/rpc/internal/svc"
-	"GopherTok/server/video/rpc/types/video"
+	"github.com/zeromicro/go-zero/core/stores/sqlc"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -30,14 +28,13 @@ func NewIsExistsVideoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *IsE
 
 func (l *IsExistsVideoLogic) IsExistsVideo(in *video.IsExistsVideoReq) (*video.IsExistsVideoResp, error) {
 	// todo: add your logic here and delete this line
-	v := model.Video{}
 	isExists := false
-	result := l.svcCtx.MysqlDb.Where("id = ?", in.VideoId).First(&v)
+	_, err := l.svcCtx.VideoModel.FindOne(l.ctx, in.VideoId)
 	// 判断记录是否存在
-	if result.Error == gorm.ErrRecordNotFound {
+	if errors.Is(err, sqlc.ErrNotFound) {
 		logc.Info(l.ctx, "ID %d 的记录不存在\n", in.VideoId)
-	} else if result.Error != nil {
-		return nil, errors.Wrapf(errorx.NewDefaultError("mysql查询出错，err:"+result.Error.Error()), "mysql查询出错，err:%v", result.Error)
+	} else if err != nil {
+		return nil, errors.Wrapf(errorx.NewDefaultError("mysql查询出错，err:"+err.Error()), "mysql查询出错，err:%v", err.Error)
 	} else {
 		logc.Info(l.ctx, "Video_ID %d 的记录存在\n", in.VideoId)
 		isExists = true
