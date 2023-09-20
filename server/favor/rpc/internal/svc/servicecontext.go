@@ -8,6 +8,7 @@ import (
 	"GopherTok/server/video/rpc/videoclient"
 	"github.com/zeromicro/go-queue/kq"
 	"github.com/zeromicro/go-zero/zrpc"
+	"gorm.io/gorm"
 )
 
 type ServiceContext struct {
@@ -16,6 +17,7 @@ type ServiceContext struct {
 	FavorModel  model.FavorModel
 	UserRpc     userclient.User
 	KafkaPusher *kq.Pusher
+	DB          *gorm.DB
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -28,5 +30,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		VideoRpc:    videoclient.NewVideo(zrpc.MustNewClient(c.VideoRpcConf)),
 		FavorModel:  model.NewFavorModel(redisDb),
 		UserRpc:     userclient.NewUser(zrpc.MustNewClient(c.UserRpcConf)),
+		DB:          init_db.InitGorm(c.Mysql.DataSource),
 	}
 }

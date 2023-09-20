@@ -18,6 +18,9 @@ type Config struct {
 		Addrs []string
 		Topic string
 	}
+	Mysql struct {
+		DataSource string
+	}
 
 	VideoRpcConf zrpc.RpcClientConf
 	UserRpcConf  zrpc.RpcClientConf

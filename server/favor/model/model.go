@@ -9,6 +9,3 @@ type FavorInfo struct {
 	Info
 	Method string
 }
-
-type Favor struct {
-}

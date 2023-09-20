@@ -46,7 +46,6 @@ func (l *FavoredNumOfUserLogic) FavoredNumOfUser(in *favor.FavoredNumOfUserReq) 
 		id := id
 		go func(videoID int) {
 			defer wg.Done()
-
 			num, _ := l.svcCtx.FavorModel.NumOfFavor(l.ctx, id)
 			resultChan <- int64(num)
 		}(int(id))

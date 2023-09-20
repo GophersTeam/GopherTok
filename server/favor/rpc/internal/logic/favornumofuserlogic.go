@@ -1,7 +1,9 @@
 package logic
 
 import (
+	"GopherTok/server/favor/model"
 	"context"
+	"github.com/redis/go-redis/v9"
 
 	"GopherTok/common/errorx"
 
@@ -31,6 +33,16 @@ func (l *FavorNumOfUserLogic) FavorNumOfUser(in *favor.FavorNumOfUserReq) (*favo
 	// todo: add your logic here and delete this line
 	num, err := l.svcCtx.FavorModel.FavorNumOfUser(l.ctx, in.UserId)
 	if err != nil {
+		if err == redis.Nil {
+			var count int64
+			err := l.svcCtx.DB.Model(&model.Info{}).Where("userid = ?", in.UserId).Count(&count).Error
+			if err != nil {
+				return nil, errors.Wrapf(errorx.NewDefaultError(err.Error()), "err:%v", err)
+			}
+			return &favor.FavorNumOfUserResp{
+				FavorNumOfUser: int64(count),
+			}, nil
+		}
 		return nil, errors.Wrapf(errorx.NewDefaultError(err.Error()), "err:%v", err)
 	}
 
