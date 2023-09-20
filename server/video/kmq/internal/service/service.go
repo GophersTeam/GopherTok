@@ -118,6 +118,7 @@ func (s *Service) consume(ch chan *model.Video) {
 			err := s.Rdb.SAdd(context.Background(), fmt.Sprintf("%s%v", consts.UserVideoIdsPrefix, v.UserId), v.Id).Err()
 			return err
 		})
+
 		if err != nil {
 			logx.Error("video mq并发写入mysql,redis错误，err:", err)
 		}
