@@ -14,7 +14,7 @@ func (r RelationRpc) AddFollow(ctx context.Context, in *relationrpc.AddFollowReq
 	// TODO implement me
 
 	return &relationrpc.AddFollowResp{
-		StatusCode: "",
+		StatusCode: 0,
 		StatusMsg:  "",
 	}, nil
 }
@@ -23,7 +23,7 @@ func (r RelationRpc) DeleteFollow(ctx context.Context, in *relationrpc.DeleteFol
 	// TODO implement me
 
 	return &relationrpc.DeleteFollowResp{
-		StatusCode: "",
+		StatusCode: 0,
 		StatusMsg:  "",
 	}, nil
 }
@@ -33,7 +33,7 @@ func (r RelationRpc) GetFollowList(ctx context.Context, in *relationrpc.GetFollo
 
 	return &relationrpc.GetFollowListResp{
 		StatusMsg:  "",
-		StatusCode: "",
+		StatusCode: 0,
 		UserList:   nil,
 	}, nil
 }
@@ -43,7 +43,7 @@ func (r RelationRpc) GetFollowerList(ctx context.Context, in *relationrpc.GetFol
 
 	return &relationrpc.GetFollowerResp{
 		StatusMsg:  "",
-		StatusCode: "",
+		StatusCode: 0,
 		UserList:   nil,
 	}, nil
 }
@@ -53,7 +53,7 @@ func (r RelationRpc) GetFriendList(ctx context.Context, in *relationrpc.GetFrien
 
 	return &relationrpc.GetFriendListResp{
 		StatusMsg:  "",
-		StatusCode: "",
+		StatusCode: 0,
 		UserList:   nil,
 	}, nil
 }
@@ -62,7 +62,7 @@ func (r RelationRpc) GetFollowerCount(ctx context.Context, in *relationrpc.GetFo
 	// TODO implement me
 
 	return &relationrpc.GetFollowerCountResp{
-		StatusCode: "",
+		StatusCode: 0,
 		StatusMsg:  "",
 		Count:      0,
 	}, nil
@@ -72,7 +72,7 @@ func (r RelationRpc) GetFollowCount(ctx context.Context, in *relationrpc.GetFoll
 	// TODO implement me
 
 	return &relationrpc.GetFollowCountResp{
-		StatusCode: "",
+		StatusCode: 0,
 		StatusMsg:  "",
 		Count:      0,
 	}, nil
@@ -82,7 +82,7 @@ func (r RelationRpc) GetFriendCount(ctx context.Context, in *relationrpc.GetFrie
 	// TODO implement me
 
 	return &relationrpc.GetFriendCountResp{
-		StatusCode: "",
+		StatusCode: 0,
 		StatusMsg:  "",
 		Count:      0,
 	}, nil
@@ -92,7 +92,7 @@ func (r RelationRpc) CheckIsFollow(ctx context.Context, in *relationrpc.CheckIsF
 	// TODO implement me
 
 	return &relationrpc.CheckIsFollowResp{
-		StatusCode: "",
+		StatusCode: 0,
 		StatusMsg:  "",
 		IsFollow:   true,
 	}, nil

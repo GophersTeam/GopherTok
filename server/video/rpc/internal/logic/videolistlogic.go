@@ -3,6 +3,8 @@ package logic
 import (
 	"context"
 	"fmt"
+	"github.com/zeromicro/go-zero/core/mr"
+	"sort"
 	"strconv"
 	"time"
 
@@ -63,15 +65,36 @@ func (l *VideoListLogic) VideoList(in *video.VideoListReq) (*video.VideoListResp
 		return nil, errors.Wrapf(errorx.NewDefaultError("redis ZREVRANGEBYSCORE错误"+err.Error()), "redis ZREVRANGEBYSCORE错误%v", err)
 	}
 
-	list := make([]*model.Video, 0)
 	// 根据id走缓存查询
-	for _, v := range vIds {
-		oneVideo, err := l.svcCtx.VideoModel.FindOne(l.ctx, v.Member.(int64))
-		if err != nil {
-			return nil, errors.Wrapf(errorx.NewDefaultError("mysql find 错误"+err.Error()), "mysql find err:%v", err)
+	// 使用MapReduce并发查询缓存
+	list, err := mr.MapReduce(func(source chan<- interface{}) {
+		for _, v := range vIds {
+			source <- v.Member
 		}
-		list = append(list, oneVideo)
-	}
+	}, func(item interface{}, writer mr.Writer[*model.Video], cancel func(error)) {
+		oneVideo, err := l.svcCtx.VideoModel.FindOne(l.ctx, item.(int64))
+		if err != nil {
+			cancel(err)
+		}
+		writer.Write(oneVideo)
+	}, func(pipe <-chan *model.Video, writer mr.Writer[[]*model.Video], cancel func(error)) {
+		lists := make([]*model.Video, 0)
+		for p := range pipe {
+			lists = append(lists, p)
+		}
+		writer.Write(lists)
+	})
+	// 时间逆序排序
+	sort.Slice(list, func(i, j int) bool {
+		return list[i].CreateTime.After(list[j].CreateTime)
+	})
+	//for _, v := range vIds {
+	//	oneVideo, err := l.svcCtx.VideoModel.FindOne(l.ctx, v.Member.(int64))
+	//	if err != nil {
+	//		return nil, errors.Wrapf(errorx.NewDefaultError("mysql find 错误"+err.Error()), "mysql find err:%v", err)
+	//	}
+	//	list = append(list, oneVideo)
+	//}
 
 	videoList := make([]*video.VideoList, 0)
 
