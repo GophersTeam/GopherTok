@@ -14,6 +14,11 @@ type Config struct {
 		Cluster6 string
 	}
 
+	KafkaConf struct {
+		Addrs []string
+		Topic string
+	}
+
 	VideoRpcConf zrpc.RpcClientConf
 	UserRpcConf  zrpc.RpcClientConf
 }
