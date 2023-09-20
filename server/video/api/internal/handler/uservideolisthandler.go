@@ -21,6 +21,5 @@ func UserVideoListHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		l := logic.NewUserVideoListLogic(r.Context(), svcCtx)
 		resp, err := l.UserVideoList(&req)
 		response.Response(r, w, resp, err) // ②
-
 	}
 }

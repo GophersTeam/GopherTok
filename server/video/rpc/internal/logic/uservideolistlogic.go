@@ -34,7 +34,7 @@ func (l *UserVideoListLogic) UserVideoList(in *video.UserVideoListReq) (*video.U
 		return nil, errors.Wrapf(errorx.NewDefaultError("mysql find 错误"+err.Error()), "mysql find err:%v", err)
 	}
 
-	videoList := make([]*video.VideoList, 0) // Assuming VideoList is a struct that matches your needs
+	videoList := make([]*video.VideoList, 0)
 
 	for i := 0; i < len(list); i++ {
 		videoItem := &video.VideoList{

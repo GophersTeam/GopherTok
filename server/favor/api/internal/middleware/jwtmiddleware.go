@@ -49,7 +49,6 @@ func (m *JWTMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 		if isExpire {
 			parts[0], parts[1] = utils.GetToken(parseToken.ID, parseToken.State, m.Config.Token.AccessToken, m.Config.Token.RefreshToken)
 			// w.Header().Set("Authorization", fmt.Sprintf("Bearer %s %s", parts[0], parts[1]))
-
 		}
 		token = parts[0] + " " + parts[1]
 		r = r.WithContext(context.WithValue(r.Context(), consts.UserId, parseToken.ID))

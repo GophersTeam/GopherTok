@@ -83,7 +83,6 @@ func TokenValidationHandler(w http.ResponseWriter, r *http.Request) {
 	if isExpire {
 		parts[0], parts[1] = utils.GetToken(parseToken.ID, parseToken.State, "xxx", "zzz")
 		// w.Header().Set("Authorization", fmt.Sprintf("Bearer %s %s", parts[0], parts[1]))
-
 	}
 	token = parts[0] + " " + parts[1]
 	r = r.WithContext(context.WithValue(r.Context(), consts.UserId, parseToken.ID))
